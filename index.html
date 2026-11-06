@@ -149,7 +149,7 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB MASTER BARANG (KODE AUTOMATIS & READONLY) -->
+      <!-- 1. TAB MASTER BARANG -->
       <section id="tab-barang" class="tab-content block space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -194,7 +194,7 @@
         </div>
       </section>
 
-      <!-- 2. TAB PEMBELIAN (FAKTUR OTOMATIS & RECORD PETUGAS) -->
+      <!-- 2. TAB PEMBELIAN (PILIH TERUTAMA BAHAN BAKU / BARANG JADI) -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -206,7 +206,7 @@
               <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Pembelian</label>
               <select id="p_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -226,7 +226,7 @@
         </div>
       </section>
 
-      <!-- 3. TAB PENGOLAHAN (BATCH OTOMATIS & RECORD PETUGAS) -->
+      <!-- 3. TAB PENGOLAHAN (FILTER KHUSUS BAHAN BAKU PEMBELIAN) -->
       <section id="tab-pengolahan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -239,6 +239,7 @@
             </div>
             <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100 space-y-3">
               <span class="text-xs font-bold text-purple-700 uppercase">1. Potong Bahan Baku (-)</span>
+              <p class="text-[11px] text-purple-600">Hanya menampilkan Bahan Baku hasil Pembelian yang stoknya tersedia.</p>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select id="o_select_bahan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Pilih Bahan Baku</option></select>
                 <input type="number" step="0.01" id="o_jumlah_bahan" required placeholder="Qty Terpakai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
@@ -258,7 +259,7 @@
         </div>
       </section>
 
-      <!-- 4. TAB PENJUALAN (NOTA OTOMATIS, HARGA JUAL SATUAN, PETUGAS) -->
+      <!-- 4. TAB PENJUALAN (FILTER BARANG JADI & HASIL OLAHAN) -->
       <section id="tab-penjualan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -271,6 +272,7 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Jual</label>
+              <p class="text-[11px] text-amber-600 mb-1">Hanya menampilkan Barang Jadi (Pembelian) & Hasil Olahan.</p>
               <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -620,6 +622,7 @@
       } catch (err) { alert(err.message); }
     });
 
+    // LISTENER REALTIME BARANG + POPULASI DROPDOWN DENGAN FILTERING SESUAI ATURAN
     onSnapshot(collection(db, "barang"), (snapshot) => {
       const list = document.getElementById("tabelBarangBody");
       const pSelect = document.getElementById("p_select_barang");
@@ -628,14 +631,19 @@
       const jSelect = document.getElementById("j_select_barang");
 
       list.innerHTML = "";
-      pSelect.innerHTML = oBahanSelect.innerHTML = oHasilSelect.innerHTML = jSelect.innerHTML = '<option value="">-- Pilih Barang --</option>';
+      pSelect.innerHTML = '<option value="">-- Pilih Barang Pembelian --</option>';
+      oBahanSelect.innerHTML = '<option value="">-- Pilih Bahan Baku (Pembelian) --</option>';
+      oHasilSelect.innerHTML = '<option value="">-- Pilih Barang Hasil Olahan --</option>';
+      jSelect.innerHTML = '<option value="">-- Pilih Barang Jual --</option>';
 
       if (snapshot.empty) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
 
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
         const id = docSnap.id;
+        const stok = d.stok_terkini || 0;
         
+        // Render List Daftar Barang
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
             <div>
@@ -644,15 +652,29 @@
             </div>
             <div class="text-right">
               <span class="text-xs text-slate-400 block">Stok Terkini</span>
-              <span class="text-sm font-black text-slate-900">${d.stok_terkini || 0} ${d.satuan || ''}</span>
+              <span class="text-sm font-black text-slate-900">${stok} ${d.satuan || ''}</span>
             </div>
           </div>`;
 
-        const opt = `<option value="${id}">${d.nama_barang} (Stok: ${d.stok_terkini || 0} ${d.satuan || ''})</option>`;
-        pSelect.innerHTML += opt;
-        oBahanSelect.innerHTML += opt;
-        oHasilSelect.innerHTML += opt;
-        jSelect.innerHTML += opt;
+        // 1. POPULASI PEMBELIAN (Dapat membeli Bahan Baku / Barang Jadi)
+        if (d.kategori === 'BAHAN_BAKU' || d.kategori === 'BARANG_JADI') {
+          pSelect.innerHTML += `<option value="${id}">${d.nama_barang} [${d.kategori}] (Stok saat ini: ${stok} ${d.satuan || ''})</option>`;
+        }
+
+        // 2. POPULASI PENGOLAHAN BAHAN BAKU (Hanya Kategori BAHAN_BAKU dari Pembelian dengan Stok > 0)
+        if (d.kategori === 'BAHAN_BAKU' && stok > 0) {
+          oBahanSelect.innerHTML += `<option value="${id}">${d.nama_barang} (Stok Siap Olah: ${stok} ${d.satuan || ''})</option>`;
+        }
+
+        // 3. POPULASI PENGOLAHAN BARANG HASIL (Hanya Kategori HASIL_OLAHAN)
+        if (d.kategori === 'HASIL_OLAHAN') {
+          oHasilSelect.innerHTML += `<option value="${id}">${d.nama_barang} (Stok: ${stok} ${d.satuan || ''})</option>`;
+        }
+
+        // 4. POPULASI PENJUALAN (Hanya Barang Jadi dari Pembelian & Hasil Olahan dengan Stok > 0)
+        if ((d.kategori === 'BARANG_JADI' || d.kategori === 'HASIL_OLAHAN') && stok > 0) {
+          jSelect.innerHTML += `<option value="${id}">${d.nama_barang} [${d.kategori}] (Stok Siap Jual: ${stok} ${d.satuan || ''})</option>`;
+        }
       });
     });
 
@@ -704,7 +726,7 @@
         const bahanSnap = await getDoc(bahanRef);
         const hasilSnap = await getDoc(hasilRef);
 
-        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) return alert("Stok bahan tidak mencukupi!");
+        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) return alert("Stok bahan baku tidak mencukupi!");
 
         batch.update(bahanRef, { stok_terkini: bahanSnap.data().stok_terkini - qtyBahan });
         batch.update(hasilRef, { stok_terkini: (hasilSnap.data().stok_terkini || 0) + qtyHasil });

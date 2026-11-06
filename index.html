@@ -149,7 +149,7 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB MASTER BARANG (TANPA STOK AWAL & HARGA JUAL) -->
+      <!-- 1. TAB MASTER BARANG (KODE AUTOMATIS & READONLY) -->
       <section id="tab-barang" class="tab-content block space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -158,8 +158,8 @@
           <form id="formBarang" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode SKU</label>
-                <input type="text" id="b_kode" required placeholder="BRG-001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode SKU (Otomatis)</label>
+                <input type="text" id="b_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
@@ -187,9 +187,9 @@
         </div>
 
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Stok Barang</h3>
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Barang</h3>
           <div id="tabelBarangBody" class="space-y-3">
-            <p class="text-xs text-slate-400">Memuat stok...</p>
+            <p class="text-xs text-slate-400">Memuat data barang...</p>
           </div>
         </div>
       </section>
@@ -520,6 +520,7 @@
     }
 
     function refreshAutoCodes() {
+      document.getElementById("b_kode").value = generateAutoCode("BRG");
       document.getElementById("p_faktur").value = generateAutoCode("INV-BUY");
       document.getElementById("o_batch").value = generateAutoCode("BATCH");
       document.getElementById("j_nota").value = generateAutoCode("POS");
@@ -601,7 +602,7 @@
       });
     };
 
-    // 1. MASTER BARANG (HANYA KODE, NAMA, KATEGORI, SATUAN)
+    // 1. MASTER BARANG (AUTO KODE SKU, NAMA, KATEGORI, SATUAN)
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -615,6 +616,7 @@
         });
         alert("Barang berhasil disimpan!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 

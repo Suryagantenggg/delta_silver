@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Inventory & Pengolahan Lengkap</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; background-color: #f4f6f9; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    h2 { border-bottom: 2px solid #007bff; padding-bottom: 10px; color: #333; margin-top: 0; }
+    
+    /* Navigation Tabs */
+    .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+    .tab-button { background: #eee; border: none; padding: 12px 18px; cursor: pointer; border-radius: 5px 5px 0 0; font-weight: bold; color: #555; }
+    .tab-button.active { background: #007bff; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    /* Form Styles */
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    button.btn-submit { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; width: 100%; margin-top: 10px; }
+    button.btn-submit:hover { background: #218838; }
+    
+    /* Table Styles */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: left; }
+    th { background-color: #f8f9fa; font-weight: bold; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
+    .badge-baku { background-color: #ff9800; }
+    .badge-jadi { background-color: #2196f3; }
+    .badge-olah { background-color: #9c27b0; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('barang')">📦 Master Barang</button>
+      <button class="tab-button" onclick="switchTab('pembelian')">🛒 Pembelian</button>
+      <button class="tab-button" onclick="switchTab('pengolahan')">⚙️ Pengolahan</button>
+      <button class="tab-button" onclick="switchTab('penjualan')">💰 Penjualan</button>
+      <button class="tab-button" onclick="switchTab('asset')">🏢 Asset</button>
+      <button class="tab-button" onclick="switchTab('user')">👤 User & Role</button>
+    </div>
+
+    <!-- 1. TAB MASTER BARANG -->
+    <div id="tab-barang" class="tab-content active">
+      <h2>1. Tabel Data Barang</h2>
+      <form id="formBarang">
+        <div class="form-group">
+          <label>Kode Barang (SKU):</label>
+          <input type="text" id="b_kode" placeholder="Misal: BRG-001" required>
+        </div>
+        <div class="form-group">
+          <label>Nama Barang:</label>
+          <input type="text" id="b_nama" placeholder="Misal: Kopi Biji Arabika" required>
+        </div>
+        <div class="form-group">
+          <label>Kategori:</label>
+          <select id="b_kategori" required>
+            <option value="BAHAN_BAKU">Bahan Baku</option>
+            <option value="BARANG_JADI">Barang Jadi (Langsung Jual)</option>
+            <option value="HASIL_OLAHAN">Hasil Olahan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Satuan & Stok Awal:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="b_satuan" placeholder="Satuan (kg, pcs)" required>
+            <input type="number" step="0.01" id="b_stok" placeholder="Stok Awal" value="0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Harga Jual (Rp):</label>
+          <input type="number" id="b_harga" value="0" required>
+        </div>
+        <button type="submit" class="btn-submit">Simpan Barang</button>
+      </form>
+
+      <h3>Daftar Stok Barang</h3>
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Nama Barang</th><th>Kategori</th><th>Stok</th><th>Harga Jual</th></tr>
+        </thead>
+        <tbody id="tabelBarangBody"><tr><td colspan="5">Memuat data...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- 2. TAB PEMBELIAN -->
+    <div id="tab-pembelian" class="tab-content">
+      <h2>2. Tabel Transaksi Pembelian</h2>
+      <form id="formPembelian">
+        <div class="form-group">
+          <label>Nomor Faktur Beli:</label>
+          <input type="text" id="p_faktur" placeholder="INV-BUY-001" required>
+        </div>
+        <div class="form-group">
+          <label>Pilih Barang (Tambah Stok):</label>
+          <select id="p_select_barang" required><option value="">-- Pilih Barang --</option></select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Beli & Harga Satuan:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="number" step="0.01" id="p_jumlah" placeholder="Jumlah Beli" required>
+            <input type="number" id="p_harga" placeholder="Harga Beli Satuan (Rp)" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Simpan Pembelian (+Stok)</button>
+      </form>
+    </div>
+
+    <!-- 3. TAB PENGOLAHAN -->
+    <div id="tab-pengolahan" class="tab-content">
+      <h2>3. Tabel Pengolahan (Manufacturing)</h2>
+      <form id="formPengolahan">
+        <div class="form-group">
+          <label>Kode Batch Produksi:</label>
+          <input type="text" id="o_batch" placeholder="BATCH-2026-01" required>
+        </div>
+        <div class="form-group">
+          <label>Bahan Baku yang Digunakan (-Stok):</label>
+          <div style="display: flex; gap: 10px;">
+            <select id="o_select_bahan" required><option value="">-- Pilih Bahan Baku --</option></select>
+            <input type="number" step="0.01" id="o_jumlah_bahan" placeholder="Jumlah Terpakai" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Barang Hasil Olahan (+Stok):</label>
+          <div style="display: flex; gap: 10px;">
+            <select id="o_select_hasil" required><option value="">-- Pilih Barang Hasil --</option></select>
+            <input type="number" step="0.01" id="o_jumlah_hasil" placeholder="Jumlah Dihasilkan" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Proses Pengolahan Stok</button>
+      </form>
+    </div>
+
+    <!-- 4. TAB PENJUALAN -->
+    <div id="tab-penjualan" class="tab-content">
+      <h2>4. Tabel Penjualan (POS Kasir)</h2>
+      <form id="formPenjualan">
+        <div class="form-group">
+          <label>Nomor Nota Jual:</label>
+          <input type="text" id="j_nota" placeholder="POS-2026-001" required>
+        </div>
+        <div class="form-group">
+          <label>Pilih Barang Jual (-Stok):</label>
+          <select id="j_select_barang" required><option value="">-- Pilih Barang --</option></select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Terjual & Metode Pembayaran:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="number" step="0.01" id="j_jumlah" placeholder="Qty Jual" required>
+            <select id="j_metode" required>
+              <option value="CASH">CASH</option>
+              <option value="TRANSFER">TRANSFER</option>
+              <option value="QRIS">QRIS</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Simpan Transaksi Penjualan</button>
+      </form>
+    </div>
+
+    <!-- 5. TAB ASSET -->
+    <div id="tab-asset" class="tab-content">
+      <h2>5. Tabel Asset Operasional</h2>
+      <form id="formAsset">
+        <div class="form-group">
+          <label>Kode & Nama Asset:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="a_kode" placeholder="AST-001" required>
+            <input type="text" id="a_nama" placeholder="Nama Peralatan/Mesin" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Harga Perolehan & Umur Ekonomis (Bulan):</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="number" id="a_harga" placeholder="Harga Beli Asset (Rp)" required>
+            <input type="number" id="a_umur" placeholder="Umur (Bulan)" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Simpan Data Asset</button>
+      </form>
+
+      <h3>Daftar Asset</h3>
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Nama Asset</th><th>Harga Perolehan</th><th>Umur Ekonomis</th></tr>
+        </thead>
+        <tbody id="tabelAssetBody"><tr><td colspan="4">Memuat asset...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- 6. TAB USER -->
+    <div id="tab-user" class="tab-content">
+      <h2>6. Tabel Management Otorisasi User</h2>
+      <form id="formUser">
+        <div class="form-group">
+          <label>Nama User & Email Login:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="u_nama" placeholder="Nama Lengkap" required>
+            <input type="email" id="u_email" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Role Akses:</label>
+          <select id="u_role" required>
+            <option value="admin">Super Admin</option>
+            <option value="kasir">Kasir</option>
+            <option value="gudang">Admin Gudang</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-submit">Simpan Profile User</button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Firebase JavaScript SDK Modular -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, collection, addDoc, doc, getDoc, 
+      onSnapshot, writeBatch, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // KUNCI KONFIGURASI FIREBASE ANDA
+    const firebaseConfig = {
+      apiKey: "AIzaSyC7DFLmaWssvGemkTWgteZE3Cu42Rq_F2s",
+      authDomain: "delta-silver.firebaseapp.com",
+      projectId: "delta-silver",
+      storageBucket: "delta-silver.firebasestorage.app",
+      messagingSenderId: "286606928139",
+      appId: "1:286606928139:web:e766c68a655506c4ad5a0e",
+      measurementId: "G-DVQ68CDEV1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Tab Navigation Logic
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      event.currentTarget.classList.add('active');
+    };
+
+    // 1. MASTER BARANG (CREATE & READ REALTIME)
+    document.getElementById("formBarang").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "barang"), {
+          kode_barang: document.getElementById("b_kode").value,
+          nama_barang: document.getElementById("b_nama").value,
+          kategori: document.getElementById("b_kategori").value,
+          satuan: document.getElementById("b_satuan").value,
+          stok_terkini: parseFloat(document.getElementById("b_stok").value),
+          harga_jual: parseFloat(document.getElementById("b_harga").value),
+          created_at: serverTimestamp()
+        });
+        alert("Barang Berhasil Disimpan!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+
+    onSnapshot(collection(db, "barang"), (snapshot) => {
+      const tabel = document.getElementById("tabelBarangBody");
+      const pSelect = document.getElementById("p_select_barang");
+      const oBahanSelect = document.getElementById("o_select_bahan");
+      const oHasilSelect = document.getElementById("o_select_hasil");
+      const jSelect = document.getElementById("j_select_barang");
+
+      tabel.innerHTML = "";
+      pSelect.innerHTML = oBahanSelect.innerHTML = oHasilSelect.innerHTML = jSelect.innerHTML = '<option value="">-- Pilih Barang --</option>';
+
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        const id = docSnap.id;
+        
+        tabel.innerHTML += `<tr>
+          <td>${d.kode_barang}</td>
+          <td>${d.nama_barang}</td>
+          <td><span class="badge badge-baku">${d.kategori}</span></td>
+          <td><b>${d.stok_terkini}</b> ${d.satuan}</td>
+          <td>Rp ${Number(d.harga_jual).toLocaleString('id-ID')}</td>
+        </tr>`;
+
+        const opt = `<option value="${id}">${d.nama_barang} (Stok: ${d.stok_terkini} ${d.satuan})</option>`;
+        pSelect.innerHTML += opt;
+        oBahanSelect.innerHTML += opt;
+        oHasilSelect.innerHTML += opt;
+        jSelect.innerHTML += opt;
+      });
+    });
+
+    // 2. PEMBELIAN (+ STOK)
+    document.getElementById("formPembelian").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bId = document.getElementById("p_select_barang").value;
+      const qty = parseFloat(document.getElementById("p_jumlah").value);
+      const harga = parseFloat(document.getElementById("p_harga").value);
+
+      try {
+        const batch = writeBatch(db);
+        const bRef = doc(db, "barang", bId);
+        const bSnap = await getDoc(bRef);
+        
+        batch.update(bRef, { 
+          stok_terkini: (bSnap.data().stok_terkini || 0) + qty,
+          harga_beli_terakhir: harga 
+        });
+
+        batch.set(doc(collection(db, "pembelian")), {
+          no_faktur: document.getElementById("p_faktur").value,
+          total_bayar: qty * harga,
+          tanggal_beli: serverTimestamp()
+        });
+
+        await batch.commit();
+        alert("Pembelian Berhasil & Stok Bertambah!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+
+    // 3. PENGOLAHAN (- STOK BAHAN, + STOK HASIL)
+    document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bahanId = document.getElementById("o_select_bahan").value;
+      const qtyBahan = parseFloat(document.getElementById("o_jumlah_bahan").value);
+      const hasilId = document.getElementById("o_select_hasil").value;
+      const qtyHasil = parseFloat(document.getElementById("o_jumlah_hasil").value);
+
+      try {
+        const batch = writeBatch(db);
+        const bahanRef = doc(db, "barang", bahanId);
+        const hasilRef = doc(db, "barang", hasilId);
+        
+        const bahanSnap = await getDoc(bahanRef);
+        const hasilSnap = await getDoc(hasilRef);
+
+        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) {
+          alert("Stok Bahan Baku Tidak Cukup!");
+          return;
+        }
+
+        batch.update(bahanRef, { stok_terkini: bahanSnap.data().stok_terkini - qtyBahan });
+        batch.update(hasilRef, { stok_terkini: (hasilSnap.data().stok_terkini || 0) + qtyHasil });
+
+        batch.set(doc(collection(db, "pengolahan")), {
+          kode_batch: document.getElementById("o_batch").value,
+          tanggal_pengolahan: serverTimestamp()
+        });
+
+        await batch.commit();
+        alert("Pengolahan Berhasil Ditransaksikan!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+
+    // 4. PENJUALAN (- STOK)
+    document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const bId = document.getElementById("j_select_barang").value;
+      const qty = parseFloat(document.getElementById("j_jumlah").value);
+
+      try {
+        const batch = writeBatch(db);
+        const bRef = doc(db, "barang", bId);
+        const bSnap = await getDoc(bRef);
+
+        if ((bSnap.data().stok_terkini || 0) < qty) {
+          alert("Stok barang tidak mencukupi!");
+          return;
+        }
+
+        batch.update(bRef, { stok_terkini: bSnap.data().stok_terkini - qty });
+        batch.set(doc(collection(db, "penjualan")), {
+          no_nota: document.getElementById("j_nota").value,
+          metode: document.getElementById("j_metode").value,
+          tanggal_jual: serverTimestamp()
+        });
+
+        await batch.commit();
+        alert("Penjualan Berhasil!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+
+    // 5. ASSET
+    document.getElementById("formAsset").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "assets"), {
+          kode_asset: document.getElementById("a_kode").value,
+          nama_asset: document.getElementById("a_nama").value,
+          harga_perolehan: parseFloat(document.getElementById("a_harga").value),
+          umur_ekonomis_bulan: parseInt(document.getElementById("a_umur").value),
+          created_at: serverTimestamp()
+        });
+        alert("Asset Berhasil Disimpan!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+
+    onSnapshot(collection(db, "assets"), (snapshot) => {
+      const tabel = document.getElementById("tabelAssetBody");
+      tabel.innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        tabel.innerHTML += `<tr>
+          <td>${d.kode_asset}</td>
+          <td>${d.nama_asset}</td>
+          <td>Rp ${Number(d.harga_perolehan).toLocaleString('id-ID')}</td>
+          <td>${d.umur_ekonomis_bulan} Bulan</td>
+        </tr>`;
+      });
+    });
+
+    // 6. USER ROLE
+    document.getElementById("formUser").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "users"), {
+          nama: document.getElementById("u_nama").value,
+          email: document.getElementById("u_email").value,
+          role_id: document.getElementById("u_role").value,
+          created_at: serverTimestamp()
+        });
+        alert("Profile User Berhasil Disimpan!");
+        e.target.reset();
+      } catch (err) { alert(err.message); }
+    });
+  </script>
+</body>
+</html>

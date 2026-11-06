@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Inventory & Pengolahan System</title>
+  <title>Inventory, Pengolahan & Investor System</title>
   
   <!-- Tailwind CSS & Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +23,7 @@
           },
           colors: {
             brand: {
-              50: '#eep2ff',
+              50: '#eef2ff',
               100: '#e0e7ff',
               500: '#6366f1',
               600: '#4f46e5',
@@ -42,466 +42,664 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="h-full text-slate-800 flex flex-col font-sans pb-24 md:pb-6 antialiased selection:bg-brand-500 selection:text-white">
+<body class="h-full text-slate-800 flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- TOP APP BAR / HEADER -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 sm:px-8 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-        <i class="ph-bold ph-package text-xl"></i>
-      </div>
-      <div>
-        <h1 class="font-bold text-base sm:text-lg text-slate-900 leading-tight">StockManager</h1>
-        <p class="text-xs text-slate-500 font-medium">Inventory & Manufacturing</p>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Firestore Online
-      </span>
-    </div>
-  </header>
-
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-4 sm:px-6 sm:py-6">
-    
-    <!-- DESKTOP TOP NAV TABS (Hidden on mobile, visible on md+) -->
-    <div class="hidden md:flex items-center gap-1 bg-white p-1.5 rounded-2xl border border-slate-200 mb-6 shadow-sm">
-      <button onclick="switchTab('barang')" id="dtab-barang" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-brand-600 bg-brand-50 shadow-sm">
-        <i class="ph-bold ph-package text-lg"></i> Master Barang
-      </button>
-      <button onclick="switchTab('pembelian')" id="dtab-pembelian" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-        <i class="ph-bold ph-shopping-cart-simple text-lg"></i> Pembelian
-      </button>
-      <button onclick="switchTab('pengolahan')" id="dtab-pengolahan" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-        <i class="ph-bold ph-gear text-lg"></i> Pengolahan
-      </button>
-      <button onclick="switchTab('penjualan')" id="dtab-penjualan" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-        <i class="ph-bold ph-receipt text-lg"></i> Penjualan
-      </button>
-      <button onclick="switchTab('asset')" id="dtab-asset" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-        <i class="ph-bold ph-buildings text-lg"></i> Asset
-      </button>
-      <button onclick="switchTab('user')" id="dtab-user" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
-        <i class="ph-bold ph-users text-lg"></i> User Role
-      </button>
-    </div>
-
-    <!-- TAB 1: MASTER BARANG -->
-    <section id="tab-barang" class="tab-content block space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-plus-circle text-brand-600 text-xl"></i> Input Master Barang
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Tambah produk baru atau stok awal bahan mentah/hasil olahan.</p>
-          </div>
+  <!-- ==================== AUTH CONTAINER (LOGIN / SIGN UP / FORGOT PASSWORD) ==================== -->
+  <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xl max-w-md w-full p-6 sm:p-8 space-y-6 my-auto">
+      
+      <!-- Brand Logo -->
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 mx-auto">
+          <i class="ph-bold ph-package text-3xl"></i>
         </div>
+        <h1 class="text-2xl font-bold text-slate-900">StockManager</h1>
+        <p class="text-xs text-slate-500 font-medium">Sistem Manajemen Inventory & Investasi</p>
+      </div>
 
-        <form id="formBarang" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode SKU / Barcode</label>
-              <input type="text" id="b_kode" placeholder="Misal: BRG-001" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Barang</label>
-              <input type="text" id="b_nama" placeholder="Misal: Kopi Biji Arabika" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kategori</label>
-              <select id="b_kategori" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
-                <option value="BAHAN_BAKU">🌾 Bahan Baku</option>
-                <option value="BARANG_JADI">📦 Barang Jadi (Direct)</option>
-                <option value="HASIL_OLAHAN">⚙️ Hasil Olahan</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Satuan Ukuran</label>
-              <input type="text" id="b_satuan" placeholder="kg, pcs, liter, pack" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Stok Awal</label>
-              <input type="number" step="0.01" id="b_stok" value="0" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
-            </div>
-          </div>
-
+      <!-- AUTH FORM: LOGIN -->
+      <div id="formContainerLogin" class="space-y-4">
+        <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-2">Masuk Akun</h2>
+        <form id="formLogin" class="space-y-3.5">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Jual Satuan (Rp)</label>
-            <input type="number" id="b_harga" value="0" required 
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email</label>
+            <input type="email" id="loginEmail" placeholder="nama@email.com" required
               class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
           </div>
-
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Password</label>
+              <button type="button" onclick="showAuthForm('forgot')" class="text-xs font-semibold text-brand-600 hover:underline">Lupa Password?</button>
+            </div>
+            <input type="password" id="loginPassword" placeholder="••••••••" required
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+          </div>
           <button type="submit" 
             class="w-full h-12 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-floppy-disk text-lg"></i> Simpan Data Barang
+            <i class="ph-bold ph-sign-in text-lg"></i> Masuk
           </button>
         </form>
-      </div>
-
-      <!-- LIST STOK BARANG (Card Mobile View & Desktop Table) -->
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
-            <i class="ph-duotone ph-list-numbers text-brand-600 text-xl"></i> Katalog & Stok Terkini
-          </h3>
-          <span id="barangCountBadge" class="text-xs bg-slate-100 font-bold px-2.5 py-1 rounded-full text-slate-600">0 Item</span>
-        </div>
-
-        <!-- Mobile Card View (Terlihat di Layar HP) -->
-        <div id="mobileBarangCards" class="grid grid-cols-1 gap-3 sm:hidden">
-          <div class="p-4 text-center text-slate-400 text-sm">Memuat data barang...</div>
-        </div>
-
-        <!-- Desktop Table View (Hidden di HP, Terlihat di Tab/Desktop) -->
-        <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-xs uppercase tracking-wider">
-              <tr>
-                <th class="py-3 px-4">Kode SKU</th>
-                <th class="py-3 px-4">Nama Barang</th>
-                <th class="py-3 px-4">Kategori</th>
-                <th class="py-3 px-4 text-right">Stok Terkini</th>
-                <th class="py-3 px-4 text-right">Harga Jual</th>
-              </tr>
-            </thead>
-            <tbody id="tabelBarangBody" class="divide-y divide-slate-100">
-              <tr><td colspan="5" class="py-6 text-center text-slate-400">Memuat data...</td></tr>
-            </tbody>
-          </table>
+        <div class="text-center pt-2">
+          <p class="text-xs text-slate-500">Belum punya akun? <button onclick="showAuthForm('signup')" class="font-bold text-brand-600 hover:underline">Daftar Sekarang</button></p>
         </div>
       </div>
-    </section>
 
-    <!-- TAB 2: PEMBELIAN -->
-    <section id="tab-pembelian" class="tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+      <!-- AUTH FORM: SIGN UP -->
+      <div id="formContainerSignUp" class="space-y-4 hidden">
+        <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-2">Buat Akun Baru</h2>
+        <form id="formSignUp" class="space-y-3.5">
           <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-shopping-bag text-emerald-600 text-xl"></i> Transaksi Pembelian Stok
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Input barang masuk dari supplier & stok otomatis bertambah secara real-time.</p>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap</label>
+            <input type="text" id="signUpNama" placeholder="Nama Anda" required
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
           </div>
-        </div>
-
-        <form id="formPembelian" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Faktur / Invoice Beli</label>
-            <input type="text" id="p_faktur" placeholder="Contoh: INV-BUY-2026-001" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email</label>
+            <input type="email" id="signUpEmail" placeholder="nama@email.com" required
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
           </div>
-
           <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Pilih Item Barang</label>
-            <select id="p_select_barang" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
-              <option value="">-- Memuat Data Barang --</option>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" id="signUpPassword" placeholder="Minimal 6 karakter" required minlength="6"
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Role / Peran</label>
+            <select id="signUpRole" required
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+              <option value="admin">👑 Super Admin</option>
+              <option value="kasir">💳 Kasir</option>
+              <option value="gudang">📦 Admin Gudang</option>
             </select>
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jumlah Beli (Qty)</label>
-              <input type="number" step="0.01" id="p_jumlah" placeholder="0" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Beli Satuan (Rp)</label>
-              <input type="number" id="p_harga" placeholder="0" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
-            </div>
-          </div>
-
           <button type="submit" 
             class="w-full h-12 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-plus-circle text-lg"></i> Process & Add Stock (+Stok)
+            <i class="ph-bold ph-user-plus text-lg"></i> Mendaftar
           </button>
         </form>
-      </div>
-    </section>
-
-    <!-- TAB 3: PENGOLAHAN -->
-    <section id="tab-pengolahan" class="tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-factory text-purple-600 text-xl"></i> Pengolahan & Batch Produksi
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Konversi bahan mentah (-Stok) menjadi produk hasil olahan (+Stok).</p>
-          </div>
+        <div class="text-center pt-2">
+          <p class="text-xs text-slate-500">Sudah punya akun? <button onclick="showAuthForm('login')" class="font-bold text-brand-600 hover:underline">Masuk</button></p>
         </div>
+      </div>
 
-        <form id="formPengolahan" class="space-y-4">
+      <!-- AUTH FORM: FORGOT PASSWORD -->
+      <div id="formContainerForgot" class="space-y-4 hidden">
+        <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-2">Lupa Password</h2>
+        <p class="text-xs text-slate-500">Masukkan email Anda. Kami akan mengirimkan instruksi untuk reset kata sandi.</p>
+        <form id="formForgot" class="space-y-3.5">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Batch Produksi</label>
-            <input type="text" id="o_batch" placeholder="BATCH-202611-01" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all">
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Terdaftar</label>
+            <input type="email" id="forgotEmail" placeholder="nama@email.com" required
+              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
           </div>
-
-          <!-- Section Bahan Baku (Minus Stock) -->
-          <div class="p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl space-y-3">
-            <span class="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="ph-bold ph-minus-circle text-amber-600"></i> Konsumsi Bahan Baku (-Stok)
-            </span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="sm:col-span-2">
-                <select id="o_select_bahan" required 
-                  class="w-full h-11 px-3 bg-white border border-amber-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                  <option value="">-- Pilih Bahan Baku --</option>
-                </select>
-              </div>
-              <div>
-                <input type="number" step="0.01" id="o_jumlah_bahan" placeholder="Qty Terpakai" required 
-                  class="w-full h-11 px-3 bg-white border border-amber-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500">
-              </div>
-            </div>
-          </div>
-
-          <!-- Section Hasil Olahan (Plus Stock) -->
-          <div class="p-3.5 bg-indigo-50/60 border border-indigo-200/60 rounded-xl space-y-3">
-            <span class="text-xs font-bold text-indigo-800 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="ph-bold ph-plus-circle text-indigo-600"></i> Hasil Jadi Pengolahan (+Stok)
-            </span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="sm:col-span-2">
-                <select id="o_select_hasil" required 
-                  class="w-full h-11 px-3 bg-white border border-indigo-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Pilih Barang Hasil --</option>
-                </select>
-              </div>
-              <div>
-                <input type="number" step="0.01" id="o_jumlah_hasil" placeholder="Qty Dihasilkan" required 
-                  class="w-full h-11 px-3 bg-white border border-indigo-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              </div>
-            </div>
-          </div>
-
           <button type="submit" 
-            class="w-full h-12 bg-purple-600 hover:bg-purple-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-purple-500/20 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-arrows-clockwise text-lg"></i> Eksekusi Pengolahan Stok Atomik
+            class="w-full h-12 bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all">
+            <i class="ph-bold ph-paper-plane-tilt text-lg"></i> Kirim Link Reset
           </button>
         </form>
+        <div class="text-center pt-2">
+          <button onclick="showAuthForm('login')" class="text-xs font-bold text-slate-600 hover:underline">← Kembali ke Login</button>
+        </div>
       </div>
-    </section>
 
-    <!-- TAB 4: PENJUALAN -->
-    <section id="tab-penjualan" class="tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-currency-circle-dollar text-blue-600 text-xl"></i> Transaksi Penjualan (POS)
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Penjualan barang jadi atau hasil olahan (-Stok otomatis).</p>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD APP ==================== -->
+  <div id="mainApp" class="hidden h-full flex flex-col pb-24 md:pb-6">
+    
+    <!-- TOP APP BAR / HEADER -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 sm:px-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i class="ph-bold ph-package text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg text-slate-900 leading-tight">StockManager</h1>
+          <p class="text-xs text-slate-500 font-medium" id="userDisplayEmail">User Online</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnLogout" title="Keluar Akun" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/60 transition-all">
+          <i class="ph-bold ph-sign-out text-sm"></i> <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-4 sm:px-6 sm:py-6">
+      
+      <!-- DESKTOP TOP NAV TABS (Hidden on mobile, visible on md+) -->
+      <div class="hidden md:flex items-center gap-1 bg-white p-1.5 rounded-2xl border border-slate-200 mb-6 shadow-sm overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('barang')" id="dtab-barang" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-brand-600 bg-brand-50 shadow-sm whitespace-nowrap">
+          <i class="ph-bold ph-package text-base"></i> Barang
+        </button>
+        <button onclick="switchTab('pembelian')" id="dtab-pembelian" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-shopping-cart-simple text-base"></i> Beli
+        </button>
+        <button onclick="switchTab('pengolahan')" id="dtab-pengolahan" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-gear text-base"></i> Olah
+        </button>
+        <button onclick="switchTab('penjualan')" id="dtab-penjualan" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-receipt text-base"></i> Jual
+        </button>
+        <button onclick="switchTab('investor')" id="dtab-investor" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-hand-coins text-base"></i> Investor
+        </button>
+        <button onclick="switchTab('asset')" id="dtab-asset" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-buildings text-base"></i> Asset
+        </button>
+        <button onclick="switchTab('user')" id="dtab-user" class="tab-btn flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 whitespace-nowrap">
+          <i class="ph-bold ph-users text-base"></i> User Role
+        </button>
+      </div>
+
+      <!-- TAB 1: MASTER BARANG -->
+      <section id="tab-barang" class="tab-content block space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-plus-circle text-brand-600 text-xl"></i> Input Master Barang
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Tambah produk baru atau stok awal bahan mentah/hasil olahan.</p>
+            </div>
           </div>
+
+          <form id="formBarang" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode SKU / Barcode</label>
+                <input type="text" id="b_kode" placeholder="Misal: BRG-001" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Barang</label>
+                <input type="text" id="b_nama" placeholder="Misal: Kopi Biji Arabika" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kategori</label>
+                <select id="b_kategori" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                  <option value="BAHAN_BAKU">🌾 Bahan Baku</option>
+                  <option value="BARANG_JADI">📦 Barang Jadi (Direct)</option>
+                  <option value="HASIL_OLAHAN">⚙️ Hasil Olahan</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Satuan Ukuran</label>
+                <input type="text" id="b_satuan" placeholder="kg, pcs, liter, pack" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Stok Awal</label>
+                <input type="number" step="0.01" id="b_stok" value="0" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Jual Satuan (Rp)</label>
+              <input type="number" id="b_harga" value="0" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+            </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-floppy-disk text-lg"></i> Simpan Data Barang
+            </button>
+          </form>
         </div>
 
-        <form id="formPenjualan" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Nota / Kwitansi Jual</label>
-            <input type="text" id="j_nota" placeholder="POS-202611-009" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+        <!-- LIST STOK BARANG -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="ph-duotone ph-list-numbers text-brand-600 text-xl"></i> Katalog & Stok Terkini
+            </h3>
+            <span id="barangCountBadge" class="text-xs bg-slate-100 font-bold px-2.5 py-1 rounded-full text-slate-600">0 Item</span>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Item Barang yang Dijual</label>
-            <select id="j_select_barang" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-              <option value="">-- Pilih Barang Jual --</option>
-            </select>
+          <div id="mobileBarangCards" class="grid grid-cols-1 gap-3 sm:hidden">
+            <div class="p-4 text-center text-slate-400 text-sm">Memuat data barang...</div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4">Kode SKU</th>
+                  <th class="py-3 px-4">Nama Barang</th>
+                  <th class="py-3 px-4">Kategori</th>
+                  <th class="py-3 px-4 text-right">Stok Terkini</th>
+                  <th class="py-3 px-4 text-right">Harga Jual</th>
+                </tr>
+              </thead>
+              <tbody id="tabelBarangBody" class="divide-y divide-slate-100">
+                <tr><td colspan="5" class="py-6 text-center text-slate-400">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PEMBELIAN -->
+      <section id="tab-pembelian" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jumlah Terjual (Qty)</label>
-              <input type="number" step="0.01" id="j_jumlah" placeholder="0" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-shopping-bag text-emerald-600 text-xl"></i> Transaksi Pembelian Stok
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Input barang masuk dari supplier & stok otomatis bertambah.</p>
             </div>
+          </div>
+
+          <form id="formPembelian" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Metode Pembayaran</label>
-              <select id="j_metode" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                <option value="CASH">💵 CASH / TUNAI</option>
-                <option value="QRIS">📱 QRIS / E-WALLET</option>
-                <option value="TRANSFER">🏦 TRANSFER BANK</option>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Faktur / Invoice Beli</label>
+              <input type="text" id="p_faktur" placeholder="Contoh: INV-BUY-2026-001" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Pilih Item Barang</label>
+              <select id="p_select_barang" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+                <option value="">-- Memuat Data Barang --</option>
               </select>
             </div>
-          </div>
 
-          <button type="submit" 
-            class="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-check-circle text-lg"></i> Simpan Penjualan (-Stok)
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- TAB 5: ASSET -->
-    <section id="tab-asset" class="tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-armchair text-slate-700 text-xl"></i> Manajemen Asset Operasional
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Pencatatan inventaris alat kerja & estimasi depresiasi internal.</p>
-          </div>
-        </div>
-
-        <form id="formAsset" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Asset</label>
-              <input type="text" id="a_kode" placeholder="AST-2026-001" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jumlah Beli (Qty)</label>
+                <input type="number" step="0.01" id="p_jumlah" placeholder="0" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Beli Satuan (Rp)</label>
+                <input type="number" id="p_harga" placeholder="0" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+              </div>
             </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-plus-circle text-lg"></i> Simpan Pembelian (+Stok)
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 3: PENGOLAHAN -->
+      <section id="tab-pengolahan" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Peralatan / Asset</label>
-              <input type="text" id="a_nama" placeholder="Contoh: Mesin Grinder Kopi 500W" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-factory text-purple-600 text-xl"></i> Pengolahan & Batch Produksi
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Konversi bahan mentah (-Stok) menjadi produk hasil olahan (+Stok).</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form id="formPengolahan" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Perolehan (Rp)</label>
-              <input type="number" id="a_harga" placeholder="0" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Batch Produksi</label>
+              <input type="text" id="o_batch" placeholder="BATCH-202611-01" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all">
             </div>
+
+            <div class="p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="ph-bold ph-minus-circle text-amber-600"></i> Konsumsi Bahan Baku (-Stok)
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <select id="o_select_bahan" required 
+                    class="w-full h-11 px-3 bg-white border border-amber-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <option value="">-- Pilih Bahan Baku --</option>
+                  </select>
+                </div>
+                <div>
+                  <input type="number" step="0.01" id="o_jumlah_bahan" placeholder="Qty Terpakai" required 
+                    class="w-full h-11 px-3 bg-white border border-amber-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-indigo-50/60 border border-indigo-200/60 rounded-xl space-y-3">
+              <span class="text-xs font-bold text-indigo-800 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="ph-bold ph-plus-circle text-indigo-600"></i> Hasil Jadi Pengolahan (+Stok)
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <select id="o_select_hasil" required 
+                    class="w-full h-11 px-3 bg-white border border-indigo-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">-- Pilih Barang Hasil --</option>
+                  </select>
+                </div>
+                <div>
+                  <input type="number" step="0.01" id="o_jumlah_hasil" placeholder="Qty Dihasilkan" required 
+                    class="w-full h-11 px-3 bg-white border border-indigo-300/80 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-purple-600 hover:bg-purple-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-purple-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-arrows-clockwise text-lg"></i> Eksekusi Pengolahan Stok
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 4: PENJUALAN -->
+      <section id="tab-penjualan" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Umur Ekonomis (Bulan)</label>
-              <input type="number" id="a_umur" placeholder="Misal: 36" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-currency-circle-dollar text-blue-600 text-xl"></i> Transaksi Penjualan (POS)
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Penjualan barang jadi atau hasil olahan (-Stok otomatis).</p>
             </div>
           </div>
 
-          <button type="submit" 
-            class="w-full h-12 bg-slate-800 hover:bg-slate-900 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-plus text-lg"></i> Tambah Data Asset
-          </button>
-        </form>
-      </div>
+          <form id="formPenjualan" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nomor Nota / Kwitansi Jual</label>
+              <input type="text" id="j_nota" placeholder="POS-202611-009" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+            </div>
 
-      <!-- LIST ASSET DATA (Card & Table View) -->
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
-          <i class="ph-duotone ph-clipboard-text text-slate-700 text-xl"></i> Daftar Aset Internal
-        </h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Item Barang yang Dijual</label>
+              <select id="j_select_barang" required 
+                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                <option value="">-- Pilih Barang Jual --</option>
+              </select>
+            </div>
 
-        <!-- Mobile Card View Asset -->
-        <div id="mobileAssetCards" class="grid grid-cols-1 gap-3 sm:hidden">
-          <div class="p-4 text-center text-slate-400 text-sm">Memuat data asset...</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jumlah Terjual (Qty)</label>
+                <input type="number" step="0.01" id="j_jumlah" placeholder="0" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Metode Pembayaran</label>
+                <select id="j_metode" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                  <option value="CASH">💵 CASH / TUNAI</option>
+                  <option value="QRIS">📱 QRIS / E-WALLET</option>
+                  <option value="TRANSFER">🏦 TRANSFER BANK</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-check-circle text-lg"></i> Simpan Penjualan (-Stok)
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 5: INVESTOR (BARU) -->
+      <section id="tab-investor" class="tab-content hidden space-y-6">
+        <!-- Summary Card total investasi -->
+        <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl"></div>
+          <div class="flex items-center gap-2 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
+            <i class="ph-bold ph-trend-up text-base"></i> Total Investasi Masuk
+          </div>
+          <div class="text-2xl sm:text-3xl font-extrabold mt-1 text-white" id="totalInvestasiSummary">Rp 0</div>
+          <div class="text-xs text-indigo-200/80 mt-1" id="investorCountBadge">0 Modal Terdaftar</div>
         </div>
 
-        <!-- Desktop Table View Asset -->
-        <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-xs uppercase tracking-wider">
-              <tr>
-                <th class="py-3 px-4">Kode Asset</th>
-                <th class="py-3 px-4">Nama Asset</th>
-                <th class="py-3 px-4 text-right">Harga Beli</th>
-                <th class="py-3 px-4 text-right">Masa Umur</th>
-              </tr>
-            </thead>
-            <tbody id="tabelAssetBody" class="divide-y divide-slate-100">
-              <tr><td colspan="4" class="py-6 text-center text-slate-400">Memuat asset...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+        <!-- Form Input Investor -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-hand-holding-heart text-teal-600 text-xl"></i> Input Data Investor Baru
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Catat modal investasi yang masuk untuk operasional bisnis.</p>
+            </div>
+          </div>
 
-    <!-- TAB 6: USER ROLE -->
-    <section id="tab-user" class="tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i class="ph-duotone ph-user-gear text-indigo-600 text-xl"></i> Otorisasi & User Role
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Manajemen tingkat akses pengguna (Super Admin, Kasir, Gudang).</p>
+          <form id="formInvestor" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Investor</label>
+                <input type="text" id="inv_nama" placeholder="Contoh: Bapak Hendra" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">No. HP / WhatsApp</label>
+                <input type="tel" id="inv_hp" placeholder="08123456789" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal Investasi</label>
+                <input type="date" id="inv_tanggal" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jumlah Investasi (Rp)</label>
+                <input type="number" id="inv_jumlah" placeholder="Contoh: 50000000" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-teal-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-floppy-disk text-lg"></i> Simpan Data Investor
+            </button>
+          </form>
+        </div>
+
+        <!-- List Investor -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+            <i class="ph-duotone ph-users-three text-teal-600 text-xl"></i> Daftar Pemodal / Investor
+          </h3>
+
+          <div id="mobileInvestorCards" class="grid grid-cols-1 gap-3 sm:hidden">
+            <div class="p-4 text-center text-slate-400 text-sm">Memuat data investor...</div>
+          </div>
+
+          <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4">Nama Investor</th>
+                  <th class="py-3 px-4">No. HP</th>
+                  <th class="py-3 px-4">Tanggal</th>
+                  <th class="py-3 px-4 text-right">Jumlah Investasi</th>
+                </tr>
+              </thead>
+              <tbody id="tabelInvestorBody" class="divide-y divide-slate-100">
+                <tr><td colspan="4" class="py-6 text-center text-slate-400">Memuat data investor...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        <form id="formUser" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- TAB 6: ASSET -->
+      <section id="tab-asset" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
-              <input type="text" id="u_nama" placeholder="Contoh: Budi Santoso" required 
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-armchair text-slate-700 text-xl"></i> Manajemen Asset Operasional
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Pencatatan inventaris alat kerja & estimasi depresiasi internal.</p>
+            </div>
+          </div>
+
+          <form id="formAsset" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Asset</label>
+                <input type="text" id="a_kode" placeholder="AST-2026-001" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Peralatan / Asset</label>
+                <input type="text" id="a_nama" placeholder="Contoh: Mesin Grinder Kopi 500W" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Harga Perolehan (Rp)</label>
+                <input type="number" id="a_harga" placeholder="0" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Umur Ekonomis (Bulan)</label>
+                <input type="number" id="a_umur" placeholder="Misal: 36" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <button type="submit" 
+              class="w-full h-12 bg-slate-800 hover:bg-slate-900 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-slate-900/10 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-plus text-lg"></i> Tambah Data Asset
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+            <i class="ph-duotone ph-clipboard-text text-slate-700 text-xl"></i> Daftar Aset Internal
+          </h3>
+
+          <div id="mobileAssetCards" class="grid grid-cols-1 gap-3 sm:hidden">
+            <div class="p-4 text-center text-slate-400 text-sm">Memuat data asset...</div>
+          </div>
+
+          <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-4">Kode Asset</th>
+                  <th class="py-3 px-4">Nama Asset</th>
+                  <th class="py-3 px-4 text-right">Harga Beli</th>
+                  <th class="py-3 px-4 text-right">Masa Umur</th>
+                </tr>
+              </thead>
+              <tbody id="tabelAssetBody" class="divide-y divide-slate-100">
+                <tr><td colspan="4" class="py-6 text-center text-slate-400">Memuat asset...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: USER ROLE -->
+      <section id="tab-user" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-duotone ph-user-gear text-indigo-600 text-xl"></i> Otorisasi & User Role
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Manajemen tingkat akses pengguna (Super Admin, Kasir, Gudang).</p>
+            </div>
+          </div>
+
+          <form id="formUser" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                <input type="text" id="u_nama" placeholder="Contoh: Budi Santoso" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Email Akses</label>
+                <input type="email" id="u_email" placeholder="budi@example.com" required 
+                  class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Peran Hak Akses (Role)</label>
+              <select id="u_role" required 
                 class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+                <option value="admin">👑 Super Admin (Full Access)</option>
+                <option value="kasir">💳 Kasir (Penjualan / POS)</option>
+                <option value="gudang">📦 Admin Gudang (Stok & Pembelian)</option>
+              </select>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Email Akses</label>
-              <input type="email" id="u_email" placeholder="budi@example.com" required 
-                class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
-            </div>
-          </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Peran Hak Akses (Role)</label>
-            <select id="u_role" required 
-              class="w-full h-12 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
-              <option value="admin">👑 Super Admin (Full Access)</option>
-              <option value="kasir">💳 Kasir (Penjualan / POS)</option>
-              <option value="gudang">📦 Admin Gudang (Stok & Pembelian)</option>
-            </select>
-          </div>
+            <button type="submit" 
+              class="w-full h-12 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all">
+              <i class="ph-bold ph-user-plus text-lg"></i> Simpan Data Pengguna
+            </button>
+          </form>
+        </div>
+      </section>
 
-          <button type="submit" 
-            class="w-full h-12 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all">
-            <i class="ph-bold ph-user-plus text-lg"></i> Simpan Data Pengguna
-          </button>
-        </form>
-      </div>
-    </section>
+    </main>
 
-  </main>
+    <!-- FIXED BOTTOM NAVIGATION BAR (Mobile View) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-1 py-1.5 flex items-center justify-around shadow-lg">
+      <button onclick="switchTab('barang')" id="mtab-barang" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-brand-600">
+        <i class="ph-fill ph-package text-lg"></i>
+        <span class="text-[9px] font-semibold mt-0.5">Barang</span>
+      </button>
+      <button onclick="switchTab('pembelian')" id="mtab-pembelian" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-shopping-cart-simple text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">Beli</span>
+      </button>
+      <button onclick="switchTab('pengolahan')" id="mtab-pengolahan" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-gear text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">Olah</span>
+      </button>
+      <button onclick="switchTab('penjualan')" id="mtab-penjualan" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-receipt text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">Jual</span>
+      </button>
+      <button onclick="switchTab('investor')" id="mtab-investor" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-hand-coins text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">Investor</span>
+      </button>
+      <button onclick="switchTab('asset')" id="mtab-asset" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-buildings text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">Asset</span>
+      </button>
+      <button onclick="switchTab('user')" id="mtab-user" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
+        <i class="ph-bold ph-users text-lg"></i>
+        <span class="text-[9px] font-medium mt-0.5">User</span>
+      </button>
+    </nav>
+  </div>
 
-  <!-- FIXED BOTTOM NAVIGATION BAR (Khusus Perangkat Mobile) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-1.5 flex items-center justify-around shadow-lg">
-    <button onclick="switchTab('barang')" id="mtab-barang" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-brand-600">
-      <i class="ph-fill ph-package text-xl"></i>
-      <span class="text-[10px] font-semibold mt-0.5">Barang</span>
-    </button>
-    <button onclick="switchTab('pembelian')" id="mtab-pembelian" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
-      <i class="ph-bold ph-shopping-cart-simple text-xl"></i>
-      <span class="text-[10px] font-medium mt-0.5">Beli</span>
-    </button>
-    <button onclick="switchTab('pengolahan')" id="mtab-pengolahan" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
-      <i class="ph-bold ph-gear text-xl"></i>
-      <span class="text-[10px] font-medium mt-0.5">Olah</span>
-    </button>
-    <button onclick="switchTab('penjualan')" id="mtab-penjualan" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
-      <i class="ph-bold ph-receipt text-xl"></i>
-      <span class="text-[10px] font-medium mt-0.5">Jual</span>
-    </button>
-    <button onclick="switchTab('asset')" id="mtab-asset" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
-      <i class="ph-bold ph-buildings text-xl"></i>
-      <span class="text-[10px] font-medium mt-0.5">Asset</span>
-    </button>
-    <button onclick="switchTab('user')" id="mtab-user" class="mobile-nav-btn flex flex-col items-center justify-center w-full py-1 text-slate-400 hover:text-slate-600">
-      <i class="ph-bold ph-users text-xl"></i>
-      <span class="text-[10px] font-medium mt-0.5">User</span>
-    </button>
-  </nav>
-
-  <!-- FIREBASE INITIALIZATION & TRANSACTIONS LOGIC -->
+  <!-- FIREBASE INITIALIZATION & AUTH & TRANSACTIONS LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
-      getFirestore, collection, addDoc, doc, getDoc, 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      sendPasswordResetEmail, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, doc, setDoc, getDoc, 
       onSnapshot, writeBatch, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -517,15 +715,112 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // SWITCH TAB LOGIC FOR MOBILE & DESKTOP NAV
-    window.switchTab = function(tabName) {
-      // Hide all content tabs
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+    // AUTH FORMS TOGGLE LOGIC
+    window.showAuthForm = function(formType) {
+      document.getElementById("formContainerLogin").classList.add("hidden");
+      document.getElementById("formContainerSignUp").classList.add("hidden");
+      document.getElementById("formContainerForgot").classList.add("hidden");
 
-      // Update Desktop Nav styles
+      if (formType === 'login') {
+        document.getElementById("formContainerLogin").classList.remove("hidden");
+      } else if (formType === 'signup') {
+        document.getElementById("formContainerSignUp").classList.remove("hidden");
+      } else if (formType === 'forgot') {
+        document.getElementById("formContainerForgot").classList.remove("hidden");
+      }
+    };
+
+    // LISTEN AUTH STATE CHANGED
+    onAuthStateChanged(auth, (user) => {
+      const authScreen = document.getElementById("authScreen");
+      const mainApp = document.getElementById("mainApp");
+      const userDisplayEmail = document.getElementById("userDisplayEmail");
+
+      if (user) {
+        // User logged in
+        authScreen.classList.add("hidden");
+        mainApp.classList.remove("hidden");
+        userDisplayEmail.innerText = user.email;
+      } else {
+        // User logged out
+        authScreen.classList.remove("hidden");
+        mainApp.classList.add("hidden");
+        showAuthForm('login');
+      }
+    });
+
+    // 1. AUTH: LOGIN
+    document.getElementById("formLogin").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("✅ Berhasil Masuk!");
+      } catch (err) {
+        alert("❌ Login Gagal: " + err.message);
+      }
+    });
+
+    // 2. AUTH: SIGN UP
+    document.getElementById("formSignUp").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nama = document.getElementById("signUpNama").value.trim();
+      const email = document.getElementById("signUpEmail").value.trim();
+      const password = document.getElementById("signUpPassword").value;
+      const role = document.getElementById("signUpRole").value;
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        // Save profile & role to Firestore 'users'
+        await setDoc(doc(db, "users", uid), {
+          nama: nama,
+          email: email,
+          role_id: role,
+          status_aktif: true,
+          created_at: serverTimestamp()
+        });
+
+        alert("✅ Registrasi Berhasil!");
+      } catch (err) {
+        alert("❌ Gagal Mendaftar: " + err.message);
+      }
+    });
+
+    // 3. AUTH: FORGOT PASSWORD
+    document.getElementById("formForgot").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("forgotEmail").value.trim();
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("✉️ Link reset password telah dikirim ke email Anda!");
+        showAuthForm('login');
+      } catch (err) {
+        alert("❌ Gagal Kirim Email: " + err.message);
+      }
+    });
+
+    // 4. AUTH: LOGOUT
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      if (confirm("Apakah Anda yakin ingin keluar?")) {
+        await signOut(auth);
+      }
+    });
+
+    // SWITCH TAB LOGIC
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeContent = document.getElementById(`tab-${tabName}`);
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      // Desktop Nav
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('text-brand-600', 'bg-brand-50', 'shadow-sm');
         btn.classList.add('text-slate-600');
@@ -536,7 +831,7 @@
         dActive.classList.remove('text-slate-600');
       }
 
-      // Update Mobile Nav Bar styles & icon weights
+      // Mobile Nav
       document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
         btn.classList.remove('text-brand-600');
         btn.classList.add('text-slate-400');
@@ -558,7 +853,12 @@
       }
     };
 
-    // 1. MASTER BARANG (CREATE & REALTIME READ)
+    // Set input tanggal investor default hari ini
+    document.getElementById("inv_tanggal").valueAsDate = new Date();
+
+    // ==================== FIRESTORE MODULES LOGIC ====================
+
+    // 1. MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -576,7 +876,6 @@
       } catch (err) { alert("❌ Error: " + err.message); }
     });
 
-    // Realtime Listener to Render Desktop Table & Mobile Cards
     onSnapshot(collection(db, "barang"), (snapshot) => {
       const tabelBody = document.getElementById("tabelBarangBody");
       const mobileCards = document.getElementById("mobileBarangCards");
@@ -604,7 +903,6 @@
         const d = docSnap.data();
         const id = docSnap.id;
 
-        // Badge styling based on category
         let badgeStyle = "bg-slate-100 text-slate-700 border-slate-200";
         let katLabel = d.kategori;
         if (d.kategori === "BAHAN_BAKU") {
@@ -618,7 +916,6 @@
           katLabel = "⚙️ Hasil Olahan";
         }
 
-        // Render Desktop Table Row
         tabelBody.innerHTML += `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-3 px-4 font-mono text-xs font-semibold text-slate-600">${d.kode_barang}</td>
@@ -629,7 +926,6 @@
           </tr>
         `;
 
-        // Render Mobile Responsive Card
         mobileCards.innerHTML += `
           <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 flex flex-col gap-2">
             <div class="flex items-center justify-between">
@@ -644,7 +940,6 @@
           </div>
         `;
 
-        // Append to Form Dropdowns
         const opt = `<option value="${id}">${d.nama_barang} (Stok: ${d.stok_terkini} ${d.satuan})</option>`;
         pSelect.innerHTML += opt;
         oBahanSelect.innerHTML += opt;
@@ -653,7 +948,7 @@
       });
     });
 
-    // 2. PEMBELIAN (+ STOK)
+    // 2. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bId = document.getElementById("p_select_barang").value;
@@ -687,7 +982,7 @@
       } catch (err) { alert("❌ Gagal: " + err.message); }
     });
 
-    // 3. PENGOLAHAN (- STOK BAHAN, + STOK HASIL)
+    // 3. PENGOLAHAN
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bahanId = document.getElementById("o_select_bahan").value;
@@ -731,7 +1026,7 @@
       } catch (err) { alert("❌ Gagal: " + err.message); }
     });
 
-    // 4. PENJUALAN (- STOK)
+    // 4. PENJUALAN
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bId = document.getElementById("j_select_barang").value;
@@ -767,7 +1062,76 @@
       } catch (err) { alert("❌ Gagal: " + err.message); }
     });
 
-    // 5. ASSET (CREATE & READ)
+    // 5. INVESTOR (NEW FEATURE)
+    document.getElementById("formInvestor").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "investors"), {
+          nama_investor: document.getElementById("inv_nama").value.trim(),
+          no_hp: document.getElementById("inv_hp").value.trim(),
+          tanggal_investasi: document.getElementById("inv_tanggal").value,
+          jumlah_investasi: parseFloat(document.getElementById("inv_jumlah").value),
+          created_at: serverTimestamp()
+        });
+        alert("✅ Data Investor Berhasil Disimpan!");
+        e.target.reset();
+        document.getElementById("inv_tanggal").valueAsDate = new Date();
+      } catch (err) { alert("❌ Error: " + err.message); }
+    });
+
+    onSnapshot(collection(db, "investors"), (snapshot) => {
+      const tabel = document.getElementById("tabelInvestorBody");
+      const mobileCards = document.getElementById("mobileInvestorCards");
+      const totalSummary = document.getElementById("totalInvestasiSummary");
+      const countBadge = document.getElementById("investorCountBadge");
+
+      tabel.innerHTML = "";
+      mobileCards.innerHTML = "";
+      let totalRupiah = 0;
+
+      countBadge.innerText = `${snapshot.size} Pemodal Terdaftar`;
+
+      if (snapshot.empty) {
+        tabel.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400">Belum ada investor terdaftar.</td></tr>`;
+        mobileCards.innerHTML = `<div class="p-4 bg-white rounded-xl text-center text-slate-400 text-sm">Belum ada investor terdaftar.</div>`;
+        totalSummary.innerText = "Rp 0";
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        const jml = Number(d.jumlah_investasi || 0);
+        totalRupiah += jml;
+
+        // Desktop Table Row
+        tabel.innerHTML += `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-4 font-semibold text-slate-900">${d.nama_investor}</td>
+            <td class="py-3 px-4 text-slate-600">${d.no_hp}</td>
+            <td class="py-3 px-4 text-slate-600">${d.tanggal_investasi || '-'}</td>
+            <td class="py-3 px-4 text-right font-bold text-teal-700">Rp ${jml.toLocaleString('id-ID')}</td>
+          </tr>
+        `;
+
+        // Mobile Card Row
+        mobileCards.innerHTML += `
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-sm">${d.nama_investor}</span>
+              <span class="text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200/60 rounded-md">Rp ${jml.toLocaleString('id-ID')}</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-200/50">
+              <span>📱 ${d.no_hp}</span>
+              <span>📅 ${d.tanggal_investasi || '-'}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      totalSummary.innerText = `Rp ${totalRupiah.toLocaleString('id-ID')}`;
+    });
+
+    // 6. ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -798,7 +1162,6 @@
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
 
-        // Desktop Table
         tabel.innerHTML += `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-3 px-4 font-mono text-xs font-semibold text-slate-600">${d.kode_asset}</td>
@@ -808,7 +1171,6 @@
           </tr>
         `;
 
-        // Mobile Cards
         mobileCards.innerHTML += `
           <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 flex flex-col gap-1.5">
             <div class="flex items-center justify-between">
@@ -825,7 +1187,7 @@
       });
     });
 
-    // 6. USER ROLE (CREATE)
+    // 7. USER ROLE
     document.getElementById("formUser").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {

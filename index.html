@@ -628,17 +628,17 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
             <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_barang} • ${d.kategori}</span>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_barang}</h4>
-              <p class="text-xs text-brand-600 font-semibold">Rp ${Number(d.harga_jual).toLocaleString('id-ID')}</p>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_barang || '-'} • ${d.kategori || '-'}</span>
+              <h4 class="text-sm font-bold text-slate-800">${d.nama_barang || 'Tanpa Nama'}</h4>
+              <p class="text-xs text-brand-600 font-semibold">Rp ${Number(d.harga_jual || 0).toLocaleString('id-ID')}</p>
             </div>
             <div class="text-right">
               <span class="text-xs text-slate-400 block">Stok</span>
-              <span class="text-sm font-black text-slate-900">${d.stok_terkini} ${d.satuan}</span>
+              <span class="text-sm font-black text-slate-900">${d.stok_terkini || 0} ${d.satuan || ''}</span>
             </div>
           </div>`;
 
-        const opt = `<option value="${id}">${d.nama_barang} (${d.stok_terkini} ${d.satuan})</option>`;
+        const opt = `<option value="${id}">${d.nama_barang} (${d.stok_terkini || 0} ${d.satuan || ''})</option>`;
         pSelect.innerHTML += opt;
         oBahanSelect.innerHTML += opt;
         oHasilSelect.innerHTML += opt;
@@ -757,10 +757,10 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
             <div>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_investor}</h4>
-              <p class="text-xs text-slate-400">${d.no_hp} • ${d.tanggal_investasi}</p>
+              <h4 class="text-sm font-bold text-slate-800">${d.nama_investor || '-'}</h4>
+              <p class="text-xs text-slate-400">${d.no_hp || ''} • ${d.tanggal_investasi || ''}</p>
             </div>
-            <span class="text-sm font-black text-indigo-600">Rp ${Number(d.jumlah_investasi).toLocaleString('id-ID')}</span>
+            <span class="text-sm font-black text-indigo-600">Rp ${Number(d.jumlah_investasi || 0).toLocaleString('id-ID')}</span>
           </div>`;
       });
 
@@ -791,12 +791,12 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
             <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_asset}</span>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_asset}</h4>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_asset || '-'}</span>
+              <h4 class="text-sm font-bold text-slate-800">${d.nama_asset || '-'}</h4>
             </div>
             <div class="text-right">
-              <span class="text-sm font-black text-cyan-600">Rp ${Number(d.harga_perolehan).toLocaleString('id-ID')}</span>
-              <span class="text-xs text-slate-400 block">${d.umur_ekonomis_bulan} Bln</span>
+              <span class="text-sm font-black text-cyan-600">Rp ${Number(d.harga_perolehan || 0).toLocaleString('id-ID')}</span>
+              <span class="text-xs text-slate-400 block">${d.umur_ekonomis_bulan || 0} Bln</span>
             </div>
           </div>`;
       });
@@ -817,7 +817,7 @@
       } catch (err) { alert(err.message); }
     });
 
-    // FITUR MIGRASI: IMPORT DATA DARI DATABASE LAMA
+    // FITUR MIGRASI PENYEMPURNAAN (VARIASI VARIAN NAMA KOLEKSI)
     window.importFromOldDatabase = async () => {
       const btn = document.getElementById("btnImportData");
       const status = document.getElementById("importStatus");
@@ -826,25 +826,52 @@
       status.classList.remove("hidden");
       status.innerText = "Membaca data dari database lama...";
 
-      const collectionsToMigrate = ["barang", "pembelian", "pengolahan", "penjualan", "assets", "investors"];
+      // Variasi penamaan koleksi jika ada perbedaan di database lama
+      const targets = [
+        { target: "barang", variants: ["barang", "Barang", "items", "products"] },
+        { target: "pembelian", variants: ["pembelian", "Pembelian", "purchases"] },
+        { target: "pengolahan", variants: ["pengolahan", "Pengolahan", "productions"] },
+        { target: "penjualan", variants: ["penjualan", "Penjualan", "sales"] },
+        { target: "assets", variants: ["assets", "Assets", "asset"] },
+        { target: "investors", variants: ["investors", "Investors", "investor"] },
+        { target: "users", variants: ["users", "Users", "user"] }
+      ];
+
       let totalMigrated = 0;
 
       try {
-        for (const collName of collectionsToMigrate) {
-          status.innerText = `Mengimport koleksi '${collName}'...`;
-          const oldSnapshot = await getDocs(collection(dbLama, collName));
+        for (const item of targets) {
+          let foundSnapshot = null;
+          let activeVariant = "";
 
-          if (!oldSnapshot.empty) {
-            for (const docSnap of oldSnapshot.docs) {
+          for (const variant of item.variants) {
+            try {
+              const snap = await getDocs(collection(dbLama, variant));
+              if (!snap.empty) {
+                foundSnapshot = snap;
+                activeVariant = variant;
+                break;
+              }
+            } catch (e) { console.log(`Cek koleksi ${variant}: `, e); }
+          }
+
+          if (foundSnapshot && !foundSnapshot.empty) {
+            status.innerText = `Mengimport ${foundSnapshot.size} dokumen dari koleksi '${activeVariant}'...`;
+            for (const docSnap of foundSnapshot.docs) {
               const data = docSnap.data();
-              await addDoc(collection(db, collName), data);
+              await addDoc(collection(db, item.target), data);
               totalMigrated++;
             }
           }
         }
 
-        status.innerText = `✅ Selesai! Berhasil memindahkan ${totalMigrated} data ke database baru. Silakan refresh halaman.`;
-        alert(`Sukses! ${totalMigrated} data berhasil diimport dari database lama.`);
+        if (totalMigrated > 0) {
+          status.innerText = `✅ Selesai! Berhasil memindahkan ${totalMigrated} data ke database baru. Silakan refresh halaman.`;
+          alert(`Sukses! ${totalMigrated} data berhasil diimport.`);
+        } else {
+          status.innerText = `⚠️ 0 data dipindahkan. Pastikan Rules Firestore pada proyek 'refining-perak-app' dan 'delta-silver' sudah di-Publish (allow read, write: if true;).`;
+          alert("Gagal Import: 0 Data Ditemukan. Periksa izin Rules di Firebase Console.");
+        }
       } catch (err) {
         console.error(err);
         status.innerText = `❌ Error saat migrasi: ${err.message}`;

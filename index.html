@@ -149,7 +149,7 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB MASTER BARANG -->
+      <!-- 1. TAB MASTER BARANG (TANPA STOK AWAL & HARGA JUAL) -->
       <section id="tab-barang" class="tab-content block space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -166,7 +166,7 @@
                 <input type="text" id="b_nama" required placeholder="Biji Kopi Arabika" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori</label>
                 <select id="b_kategori" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
@@ -176,17 +176,9 @@
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan Ukuran</label>
                 <input type="text" id="b_satuan" required placeholder="kg / pcs / liter" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Stok Awal</label>
-                <input type="number" step="0.01" id="b_stok" value="0" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual (Rp)</label>
-              <input type="number" id="b_harga" value="0" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
             </div>
             <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-brand-500/20">
               Simpan Data Barang
@@ -202,7 +194,7 @@
         </div>
       </section>
 
-      <!-- 2. TAB PEMBELIAN -->
+      <!-- 2. TAB PEMBELIAN (FAKTUR OTOMATIS & RECORD PETUGAS) -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -210,8 +202,8 @@
           </h2>
           <form id="formPembelian" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Faktur Beli</label>
-              <input type="text" id="p_faktur" required placeholder="INV-BUY-001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Faktur Beli (Otomatis)</label>
+              <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang</label>
@@ -234,7 +226,7 @@
         </div>
       </section>
 
-      <!-- 3. TAB PENGOLAHAN -->
+      <!-- 3. TAB PENGOLAHAN (BATCH OTOMATIS & RECORD PETUGAS) -->
       <section id="tab-pengolahan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -242,8 +234,8 @@
           </h2>
           <form id="formPengolahan" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Batch Produksi</label>
-              <input type="text" id="o_batch" required placeholder="BATCH-2026-001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Batch Produksi (Otomatis)</label>
+              <input type="text" id="o_batch" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
             </div>
             <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100 space-y-3">
               <span class="text-xs font-bold text-purple-700 uppercase">1. Potong Bahan Baku (-)</span>
@@ -266,7 +258,7 @@
         </div>
       </section>
 
-      <!-- 4. TAB PENJUALAN -->
+      <!-- 4. TAB PENJUALAN (NOTA OTOMATIS, HARGA JUAL SATUAN, PETUGAS) -->
       <section id="tab-penjualan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -274,17 +266,21 @@
           </h2>
           <form id="formPenjualan" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Nota Penjualan</label>
-              <input type="text" id="j_nota" required placeholder="POS-2026-001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Nota Penjualan (Otomatis)</label>
+              <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang</label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Jual</label>
               <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
                 <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
+                <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Metode Bayar</label>
@@ -394,7 +390,7 @@
         </div>
       </section>
 
-      <!-- 7. TAB USER & ROLE (+ IMPORT MIGRATION TOOL) -->
+      <!-- 7. TAB USER & ROLE -->
       <section id="tab-user" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -482,7 +478,7 @@
       onSnapshot, writeBatch, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 1. KREDENSIAL DATABASE BARU (delta-silver)
+    // KREDENSIAL DATABASE BARU
     const firebaseConfigBaru = {
       apiKey: "AIzaSyC7DFLmaWssvGemkTWgteZE3Cu42Rq_F2s",
       authDomain: "delta-silver.firebaseapp.com",
@@ -493,7 +489,7 @@
       measurementId: "G-DVQ68CDEV1"
     };
 
-    // 2. KREDENSIAL DATABASE LAMA (refining-perak-app) UNTUK MIGRASI
+    // KREDENSIAL DATABASE LAMA FOR MIGRATION
     const firebaseConfigLama = {
       apiKey: "AIzaSyDs8_zsiK6lbZa_8Jva5t0CoYbgT3rVHSw",
       authDomain: "refining-perak-app.firebaseapp.com",
@@ -504,7 +500,6 @@
       measurementId: "G-54H37SLNPY"
     };
 
-    // INITALIZE DUA DB INSTANCE
     const appBaru = initializeApp(firebaseConfigBaru, "barumain");
     const auth = getAuth(appBaru);
     const db = getFirestore(appBaru);
@@ -512,23 +507,43 @@
     const appLama = initializeApp(firebaseConfigLama, "lamamigration");
     const dbLama = getFirestore(appLama);
 
+    let currentUser = null;
+
+    // HELPER AUTO GENERATE CODE
+    function generateAutoCode(prefix) {
+      const d = new Date();
+      const dateStr = d.getFullYear().toString() +
+        String(d.getMonth() + 1).padStart(2, '0') +
+        String(d.getDate()).padStart(2, '0');
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      return `${prefix}-${dateStr}-${rand}`;
+    }
+
+    function refreshAutoCodes() {
+      document.getElementById("p_faktur").value = generateAutoCode("INV-BUY");
+      document.getElementById("o_batch").value = generateAutoCode("BATCH");
+      document.getElementById("j_nota").value = generateAutoCode("POS");
+    }
+
     // AUTH OBSERVER
     onAuthStateChanged(auth, (user) => {
       const authOverlay = document.getElementById("authOverlay");
       const appContainer = document.getElementById("appContainer");
       const userDisplay = document.getElementById("userEmailDisplay");
 
+      currentUser = user;
+
       if (user) {
         authOverlay.classList.add("hidden");
         appContainer.classList.remove("hidden");
         userDisplay.innerText = user.email;
+        refreshAutoCodes();
       } else {
         authOverlay.classList.remove("hidden");
         appContainer.classList.add("hidden");
       }
     });
 
-    // AUTH SWITCH VIEW
     window.switchAuthView = (view) => {
       document.getElementById("formLogin").classList.add("hidden");
       document.getElementById("formSignUp").classList.add("hidden");
@@ -539,7 +554,6 @@
       if (view === "forgot") document.getElementById("formForgot").classList.remove("hidden");
     };
 
-    // LOGIN ACTION
     document.getElementById("formLogin").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -547,7 +561,6 @@
       } catch (err) { alert("Login Gagal: " + err.message); }
     });
 
-    // SIGN UP ACTION
     document.getElementById("formSignUp").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -563,20 +576,17 @@
       } catch (err) { alert("Daftar Gagal: " + err.message); }
     });
 
-    // RESET PASSWORD
     document.getElementById("formForgot").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
         await sendPasswordResetEmail(auth, document.getElementById("forgotEmail").value);
-        alert("Link reset password telah dikirim ke email!");
+        alert("Link reset password telah dikirim!");
         switchAuthView("login");
       } catch (err) { alert(err.message); }
     });
 
-    // LOGOUT
     window.handleLogout = () => signOut(auth);
 
-    // TAB SWITCHING LOGIC
     window.switchTab = (tabName) => {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.getElementById(`tab-${tabName}`).classList.remove("hidden");
@@ -591,7 +601,7 @@
       });
     };
 
-    // 1. MASTER BARANG (CREATE & READ)
+    // 1. MASTER BARANG (HANYA KODE, NAMA, KATEGORI, SATUAN)
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -600,11 +610,10 @@
           nama_barang: document.getElementById("b_nama").value,
           kategori: document.getElementById("b_kategori").value,
           satuan: document.getElementById("b_satuan").value,
-          stok_terkini: parseFloat(document.getElementById("b_stok").value),
-          harga_jual: parseFloat(document.getElementById("b_harga").value),
+          stok_terkini: 0,
           created_at: serverTimestamp()
         });
-        alert("Barang disimpan!");
+        alert("Barang berhasil disimpan!");
         e.target.reset();
       } catch (err) { alert(err.message); }
     });
@@ -630,15 +639,14 @@
             <div>
               <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_barang || '-'} • ${d.kategori || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_barang || 'Tanpa Nama'}</h4>
-              <p class="text-xs text-brand-600 font-semibold">Rp ${Number(d.harga_jual || 0).toLocaleString('id-ID')}</p>
             </div>
             <div class="text-right">
-              <span class="text-xs text-slate-400 block">Stok</span>
+              <span class="text-xs text-slate-400 block">Stok Terkini</span>
               <span class="text-sm font-black text-slate-900">${d.stok_terkini || 0} ${d.satuan || ''}</span>
             </div>
           </div>`;
 
-        const opt = `<option value="${id}">${d.nama_barang} (${d.stok_terkini || 0} ${d.satuan || ''})</option>`;
+        const opt = `<option value="${id}">${d.nama_barang} (Stok: ${d.stok_terkini || 0} ${d.satuan || ''})</option>`;
         pSelect.innerHTML += opt;
         oBahanSelect.innerHTML += opt;
         oHasilSelect.innerHTML += opt;
@@ -646,12 +654,13 @@
       });
     });
 
-    // 2. PEMBELIAN (+ STOK)
+    // 2. PEMBELIAN (+ STOK + AUTO FAKTUR + PETUGAS)
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bId = document.getElementById("p_select_barang").value;
       const qty = parseFloat(document.getElementById("p_jumlah").value);
       const harga = parseFloat(document.getElementById("p_harga").value);
+      const noFaktur = document.getElementById("p_faktur").value;
 
       try {
         const batch = writeBatch(db);
@@ -660,24 +669,30 @@
         
         batch.update(bRef, { stok_terkini: (bSnap.data().stok_terkini || 0) + qty });
         batch.set(doc(collection(db, "pembelian")), {
-          no_faktur: document.getElementById("p_faktur").value,
+          no_faktur: noFaktur,
+          barang_id: bId,
+          jumlah: qty,
+          harga_satuan: harga,
           total_bayar: qty * harga,
+          petugas_email: currentUser ? currentUser.email : "Anonim",
           tanggal_beli: serverTimestamp()
         });
 
         await batch.commit();
         alert("Pembelian berhasil & stok bertambah!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // 3. PENGOLAHAN (- BAHAN, + HASIL)
+    // 3. PENGOLAHAN (- BAHAN, + HASIL + AUTO BATCH + PETUGAS)
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bahanId = document.getElementById("o_select_bahan").value;
       const qtyBahan = parseFloat(document.getElementById("o_jumlah_bahan").value);
       const hasilId = document.getElementById("o_select_hasil").value;
       const qtyHasil = parseFloat(document.getElementById("o_jumlah_hasil").value);
+      const kodeBatch = document.getElementById("o_batch").value;
 
       try {
         const batch = writeBatch(db);
@@ -687,44 +702,58 @@
         const bahanSnap = await getDoc(bahanRef);
         const hasilSnap = await getDoc(hasilRef);
 
-        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) return alert("Stok bahan kurang!");
+        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) return alert("Stok bahan tidak mencukupi!");
 
         batch.update(bahanRef, { stok_terkini: bahanSnap.data().stok_terkini - qtyBahan });
         batch.update(hasilRef, { stok_terkini: (hasilSnap.data().stok_terkini || 0) + qtyHasil });
         batch.set(doc(collection(db, "pengolahan")), {
-          kode_batch: document.getElementById("o_batch").value,
+          kode_batch: kodeBatch,
+          bahan_id: bahanId,
+          jumlah_bahan_terpakai: qtyBahan,
+          hasil_id: hasilId,
+          jumlah_hasil: qtyHasil,
+          petugas_email: currentUser ? currentUser.email : "Anonim",
           tanggal_pengolahan: serverTimestamp()
         });
 
         await batch.commit();
         alert("Proses olah stok berhasil!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // 4. PENJUALAN (- STOK)
+    // 4. PENJUALAN (- STOK + HARGA SATUAN + AUTO NOTA + PETUGAS)
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bId = document.getElementById("j_select_barang").value;
       const qty = parseFloat(document.getElementById("j_jumlah").value);
+      const hargaSatuan = parseFloat(document.getElementById("j_harga_satuan").value);
+      const noNota = document.getElementById("j_nota").value;
 
       try {
         const batch = writeBatch(db);
         const bRef = doc(db, "barang", bId);
         const bSnap = await getDoc(bRef);
 
-        if ((bSnap.data().stok_terkini || 0) < qty) return alert("Stok kurang!");
+        if ((bSnap.data().stok_terkini || 0) < qty) return alert("Stok barang tidak mencukupi!");
 
         batch.update(bRef, { stok_terkini: bSnap.data().stok_terkini - qty });
         batch.set(doc(collection(db, "penjualan")), {
-          no_nota: document.getElementById("j_nota").value,
+          no_nota: noNota,
+          barang_id: bId,
+          jumlah: qty,
+          harga_satuan: hargaSatuan,
+          total_penjualan: qty * hargaSatuan,
           metode: document.getElementById("j_metode").value,
+          petugas_email: currentUser ? currentUser.email : "Anonim",
           tanggal_jual: serverTimestamp()
         });
 
         await batch.commit();
         alert("Penjualan berhasil!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
@@ -817,7 +846,7 @@
       } catch (err) { alert(err.message); }
     });
 
-    // FITUR MIGRASI PENYEMPURNAAN (VARIASI VARIAN NAMA KOLEKSI)
+    // FITUR MIGRASI PENYEMPURNAAN
     window.importFromOldDatabase = async () => {
       const btn = document.getElementById("btnImportData");
       const status = document.getElementById("importStatus");
@@ -826,7 +855,6 @@
       status.classList.remove("hidden");
       status.innerText = "Membaca data dari database lama...";
 
-      // Variasi penamaan koleksi jika ada perbedaan di database lama
       const targets = [
         { target: "barang", variants: ["barang", "Barang", "items", "products"] },
         { target: "pembelian", variants: ["pembelian", "Pembelian", "purchases"] },

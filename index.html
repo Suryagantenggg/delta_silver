@@ -708,7 +708,7 @@
                   <option value="pengolahan">Pengolahan (Tabel_pengolahan)</option>
                   <option value="penjualan">Penjualan (Tabel_penjualan)</option>
                   <option value="investors">Investor (Tabel_investor)</option>
-                  <option value="barang">Master Barang (Tabel_barang)</option>
+                  <option value="master_barang">Master Barang (Tabel_master_barang)</option>
                 </select>
               </div>
               <div>
@@ -810,7 +810,7 @@
     let currentUserRole = "tamu";
     let currentUserNameOrEmail = "";
     let lastLaporanData = [];
-    let currentGlobalLabaBersih = 0; // Variabel global penampung laba bersih terkini
+    let currentGlobalLabaBersih = 0;
     const barangDocsCache = {};
 
     function generateAutoCode(prefix) {
@@ -1159,7 +1159,6 @@
         });
 
         const totalBiayaOperasional = sumBiayaBeli + sumBiayaOlah + sumBiayaJual;
-        // LABA BERSIH: (PENJUALAN - PEMBELIAN) - BIAYA OPERASIONAL
         const labaBersih = (sumJualNominal - sumBeliNominal) - totalBiayaOperasional;
         currentGlobalLabaBersih = labaBersih;
 
@@ -1366,14 +1365,19 @@
       XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
     };
 
-    // MASTER BARANG
+    // MASTER BARANG (DISESUAIKAN KE KOLEKSI master_barang)
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        const itemData = { kode_brg: document.getElementById("b_kode").value, nama_brg: document.getElementById("b_nama").value, Satuan: document.getElementById("b_satuan").value, created_at: serverTimestamp() };
-        await addDoc(collection(db, "barang"), itemData);
+        const itemData = { 
+          kode_brg: document.getElementById("b_kode").value, 
+          nama_brg: document.getElementById("b_nama").value, 
+          Satuan: document.getElementById("b_satuan").value, 
+          created_at: serverTimestamp() 
+        };
+        // Menggunakan koleksi 'master_barang' secara konsisten
         await addDoc(collection(db, "master_barang"), itemData);
-        alert("Master barang disimpan!");
+        alert("Master barang berhasil disimpan ke koleksi master_barang!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
@@ -1387,7 +1391,7 @@
 
       const keys = Object.keys(allDocsMap);
       if (keys.length === 0) {
-        if (list) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
+        if (list) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada data di master barang.</p>';
         return;
       }
 
@@ -1414,7 +1418,8 @@
       if (satuan) document.getElementById("p_satuan").value = satuan;
     });
 
-    onSnapshot(collection(db, "barang"), (snapshot) => {
+    // LISTENER KE KOLEKSI master_barang
+    onSnapshot(collection(db, "master_barang"), (snapshot) => {
       snapshot.forEach(docSnap => { barangDocsCache[docSnap.id] = docSnap.data(); });
       renderBarangItems(barangDocsCache);
     });
@@ -1828,7 +1833,7 @@
       else if (type === "pengolahan") data = [{ no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak Mentah", Satuan: "gram", Jumlah: 500, Harga_satuan: 15000, Total_harga: 7500000, biaya_olah: 100000, pic_pengolahan: "admin@delta.com", status: "selesai olah", nama_brg_setelah_olah: "Perak Batangan 999", Satuan_setelah_olah: "gram", Jumlah_setelah_olah: 495, Status_penjualan: "Belum terjual" }];
       else if (type === "penjualan") data = [{ no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001", nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000, Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com" }];
       else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
-      else if (type === "barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
+      else if (type === "master_barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
 
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
@@ -1867,9 +1872,8 @@
             if (tableType === "users") {
               batchDoc = { nama: row.Nama || "User", email: row.Email || "", role: (row.Role || "tamu").toLowerCase(), created_at: serverTimestamp() };
               await addDoc(collection(db, "users"), batchDoc);
-            } else if (tableType === "barang") {
+            } else if (tableType === "master_barang") {
               batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", created_at: serverTimestamp() };
-              await addDoc(collection(db, "barang"), batchDoc);
               await addDoc(collection(db, "master_barang"), batchDoc);
             } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || 0);

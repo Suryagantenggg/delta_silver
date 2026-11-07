@@ -787,8 +787,7 @@
       getDocs, 
       setDoc, 
       updateDoc, 
-      onSnapshot, 
-      serverTimestamp 
+      onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // CONFIG FIREBASE DATABASE (delta-silver)
@@ -812,6 +811,11 @@
     let lastLaporanData = [];
     let currentGlobalLabaBersih = 0;
     const barangDocsCache = {};
+
+    // CACHE REALTIME UNTUK DASHBOARD STOK
+    let snapshotBeliCache = [];
+    let snapshotOlahCache = [];
+    let snapshotJualCache = [];
 
     function generateAutoCode(prefix) {
       const d = new Date();
@@ -895,9 +899,9 @@
           refreshAutoCodes();
           loadUsersList();
           loadMultiPenjualanItems();
+          initRealtimeDashboardListeners();
 
           switchMainTab('laporan');
-          initResumeDashboard();
 
           const container = document.getElementById("containerHasilOlah");
           if (container && container.children.length === 0) {
@@ -937,7 +941,7 @@
           nama: document.getElementById("signupNama").value,
           email: document.getElementById("signupEmail").value,
           role: "tamu",
-          created_at: serverTimestamp()
+          Tanggal_beli: new Date().toISOString().split('T')[0]
         });
         alert("Akun berhasil dibuat! Status awal Anda adalah 'Tamu'.");
       } catch (err) { alert("Daftar Gagal: " + err.message); }
@@ -1026,8 +1030,31 @@
       }
     };
 
-    // 1. RESUME DASHBOARD STOK
-    async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
+    // 1. INISIALISASI REALTIME LISTENERS UTK RESUME CARD LAPORAN
+    function initRealtimeDashboardListeners() {
+      onSnapshot(collection(db, "pembelian"), (snapshot) => {
+        snapshotBeliCache = [];
+        snapshot.forEach(docSnap => snapshotBeliCache.push(docSnap.data()));
+        calculateResumeDashboard();
+      });
+
+      onSnapshot(collection(db, "pengolahan"), (snapshot) => {
+        snapshotOlahCache = [];
+        snapshot.forEach(docSnap => snapshotOlahCache.push(docSnap.data()));
+        calculateResumeDashboard();
+      });
+
+      onSnapshot(collection(db, "penjualan"), (snapshot) => {
+        snapshotJualCache = [];
+        snapshot.forEach(docSnap => snapshotJualCache.push(docSnap.data()));
+        calculateResumeDashboard();
+      });
+    }
+
+    function calculateResumeDashboard() {
+      const tglMulai = document.getElementById("lap_tgl_mulai").value;
+      const tglSelesai = document.getElementById("lap_tgl_selesai").value;
+
       let totalPembelianOlahan = 0;
       let totalMasukOlah = 0;
       let totalHasilOlah = 0;
@@ -1036,64 +1063,54 @@
       let totalJualNonOlahan = 0;
       let totalAkumulasiTerjual = 0;
 
-      try {
-        const snapBeli = await getDocs(collection(db, "pembelian"));
-        snapBeli.forEach(docSnap => {
-          const d = docSnap.data();
-          const tgl = d.Tanggal_beli;
-          if (tglMulai && tgl < tglMulai) return;
-          if (tglSelesai && tgl > tglSelesai) return;
+      snapshotBeliCache.forEach(d => {
+        const tgl = d.Tanggal_beli;
+        if (tglMulai && tgl < tglMulai) return;
+        if (tglSelesai && tgl > tglSelesai) return;
 
-          const st = (d.Status || '').toLowerCase();
-          const qty = parseFloat(d.Jumlah_beli || 0);
+        const st = (d.Status || '').toLowerCase();
+        const qty = parseFloat(d.Jumlah_beli || 0);
 
-          if (st === 'olahan') {
-            totalPembelianOlahan += qty;
-          } else {
-            totalPembelianNonOlahan += qty;
-          }
-        });
+        if (st === 'olahan') {
+          totalPembelianOlahan += qty;
+        } else {
+          totalPembelianNonOlahan += qty;
+        }
+      });
 
-        const snapOlah = await getDocs(collection(db, "pengolahan"));
-        snapOlah.forEach(docSnap => {
-          const d = docSnap.data();
-          const tgl = d.Tanggal_beli;
-          if (tglMulai && tgl < tglMulai) return;
-          if (tglSelesai && tgl > tglSelesai) return;
+      snapshotOlahCache.forEach(d => {
+        const tgl = d.Tanggal_beli;
+        if (tglMulai && tgl < tglMulai) return;
+        if (tglSelesai && tgl > tglSelesai) return;
 
-          totalMasukOlah += parseFloat(d.Jumlah || 0);
-          totalHasilOlah += parseFloat(d.Jumlah_setelah_olah || 0);
-        });
+        totalMasukOlah += parseFloat(d.Jumlah || 0);
+        totalHasilOlah += parseFloat(d.Jumlah_setelah_olah || 0);
+      });
 
-        const snapJual = await getDocs(collection(db, "penjualan"));
-        snapJual.forEach(docSnap => {
-          const d = docSnap.data();
-          const tgl = d.Tanggal_jual;
-          if (tglMulai && tgl < tglMulai) return;
-          if (tglSelesai && tgl > tglSelesai) return;
+      snapshotJualCache.forEach(d => {
+        const tgl = d.Tanggal_jual || d.Tanggal_beli;
+        if (tglMulai && tgl < tglMulai) return;
+        if (tglSelesai && tgl > tglSelesai) return;
 
-          const qty = parseFloat(d.Jumlah || 0);
-          totalAkumulasiTerjual += qty;
+        const qty = parseFloat(d.Jumlah || 0);
+        totalAkumulasiTerjual += qty;
 
-          const noBeli = d.No_trx_beli || '';
-          if (noBeli.startsWith('BUY')) {
-            totalJualNonOlahan += qty;
-          } else {
-            totalJualOlahan += qty;
-          }
-        });
+        const tipeAsal = (d.tipe_asal || '').toLowerCase();
+        if (tipeAsal === 'pengolahan') {
+          totalJualOlahan += qty;
+        } else {
+          totalJualNonOlahan += qty;
+        }
+      });
 
-        const netBelumDiolah = Math.max(0, totalPembelianOlahan - totalMasukOlah);
-        const netHasilOlahanReady = Math.max(0, totalHasilOlah - totalJualOlahan);
-        const netNonOlahanReady = Math.max(0, totalPembelianNonOlahan - totalJualNonOlahan);
+      const netBelumDiolah = Math.max(0, totalPembelianOlahan - totalMasukOlah);
+      const netHasilOlahanReady = Math.max(0, totalHasilOlah - totalJualOlahan);
+      const netNonOlahanReady = Math.max(0, totalPembelianNonOlahan - totalJualNonOlahan);
 
-        document.getElementById("res_belum_olah").innerText = netBelumDiolah.toLocaleString('id-ID');
-        document.getElementById("res_sudah_olah").innerText = netHasilOlahanReady.toLocaleString('id-ID');
-        document.getElementById("res_non_olah").innerText = netNonOlahanReady.toLocaleString('id-ID');
-        document.getElementById("res_sudah_jual").innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
-      } catch (err) {
-        console.error("Gagal memuat resume stok:", err);
-      }
+      document.getElementById("res_belum_olah").innerText = netBelumDiolah.toLocaleString('id-ID');
+      document.getElementById("res_sudah_olah").innerText = netHasilOlahanReady.toLocaleString('id-ID');
+      document.getElementById("res_non_olah").innerText = netNonOlahanReady.toLocaleString('id-ID');
+      document.getElementById("res_sudah_jual").innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
     }
 
     // 2. NERACA & USER SUMMARY
@@ -1211,7 +1228,7 @@
           const d = docSnap.data();
           const nominal = parseFloat(d.Total_jual || 0);
           totalKasIn += nominal;
-          flowItems.push({ tgl: d.Tanggal_jual || '-', jenis: 'Penjualan (POS)', keterangan: `${d.no_trx_jual || 'POS'} - ${d.nama_brg || 'Barang'} (${d.Jumlah || 0} ${d.Satuan || ''})`, tipe: 'in', nominal: nominal, pic: d.pic_penjualan || '-' });
+          flowItems.push({ tgl: d.Tanggal_jual || d.Tanggal_beli || '-', jenis: 'Penjualan (POS)', keterangan: `${d.no_trx_jual || 'POS'} - ${d.nama_brg || 'Barang'} (${d.Jumlah || 0} ${d.Satuan || ''})`, tipe: 'in', nominal: nominal, pic: d.pic_penjualan || '-' });
         });
 
         const snapBeli = await getDocs(collection(db, "pembelian"));
@@ -1239,10 +1256,10 @@
           const isTambah = (d.Status || '').toLowerCase().includes("tambah");
           if (isTambah) {
             totalKasIn += nominal;
-            flowItems.push({ tgl: d.tanggal_investasi || '-', jenis: 'Injeksi Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'in', nominal: nominal, pic: 'Investor' });
+            flowItems.push({ tgl: d.tanggal_investasi || d.Tanggal_beli || '-', jenis: 'Injeksi Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'in', nominal: nominal, pic: 'Investor' });
           } else {
             totalKasOut += nominal;
-            flowItems.push({ tgl: d.tanggal_investasi || '-', jenis: 'Penarikan Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'out', nominal: nominal, pic: 'Super Admin' });
+            flowItems.push({ tgl: d.tanggal_investasi || d.Tanggal_beli || '-', jenis: 'Penarikan Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'out', nominal: nominal, pic: 'Super Admin' });
           }
         });
 
@@ -1309,7 +1326,7 @@
       const tglSelesai = document.getElementById("lap_tgl_selesai").value;
       const resultDiv = document.getElementById("laporanResult");
 
-      initResumeDashboard(tglMulai, tglSelesai);
+      calculateResumeDashboard();
 
       resultDiv.innerHTML = "<p class='text-xs text-slate-400'>Memuat laporan...</p>";
       const snap = await getDocs(collection(db, tipe));
@@ -1365,7 +1382,7 @@
       XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
     };
 
-    // MASTER BARANG (DISESUAIKAN KE KOLEKSI master_barang)
+    // MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1373,9 +1390,8 @@
           kode_brg: document.getElementById("b_kode").value, 
           nama_brg: document.getElementById("b_nama").value, 
           Satuan: document.getElementById("b_satuan").value, 
-          created_at: serverTimestamp() 
+          Tanggal_beli: new Date().toISOString().split('T')[0] 
         };
-        // Menggunakan koleksi 'master_barang' secara konsisten
         await addDoc(collection(db, "master_barang"), itemData);
         alert("Master barang berhasil disimpan ke koleksi master_barang!");
         e.target.reset();
@@ -1418,7 +1434,6 @@
       if (satuan) document.getElementById("p_satuan").value = satuan;
     });
 
-    // LISTENER KE KOLEKSI master_barang
     onSnapshot(collection(db, "master_barang"), (snapshot) => {
       snapshot.forEach(docSnap => { barangDocsCache[docSnap.id] = docSnap.data(); });
       renderBarangItems(barangDocsCache);
@@ -1444,14 +1459,13 @@
           nama_brg: namaBarang, Satuan: document.getElementById("p_satuan").value,
           Jumlah_beli: qty, Harga_satuan: hargaSatuan, Biaya_pembelian: biayaPembelian,
           Total_harga: (qty * hargaSatuan) + biayaPembelian, pic_pembelian: currentUserNameOrEmail,
-          Status: statusOlahan, Status_penjualan: statusPenjualan, created_at: serverTimestamp()
+          Status: statusOlahan, Status_penjualan: statusPenjualan
         });
         alert("Transaksi Pembelian Disimpan!");
         e.target.reset();
         document.getElementById("p_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         loadMultiPenjualanItems();
-        initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
       } catch (err) { alert(err.message); }
@@ -1515,6 +1529,7 @@
       try {
         const biayaOlahTotal = parseFloat(document.getElementById("o_biaya").value) || 0;
         const biayaPerItem = biayaOlahTotal / selectedAntrean.length;
+        const todayStr = new Date().toISOString().split('T')[0];
 
         for (const cb of selectedAntrean) {
           const pRef = doc(db, "pembelian", cb.value);
@@ -1523,13 +1538,13 @@
 
           for (const item of hasilOlahItems) {
             await addDoc(collection(db, "pengolahan"), {
-              no_trx_beli: pData.no_trx_beli, Tanggal_beli: pData.Tanggal_beli,
+              no_trx_beli: pData.no_trx_beli, Tanggal_beli: todayStr,
               nama_brg: pData.nama_brg, Satuan: pData.Satuan, Jumlah: pData.Jumlah_beli,
               Harga_satuan: pData.Harga_satuan, Total_harga: pData.Total_harga,
               biaya_olah: biayaPerItem, pic_pengolahan: currentUserNameOrEmail,
               status: "selesai olah", nama_brg_setelah_olah: item.nama,
               Satuan_setelah_olah: item.satuan, Jumlah_setelah_olah: item.jumlah,
-              Status_penjualan: "Belum terjual", created_at: serverTimestamp()
+              Status_penjualan: "Belum terjual"
             });
           }
           await updateDoc(pRef, { Status_penjualan: "selesai olah" });
@@ -1541,7 +1556,6 @@
         document.getElementById("containerHasilOlah").innerHTML = "";
         addHasilOlahRow();
         loadMultiPenjualanItems();
-        initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
       } catch (err) { alert(err.message); }
@@ -1661,6 +1675,7 @@
       const biayaPenjualanTotal = parseFloat(document.getElementById("j_biaya").value) || 0;
       const biayaPerItem = biayaPenjualanTotal / selectedItems.length;
       const notaNo = document.getElementById("j_nota").value;
+      const todayStr = new Date().toISOString().split('T')[0];
 
       try {
         for (const item of selectedItems) {
@@ -1669,11 +1684,11 @@
           const itemData = itemSnap.data();
 
           await addDoc(collection(db, "penjualan"), {
-            no_trx_jual: notaNo, Tanggal_jual: new Date().toISOString().split('T')[0],
+            no_trx_jual: notaNo, Tanggal_jual: todayStr,
             No_trx_beli: itemData.no_trx_beli || "-", nama_brg: item.nama, Satuan: item.satuan,
             Jumlah: item.qty, Harga_jual: item.price, Biaya_penjualan: biayaPerItem,
             Total_jual: (item.qty * item.price) - biayaPerItem, pic_penjualan: currentUserNameOrEmail,
-            created_at: serverTimestamp()
+            tipe_asal: item.type
           });
           await updateDoc(itemRef, { Status_penjualan: "Terjual" });
         }
@@ -1683,7 +1698,6 @@
         document.getElementById("j_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         loadMultiPenjualanItems();
-        initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
       } catch (err) { alert(err.message); }
@@ -1715,7 +1729,7 @@
         await addDoc(collection(db, "investors"), {
           Nama: document.getElementById("inv_nama").value, Nomor_hp: document.getElementById("inv_hp").value,
           tanggal_investasi: document.getElementById("inv_tanggal").value, Jumlah: parseFloat(document.getElementById("inv_jumlah").value),
-          Status: statusTipe, created_at: serverTimestamp()
+          Status: statusTipe, Tanggal_beli: document.getElementById("inv_tanggal").value
         });
         alert("Transaksi Investor Disimpan!");
         e.target.reset();
@@ -1747,7 +1761,6 @@
         const porsiRatio = totalModalGrup > 0 ? (data.total / totalModalGrup) : 0;
         const porsiPct = (porsiRatio * 100).toFixed(2);
         
-        // KALKULASI PEMBAGIAN LABA BERSIH BERDASARKAN PORSI INVESTASI
         const nominalLabaInvestor = currentGlobalLabaBersih * porsiRatio;
 
         list.innerHTML += `
@@ -1772,7 +1785,7 @@
         await addDoc(collection(db, "assets"), {
           kode_aset: document.getElementById("a_kode").value, nama_aset: document.getElementById("a_nama").value,
           Satuan: document.getElementById("a_satuan").value, Jumlah: parseFloat(document.getElementById("a_jumlah").value),
-          Harga: parseFloat(document.getElementById("a_harga").value), created_at: serverTimestamp()
+          Harga: parseFloat(document.getElementById("a_harga").value), Tanggal_beli: new Date().toISOString().split('T')[0]
         });
         alert("Asset Disimpan!");
         e.target.reset();
@@ -1831,8 +1844,8 @@
       if (type === "users") data = [{ Nama: "Reva Surya", Email: "reva@example.com", Role: "tamu" }];
       else if (type === "pembelian") data = [{ no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak SGE Murni", Satuan: "gram", Jumlah_beli: 500, Harga_satuan: 15000, Biaya_pembelian: 50000, pic_pembelian: "admin@delta.com", Status: "olahan" }];
       else if (type === "pengolahan") data = [{ no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak Mentah", Satuan: "gram", Jumlah: 500, Harga_satuan: 15000, Total_harga: 7500000, biaya_olah: 100000, pic_pengolahan: "admin@delta.com", status: "selesai olah", nama_brg_setelah_olah: "Perak Batangan 999", Satuan_setelah_olah: "gram", Jumlah_setelah_olah: 495, Status_penjualan: "Belum terjual" }];
-      else if (type === "penjualan") data = [{ no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001", nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000, Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com" }];
-      else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
+      else if (type === "penjualan") data = [{ no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001", nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000, Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com", tipe_asal: "pengolahan" }];
+      else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal", Tanggal_beli: "2026-11-07" }];
       else if (type === "master_barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
 
       const ws = XLSX.utils.json_to_sheet(data);
@@ -1867,13 +1880,20 @@
           if (!jsonData.length) { alert("File kosong!"); btn.disabled = false; return; }
 
           let successCount = 0;
+          const todayStr = new Date().toISOString().split('T')[0];
+
           for (const row of jsonData) {
-            let batchDoc = { ...row, created_at: serverTimestamp() };
+            let batchDoc = { ...row };
+
+            if (!batchDoc.Tanggal_beli) {
+              batchDoc.Tanggal_beli = row.Tanggal_jual || row.tanggal_investasi || todayStr;
+            }
+
             if (tableType === "users") {
-              batchDoc = { nama: row.Nama || "User", email: row.Email || "", role: (row.Role || "tamu").toLowerCase(), created_at: serverTimestamp() };
+              batchDoc = { nama: row.Nama || "User", email: row.Email || "", role: (row.Role || "tamu").toLowerCase(), Tanggal_beli: todayStr };
               await addDoc(collection(db, "users"), batchDoc);
             } else if (tableType === "master_barang") {
-              batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", created_at: serverTimestamp() };
+              batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", Tanggal_beli: todayStr };
               await addDoc(collection(db, "master_barang"), batchDoc);
             } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || 0);
@@ -1899,7 +1919,6 @@
           fileInput.value = "";
           if (tableType === "users") loadUsersList();
           loadMultiPenjualanItems();
-          initResumeDashboard();
           calculateNeracaAndUserSummary();
           loadCashFlowData();
         } catch (err) { alert(`Gagal: ${err.message}`); }

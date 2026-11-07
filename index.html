@@ -204,7 +204,7 @@
         </div>
       </section>
 
-      <!-- 2. TAB PEMBELIAN -->
+      <!-- 2. TAB PEMBELIAN (NAMA BARANG MENGGUNAKAN DROPDOWN SELECT MASTER BARANG) -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -217,8 +217,10 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
-                <input type="text" id="p_nama_brg" required placeholder="Misal: Perak Murni SGE" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Master Barang</label>
+                <select id="p_select_master_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <option value="">-- Memuat Master Barang... --</option>
+                </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
@@ -589,6 +591,7 @@
     let currentUser = null;
     let currentUserRole = "tamu";
     let lastLaporanData = [];
+    const barangDocsCache = {};
 
     // HELPER AUTO GENERATE CODE
     function generateAutoCode(prefix) {
@@ -707,7 +710,7 @@
       });
     };
 
-    // 1. MASTER BARANG (LOGIKA DUAL-COLLECTION DENGAN MEMBACA "barang" DAN "master_barang")
+    // 1. MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -717,7 +720,6 @@
           Satuan: document.getElementById("b_satuan").value,
           created_at: serverTimestamp()
         };
-        // Simpan ke kedua koleksi agar konsisten
         await addDoc(collection(db, "barang"), itemData);
         await addDoc(collection(db, "master_barang"), itemData);
         
@@ -727,15 +729,17 @@
       } catch (err) { alert(err.message); }
     });
 
-    // Helper untuk merender item barang ke UI
+    // RENDER BARANG KE UI TABEL & POPULASI DROPDOWN PEMBELIAN
     function renderBarangItems(allDocsMap) {
       const list = document.getElementById("tabelBarangBody");
-      if (!list) return;
-      list.innerHTML = "";
+      const pSelect = document.getElementById("p_select_master_barang");
+      
+      if (list) list.innerHTML = "";
+      if (pSelect) pSelect.innerHTML = '<option value="">-- Pilih Master Barang --</option>';
 
       const keys = Object.keys(allDocsMap);
       if (keys.length === 0) {
-        list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang di database.</p>';
+        if (list) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang di database.</p>';
         return;
       }
 
@@ -745,18 +749,31 @@
         const nama = d.nama_brg || d.Nama_brg || d.nama || d.nama_barang || '-';
         const satuan = d.Satuan || d.satuan || '-';
 
-        list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400">${kode}</span>
-              <h4 class="text-sm font-bold text-slate-800">${nama}</h4>
-            </div>
-            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${satuan}</span>
-          </div>`;
+        if (list) {
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400">${kode}</span>
+                <h4 class="text-sm font-bold text-slate-800">${nama}</h4>
+              </div>
+              <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${satuan}</span>
+            </div>`;
+        }
+
+        if (pSelect) {
+          pSelect.innerHTML += `<option value="${nama}" data-satuan="${satuan}">${nama} (${satuan})</option>`;
+        }
       });
     }
 
-    const barangDocsCache = {};
+    // OTOMATIS ISI INPUT SATUAN SAAT BARANG DIPILIH PADA DROPDOWN PEMBELIAN
+    document.getElementById("p_select_master_barang").addEventListener("change", (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      const satuan = selectedOption.getAttribute("data-satuan");
+      if (satuan) {
+        document.getElementById("p_satuan").value = satuan;
+      }
+    });
 
     // Listener Realtime Koleksi "barang"
     onSnapshot(collection(db, "barang"), (snapshot) => {
@@ -781,6 +798,9 @@
     // 2. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const namaBarang = document.getElementById("p_select_master_barang").value;
+      if (!namaBarang) return alert("Silakan pilih Master Barang terlebih dahulu!");
+
       const statusOlahan = document.getElementById("p_status_olahan").value;
       const statusPenjualan = (statusOlahan === "non olahan") ? "Barang jadi" : "tunggu olah";
 
@@ -788,7 +808,7 @@
         await addDoc(collection(db, "pembelian"), {
           no_trx_beli: document.getElementById("p_faktur").value,
           Tanggal_beli: new Date().toISOString().split('T')[0],
-          nama_brg: document.getElementById("p_nama_brg").value,
+          nama_brg: namaBarang,
           Satuan: document.getElementById("p_satuan").value,
           Jumlah_beli: parseFloat(document.getElementById("p_jumlah").value),
           Harga_satuan: parseFloat(document.getElementById("p_harga").value),
@@ -1232,7 +1252,7 @@
       XLSX.writeFile(wb, filename);
     };
 
-    // PROCESS EXCEL IMPORT (OTOMATIS SIMPAN KE KEDUA KOLEKSI JIKA TARGETNYA BARANG)
+    // PROCESS EXCEL IMPORT
     window.processExcelImport = async () => {
       const fileInput = document.getElementById("excelFileInput");
       const tableType = document.getElementById("excelTableType").value;
@@ -1285,7 +1305,6 @@
                 Satuan: row.Satuan || row.satuan || "",
                 created_at: serverTimestamp()
               };
-              // Simpan ke dua koleksi sekaligus
               await addDoc(collection(db, "barang"), batchDoc);
               await addDoc(collection(db, "master_barang"), batchDoc);
             } else if (tableType === "pembelian") {

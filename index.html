@@ -171,45 +171,57 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB LAPORAN (DEFAULT FIRST TAB) -->
+      <!-- 1. TAB LAPORAN (DEFAULT LANDING PAGE) -->
       <section id="tab-laporan" class="tab-content block space-y-6">
         
-        <!-- RESUME WIDGET RINGKASAN BARANG -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Widget 1: Belum Diolah -->
-          <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-sm space-y-1">
+        <!-- 4 RESUME WIDGET RINGKASAN BARANG STOK REALTIME -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          <!-- Widget 1: Belum Diolah (Sisa Antrean) -->
+          <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold uppercase tracking-wider text-amber-100">Barang Belum Diolah</span>
-              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-hourglass text-lg"></i>
+              <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-amber-100">Mentah Belum Diolah</span>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-hourglass text-base"></i>
               </div>
             </div>
-            <h3 id="res_belum_olah" class="text-2xl font-black">0</h3>
-            <p class="text-[11px] text-amber-100 font-medium">Status: Antrean / Tunggu Olah</p>
+            <h3 id="res_belum_olah" class="text-xl md:text-2xl font-black">0</h3>
+            <p class="text-[10px] text-amber-100 font-medium">Stok Antrean Olah Net</p>
           </div>
 
-          <!-- Widget 2: Sudah Diolah -->
-          <div class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <!-- Widget 2: Hasil Olahan Ready -->
+          <div class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold uppercase tracking-wider text-purple-100">Barang Sudah Diolah</span>
-              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-check-circle text-lg"></i>
+              <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-purple-100">Hasil Olahan Ready</span>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-check-circle text-base"></i>
               </div>
             </div>
-            <h3 id="res_sudah_olah" class="text-2xl font-black">0</h3>
-            <p class="text-[11px] text-purple-100 font-medium">Status: Pemurnian Selesai</p>
+            <h3 id="res_sudah_olah" class="text-xl md:text-2xl font-black">0</h3>
+            <p class="text-[10px] text-purple-100 font-medium">Stok Siap Jual Net</p>
           </div>
 
-          <!-- Widget 3: Sudah Dijual -->
-          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <!-- Widget 3: Non-Olahan Ready (BARU) -->
+          <div class="bg-gradient-to-br from-cyan-600 to-blue-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold uppercase tracking-wider text-emerald-100">Total Barang Dijual</span>
-              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-shopping-bag-open text-lg"></i>
+              <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-cyan-100">Barang Jadi (Non-Olah)</span>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-package text-base"></i>
               </div>
             </div>
-            <h3 id="res_sudah_jual" class="text-2xl font-black">0</h3>
-            <p class="text-[11px] text-emerald-100 font-medium">Status: Transaksi Terjual</p>
+            <h3 id="res_non_olah" class="text-xl md:text-2xl font-black">0</h3>
+            <p class="text-[10px] text-cyan-100 font-medium">Stok Langsung Jual Net</p>
+          </div>
+
+          <!-- Widget 4: Total Barang Dijual -->
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-emerald-100">Total Terjual</span>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-shopping-bag-open text-base"></i>
+              </div>
+            </div>
+            <h3 id="res_sudah_jual" class="text-xl md:text-2xl font-black">0</h3>
+            <p class="text-[10px] text-emerald-100 font-medium">Total Akumulasi Jual</p>
           </div>
         </div>
 
@@ -535,7 +547,7 @@
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Harga (Rp)</label>
-                <input type="number" id="a_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <input type="number" id="a_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
               </div>
             </div>
             <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-cyan-500/20">
@@ -610,7 +622,7 @@
 
     </main>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR (DILENGKAPI TOMBOL LAPORAN DENGAN MATCHING ID) -->
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
       <button id="mob-nav-laporan" class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-2 rounded-xl text-brand-600" onclick="switchTab('laporan')">
         <i class="ph-bold ph-chart-line text-xl"></i>
@@ -761,10 +773,10 @@
           loadUsersList();
           updatePenjualanDropdown();
 
-          // SET TAB LAPORAN SEBAGAI LANDING PAGE AWAL SAAT LOGIN
+          // SET TAB LAPORAN SEBAGAI LANDING PAGE AWAL
           switchTab('laporan');
 
-          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG
+          // SINKRONISASI REALTIME RINGKASAN STOK RESUME BARANG
           initResumeDashboard();
 
           // Reset baris awal hasil olah jika kosong
@@ -824,7 +836,7 @@
 
     window.handleLogout = () => signOut(auth);
 
-    // LOGIKA PERPINDAHAN TAB (TERMASUK TOMBOL LAPORAN MOBILE)
+    // LOGIKA PERPINDAHAN TAB
     window.switchTab = (tabName) => {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       const targetTab = document.getElementById(`tab-${tabName}`);
@@ -860,14 +872,21 @@
       }
     };
 
-    // 1. RESUME WIDGET RINGKASAN BARANG & FILTER LAPORAN
+    // 1. RESUME WIDGET RINGKASAN STOK REALTIME DENGAN PERHITUNGAN PENGURANGAN NET
     async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
-      let qtyBelumOlah = 0;
-      let qtySudahOlah = 0;
-      let qtySudahJual = 0;
+      let totalPembelianOlahan = 0;
+      let totalMasukOlah = 0;
+      
+      let totalHasilOlah = 0;
+      let totalJualOlahan = 0;
+
+      let totalPembelianNonOlahan = 0;
+      let totalJualNonOlahan = 0;
+
+      let totalAkumulasiTerjual = 0;
 
       try {
-        // Fetch Pembelian (Belum Diolah)
+        // Fetch Pembelian
         const snapBeli = await getDocs(collection(db, "pembelian"));
         snapBeli.forEach(docSnap => {
           const d = docSnap.data();
@@ -875,13 +894,17 @@
           if (tglMulai && tgl < tglMulai) return;
           if (tglSelesai && tgl > tglSelesai) return;
 
-          const st = (d.Status_penjualan || '').toLowerCase();
-          if (st === 'tunggu olah') {
-            qtyBelumOlah += parseFloat(d.Jumlah_beli || 0);
+          const st = (d.Status || '').toLowerCase();
+          const qty = parseFloat(d.Jumlah_beli || 0);
+
+          if (st === 'olahan') {
+            totalPembelianOlahan += qty;
+          } else {
+            totalPembelianNonOlahan += qty;
           }
         });
 
-        // Fetch Pengolahan (Sudah Diolah)
+        // Fetch Pengolahan
         const snapOlah = await getDocs(collection(db, "pengolahan"));
         snapOlah.forEach(docSnap => {
           const d = docSnap.data();
@@ -889,10 +912,11 @@
           if (tglMulai && tgl < tglMulai) return;
           if (tglSelesai && tgl > tglSelesai) return;
 
-          qtySudahOlah += parseFloat(d.Jumlah_setelah_olah || 0);
+          totalMasukOlah += parseFloat(d.Jumlah || 0);
+          totalHasilOlah += parseFloat(d.Jumlah_setelah_olah || 0);
         });
 
-        // Fetch Penjualan (Sudah Dijual)
+        // Fetch Penjualan
         const snapJual = await getDocs(collection(db, "penjualan"));
         snapJual.forEach(docSnap => {
           const d = docSnap.data();
@@ -900,18 +924,32 @@
           if (tglMulai && tgl < tglMulai) return;
           if (tglSelesai && tgl > tglSelesai) return;
 
-          qtySudahJual += parseFloat(d.Jumlah || 0);
+          const qty = parseFloat(d.Jumlah || 0);
+          totalAkumulasiTerjual += qty;
+
+          const noBeli = d.No_trx_beli || '';
+          if (noBeli.startsWith('BUY')) {
+            totalJualNonOlahan += qty;
+          } else {
+            totalJualOlahan += qty;
+          }
         });
 
-        document.getElementById("res_belum_olah").innerText = qtyBelumOlah.toLocaleString('id-ID');
-        document.getElementById("res_sudah_olah").innerText = qtySudahOlah.toLocaleString('id-ID');
-        document.getElementById("res_sudah_jual").innerText = qtySudahJual.toLocaleString('id-ID');
+        // PERHITUNGAN NET RESUME STOK REALTIME
+        const netBelumDiolah = Math.max(0, totalPembelianOlahan - totalMasukOlah);
+        const netHasilOlahanReady = Math.max(0, totalHasilOlah - totalJualOlahan);
+        const netNonOlahanReady = Math.max(0, totalPembelianNonOlahan - totalJualNonOlahan);
+
+        document.getElementById("res_belum_olah").innerText = netBelumDiolah.toLocaleString('id-ID');
+        document.getElementById("res_sudah_olah").innerText = netHasilOlahanReady.toLocaleString('id-ID');
+        document.getElementById("res_non_olah").innerText = netNonOlahanReady.toLocaleString('id-ID');
+        document.getElementById("res_sudah_jual").innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
       } catch (err) {
-        console.error("Gagal memuat resume barang:", err);
+        console.error("Gagal memuat resume stok:", err);
       }
     }
 
-    // PRESET FILTER TANGGAL (BULAN INI / BULAN LALU / SEMUA)
+    // PRESET FILTER TANGGAL
     window.setFilterPreset = (preset) => {
       const now = new Date();
       const tglMulaiEl = document.getElementById("lap_tgl_mulai");

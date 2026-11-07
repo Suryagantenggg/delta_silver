@@ -162,67 +162,51 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. MENU UTAMA: LAPORAN (DEFAULT LANDING PAGE) -->
+      <!-- 1. MENU UTAMA: LAPORAN -->
       <section id="main-tab-laporan" class="main-tab-content block space-y-6">
-        
-        <!-- 4 RESUME WIDGET RINGKASAN BARANG STOK REALTIME -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          <!-- Widget 1: Mentah Belum Diolah -->
           <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-amber-100">Mentah Belum Diolah</span>
-              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-hourglass text-base"></i>
-              </div>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center"><i class="ph-bold ph-hourglass text-base"></i></div>
             </div>
             <h3 id="res_belum_olah" class="text-xl md:text-2xl font-black">0</h3>
             <p class="text-[10px] text-amber-100 font-medium">Stok Antrean Olah Net</p>
           </div>
 
-          <!-- Widget 2: Hasil Olahan Ready -->
           <div class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-purple-100">Hasil Olahan Ready</span>
-              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-check-circle text-base"></i>
-              </div>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center"><i class="ph-bold ph-check-circle text-base"></i></div>
             </div>
             <h3 id="res_sudah_olah" class="text-xl md:text-2xl font-black">0</h3>
             <p class="text-[10px] text-purple-100 font-medium">Stok Siap Jual Net</p>
           </div>
 
-          <!-- Widget 3: Non-Olahan Ready -->
           <div class="bg-gradient-to-br from-cyan-600 to-blue-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-cyan-100">Barang Jadi (Non-Olah)</span>
-              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-package text-base"></i>
-              </div>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center"><i class="ph-bold ph-package text-base"></i></div>
             </div>
             <h3 id="res_non_olah" class="text-xl md:text-2xl font-black">0</h3>
             <p class="text-[10px] text-cyan-100 font-medium">Stok Langsung Jual Net</p>
           </div>
 
-          <!-- Widget 4: Total Barang Dijual -->
           <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-emerald-100">Total Terjual</span>
-              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
-                <i class="ph-bold ph-shopping-bag-open text-base"></i>
-              </div>
+              <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center"><i class="ph-bold ph-shopping-bag-open text-base"></i></div>
             </div>
             <h3 id="res_sudah_jual" class="text-xl md:text-2xl font-black">0</h3>
             <p class="text-[10px] text-emerald-100 font-medium">Total Akumulasi Jual</p>
           </div>
         </div>
 
-        <!-- FILTER LAPORAN -->
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <i class="ph-bold ph-funnel text-brand-600 text-lg"></i> Filter Laporan Transaksi & Stok
             </h2>
-            <!-- Quick Filter Presets -->
             <div class="flex flex-wrap items-center gap-1.5">
               <button onclick="setFilterPreset('bulan_ini')" class="px-3 py-1.5 bg-brand-50 text-brand-600 hover:bg-brand-600 hover:text-white font-bold text-xs rounded-xl transition">Bulan Ini</button>
               <button onclick="setFilterPreset('bulan_lalu')" class="px-3 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-700 hover:text-white font-bold text-xs rounded-xl transition">Bulan Lalu</button>
@@ -264,10 +248,8 @@
         </div>
       </section>
 
-      <!-- 2. MENU BARU: NERACA KEUANGAN (DENGAN 2 SUB-TAB: RINGKASAN & ARUS KAS) -->
+      <!-- 2. MENU UTAMA: NERACA KEUANGAN -->
       <section id="main-tab-neraca" class="main-tab-content hidden space-y-6">
-        
-        <!-- SUB TAB SWITCHER FOR NERACA -->
         <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
           <button id="sub-neraca-ringkasan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('neraca', 'ringkasan')">
             <i class="ph-bold ph-scales"></i> Ringkasan Neraca
@@ -279,9 +261,7 @@
 
         <!-- SUB CONTENT 1: RINGKASAN NERACA -->
         <div id="subcontent-neraca-ringkasan" class="sub-content-neraca block space-y-6">
-          <!-- CARD RINGKASAN NERACA KEUANGAN (ATAS) -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- Card 1: Total Pembelian -->
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
               <div class="flex justify-between items-center text-slate-400">
                 <span class="text-xs font-bold uppercase tracking-wider">Total Pembelian</span>
@@ -291,7 +271,6 @@
               <p class="text-[11px] text-slate-400">Total Nominal Belanja / Pengeluaran</p>
             </div>
 
-            <!-- Card 2: Total Penjualan -->
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-emerald-500">
               <div class="flex justify-between items-center text-slate-400">
                 <span class="text-xs font-bold uppercase tracking-wider">Total Penjualan</span>
@@ -301,7 +280,6 @@
               <p class="text-[11px] text-slate-400">Total Nominal Omzet / Pendapatan</p>
             </div>
 
-            <!-- Card 3: Selisih Margin (Profit) -->
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
               <div class="flex justify-between items-center text-slate-400">
                 <span class="text-xs font-bold uppercase tracking-wider">Estimasi Gross Profit</span>
@@ -311,7 +289,6 @@
               <p class="text-[11px] text-slate-400">Selisih Penjualan - Pembelian</p>
             </div>
 
-            <!-- Card 4: Total Biaya Operasional -->
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-purple-500">
               <div class="flex justify-between items-center text-slate-400">
                 <span class="text-xs font-bold uppercase tracking-wider">Total Biaya Operasional</span>
@@ -322,7 +299,6 @@
             </div>
           </div>
 
-          <!-- RESUME AKTIVITAS & BIAYA OPERASIONAL PER USER -->
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
               <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
@@ -332,16 +308,14 @@
                 <i class="ph-bold ph-arrows-clockwise"></i> Refresh Data
               </button>
             </div>
-
             <div id="containerUserSummary" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <p class="text-xs text-slate-400">Memuat resume aktivitas per user...</p>
             </div>
           </div>
         </div>
 
-        <!-- SUB CONTENT 2: ARUS KAS (CASH FLOW) -->
+        <!-- SUB CONTENT 2: ARUS KAS -->
         <div id="subcontent-neraca-aruskas" class="sub-content-neraca hidden space-y-6">
-          <!-- RINGKASAN ARUS KAS NET -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-emerald-900 space-y-1">
               <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Total Kas Masuk (Inflow)</span>
@@ -362,7 +336,6 @@
             </div>
           </div>
 
-          <!-- TABEL RINCIAN MUTASI ARUS KAS -->
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
               <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
@@ -375,13 +348,10 @@
             <div id="tabelCashFlowBody" class="space-y-2.5"><p class="text-xs text-slate-400">Memuat rincian arus kas...</p></div>
           </div>
         </div>
-
       </section>
 
-      <!-- 3. MENU UTAMA: INPUT DATA (GABUNGAN 3 TAB INTERNAL: BARANG, INVESTOR, ASSET) -->
+      <!-- 3. MENU UTAMA: INPUT DATA -->
       <section id="main-tab-inputdata" class="main-tab-content hidden space-y-6">
-        
-        <!-- SUB TAB SWITCHER FOR INPUT DATA -->
         <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
           <button id="sub-input-barang" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('inputdata', 'barang')">
             <i class="ph-bold ph-package"></i> Master Barang
@@ -528,19 +498,18 @@
 
       </section>
 
-      <!-- 4. MENU UTAMA: TRANSAKSI (GABUNGAN 3 TAB INTERNAL: PEMBELIAN, PENGOLAHAN, PENJUALAN) -->
+      <!-- 4. MENU UTAMA: TRANSAKSI (PEMBELIAN, PENGOLAHAN [MULTI SELECT], PENJUALAN [MULTI SELECT]) -->
       <section id="main-tab-transaksi" class="main-tab-content hidden space-y-6">
         
-        <!-- SUB TAB SWITCHER FOR TRANSAKSI -->
         <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
           <button id="sub-trans-pembelian" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-emerald-600 shadow-sm transition" onclick="switchSubTab('transaksi', 'pembelian')">
             <i class="ph-bold ph-shopping-cart"></i> Pembelian
           </button>
           <button id="sub-trans-pengolahan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('transaksi', 'pengolahan')">
-            <i class="ph-bold ph-gear"></i> Pengolahan
+            <i class="ph-bold ph-gear"></i> Pengolahan (Multi)
           </button>
           <button id="sub-trans-penjualan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('transaksi', 'penjualan')">
-            <i class="ph-bold ph-currency-dollar"></i> Penjualan
+            <i class="ph-bold ph-currency-dollar"></i> Penjualan (Multi)
           </button>
         </div>
 
@@ -606,44 +575,52 @@
           </div>
         </div>
 
-        <!-- SUB CONTENT 2: PENGOLAHAN -->
+        <!-- SUB CONTENT 2: PENGOLAHAN (DENGAN FEATURE MULTI-SELECT ANTREAN) -->
         <div id="subcontent-transaksi-pengolahan" class="sub-content-transaksi hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok (Pemurnian)
+              <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok (Pemurnian Multi-Item)
             </h2>
             <form id="formPengolahan" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Antrean (Status: Tunggu Olah)</label>
-                  <select id="o_select_item" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Beberapa Item Antrean (Status: Tunggu Olah)</label>
+                  <p class="text-[10px] text-purple-600 mb-1 font-semibold">* Centang 1 atau lebih barang yang akan dilebur bersamaan</p>
+                  
+                  <!-- MULTI SELECT BOX ANTREAN -->
+                  <div id="multi_select_antrean_container" class="max-h-48 overflow-y-auto p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <p class="text-xs text-slate-400">Memuat antrean barang...</p>
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pengolah (Petugas Logged In)</label>
-                  <input type="text" id="o_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-purple-50 text-purple-800 font-bold text-sm">
+
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pengolah (Petugas Logged In)</label>
+                    <input type="text" id="o_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-purple-50 text-purple-800 font-bold text-sm">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Total Biaya Olah / Process Fee (Rp)</label>
+                    <input type="number" id="o_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-purple-700">
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Total Biaya Olah / Process Fee (Rp)</label>
-                <input type="number" id="o_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-purple-700">
-              </div>
-
+              <!-- HASIL BARANG OLAH -->
               <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-4">
                 <div class="flex justify-between items-center">
-                  <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Hasil Barang Setelah Olah (Bisa Lebih Dari 1 Item)</span>
+                  <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Hasil Barang Setelah Olah (Dapat Ditambah)</span>
                   <button type="button" onclick="addHasilOlahRow()" class="px-3 py-1.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition flex items-center gap-1">
                     <i class="ph-bold ph-plus"></i> Tambah Hasil Barang
                   </button>
                 </div>
                 
                 <div id="containerHasilOlah" class="space-y-3">
-                  <!-- ROW HASIL OLAH DITAMBAHKAN DISINI -->
+                  <!-- Row hasil olah ditambahkan dinamis -->
                 </div>
               </div>
 
               <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
-                Selesaikan Pengolahan & Update Status Jadi Selesai Olah
+                Selesaikan Pengolahan Seluruh Item Terpilih
               </button>
             </form>
           </div>
@@ -654,11 +631,11 @@
           </div>
         </div>
 
-        <!-- SUB CONTENT 3: PENJUALAN -->
+        <!-- SUB CONTENT 3: PENJUALAN (DENGAN FEATURE MULTI-SELECT BARANG) -->
         <div id="subcontent-transaksi-penjualan" class="sub-content-transaksi hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir
+              <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir (Multi-Select Items)
             </h2>
             <form id="formPenjualan" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -671,26 +648,30 @@
                   <input type="text" id="j_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-amber-50 text-amber-800 font-bold text-sm">
                 </div>
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Siap Jual (Barang Jadi / Selesai Olah)</label>
-                <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+
+              <!-- MULTI SELECT CHECKLIST BARANG SIAP JUAL -->
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-600">Pilih Barang Siap Jual (Centang Satu Atau Beberapa Item sekaligus)</label>
+                <div id="multi_select_jual_container" class="max-h-60 overflow-y-auto p-3 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
+                  <p class="text-xs text-slate-400">Memuat daftar barang siap jual...</p>
+                </div>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
-                  <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
-                  <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Penjualan / Ongkir / Admin (Rp)</label>
                   <input type="number" id="j_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-amber-700">
                 </div>
+                <div class="flex items-end">
+                  <div class="w-full p-3 bg-amber-50 rounded-xl border border-amber-200 text-right">
+                    <span class="text-[10px] text-amber-700 font-bold uppercase block">Total Omzet Transaksi Init</span>
+                    <span id="display_total_multi_jual" class="text-lg font-black text-amber-900">Rp 0</span>
+                  </div>
+                </div>
               </div>
+
               <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-500/20">
-                Simpan Penjualan & Update Status Terjual
+                Simpan Penjualan Seluruh Item & Cetak Nota POS
               </button>
             </form>
           </div>
@@ -703,10 +684,8 @@
 
       </section>
 
-      <!-- 5. MENU UTAMA: MENU USER & IMPORT EXCEL LOKAL -->
+      <!-- 5. MENU UTAMA: MENU USER & IMPORT EXCEL -->
       <section id="main-tab-user" class="main-tab-content hidden space-y-6">
-        
-        <!-- FITUR IMPORT EXCEL LOKAL -->
         <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg space-y-4">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center text-2xl">
@@ -751,14 +730,12 @@
           </div>
         </div>
 
-        <!-- CONTROL MANAGEMENT USERS & ROLES -->
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
             <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Otorisasi Role User (Khusus Super Admin)
           </h2>
           <div id="tabelUsersBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat daftar user...</p></div>
         </div>
-
       </section>
 
     </main>
@@ -798,7 +775,7 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
       getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, updateDoc,
-      onSnapshot, writeBatch, serverTimestamp 
+      onSnapshot, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // CONFIG FIREBASE DATABASE (delta-silver)
@@ -822,7 +799,6 @@
     let lastLaporanData = [];
     const barangDocsCache = {};
 
-    // HELPER AUTO GENERATE CODE
     function generateAutoCode(prefix) {
       const d = new Date();
       const dateStr = d.getFullYear().toString() +
@@ -839,7 +815,6 @@
       document.getElementById("a_kode").value = generateAutoCode("AST");
     }
 
-    // HELPER DYNAMIC HASIL OLAH ROW
     window.addHasilOlahRow = (nama = '', satuan = '', jumlah = '') => {
       const container = document.getElementById("containerHasilOlah");
       if (!container) return;
@@ -866,7 +841,6 @@
       container.appendChild(rowDiv);
     };
 
-    // AUTH OBSERVER & ROLE ACCESS CONTROL
     onAuthStateChanged(auth, async (user) => {
       const authOverlay = document.getElementById("authOverlay");
       const appContainer = document.getElementById("appContainer");
@@ -880,7 +854,6 @@
         authOverlay.classList.add("hidden");
         userDisplay.innerText = user.email;
 
-        // Fetch User Role & Nama Profile
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
@@ -895,7 +868,6 @@
 
         roleBadge.innerText = currentUserRole;
 
-        // Isi field PIC pada form
         document.getElementById("p_pic").value = currentUserNameOrEmail;
         document.getElementById("o_pic").value = currentUserNameOrEmail;
         document.getElementById("j_pic").value = currentUserNameOrEmail;
@@ -908,15 +880,11 @@
           appContainer.classList.remove("hidden");
           refreshAutoCodes();
           loadUsersList();
-          updatePenjualanDropdown();
+          loadMultiPenjualanItems();
 
-          // SET MENU LAPORAN SEBAGAI LANDING PAGE UTAMA
           switchMainTab('laporan');
-
-          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG & NERACA
           initResumeDashboard();
 
-          // Reset baris awal hasil olah jika kosong
           const container = document.getElementById("containerHasilOlah");
           if (container && container.children.length === 0) {
             addHasilOlahRow();
@@ -950,7 +918,6 @@
       e.preventDefault();
       try {
         const res = await createUserWithEmailAndPassword(auth, document.getElementById("signupEmail").value, document.getElementById("signupPassword").value);
-        
         await setDoc(doc(db, "users", res.user.uid), {
           uid: res.user.uid,
           nama: document.getElementById("signupNama").value,
@@ -958,7 +925,7 @@
           role: "tamu",
           created_at: serverTimestamp()
         });
-        alert("Akun berhasil dibuat! Status awal Anda adalah 'Tamu', silakan minta Super Admin memverifikasi.");
+        alert("Akun berhasil dibuat! Status awal Anda adalah 'Tamu'.");
       } catch (err) { alert("Daftar Gagal: " + err.message); }
     });
 
@@ -973,13 +940,11 @@
 
     window.handleLogout = () => signOut(auth);
 
-    // LOGIKA NAVIGASI UTAMA (5 TAB MENU UTAMA)
     window.switchMainTab = (tabName) => {
       document.querySelectorAll(".main-tab-content").forEach(el => el.classList.add("hidden"));
       const targetTab = document.getElementById(`main-tab-${tabName}`);
       if (targetTab) targetTab.classList.remove("hidden");
 
-      // Reset Nav Desktop Style
       document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.classList.remove("bg-brand-600", "text-white");
         btn.classList.add("text-slate-500");
@@ -990,7 +955,6 @@
         activeDeskNav.classList.add("bg-brand-600", "text-white");
       }
 
-      // Reset Nav Mobile Style
       document.querySelectorAll(".nav-btn-mobile").forEach(btn => {
         btn.classList.remove("text-brand-600");
         btn.classList.add("text-slate-400");
@@ -1002,7 +966,7 @@
       }
 
       if (tabName === "transaksi") {
-        updatePenjualanDropdown();
+        loadMultiPenjualanItems();
       }
       if (tabName === "laporan") {
         filterLaporan();
@@ -1013,7 +977,6 @@
       }
     };
 
-    // LOGIKA INTERNAL SUB TAB SWITCHER
     window.switchSubTab = (parentGroup, subName) => {
       document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
       const targetSub = document.getElementById(`subcontent-${parentGroup}-${subName}`);
@@ -1043,7 +1006,7 @@
       }
     };
 
-    // 1. RESUME WIDGET RINGKASAN STOK REALTIME
+    // 1. RESUME WIDGET RINGKASAN STOK
     async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
       let totalPembelianOlahan = 0;
       let totalMasukOlah = 0;
@@ -1113,7 +1076,7 @@
       }
     }
 
-    // 2. KEKALAN PERHITUNGAN NERACA KEUANGAN & USER RESUME AKTIVITAS
+    // 2. NERACA KEUANGAN & USER RESUME
     window.calculateNeracaAndUserSummary = async () => {
       let sumBeliNominal = 0;
       let sumJualNominal = 0;
@@ -1233,7 +1196,7 @@
       }
     };
 
-    // 3. LOGIKA BARU: RENDER MUTASI ARUS KAS (CASH FLOW)
+    // 3. RENDER MUTASI ARUS KAS
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
       container.innerHTML = `<p class="text-xs text-slate-400">Mengkalkulasi arus kas...</p>`;
@@ -1243,7 +1206,6 @@
       let totalKasOut = 0;
 
       try {
-        // Fetch Penjualan (Kas Masuk)
         const snapJual = await getDocs(collection(db, "penjualan"));
         snapJual.forEach(docSnap => {
           const d = docSnap.data();
@@ -1259,7 +1221,6 @@
           });
         });
 
-        // Fetch Pembelian (Kas Keluar)
         const snapBeli = await getDocs(collection(db, "pembelian"));
         snapBeli.forEach(docSnap => {
           const d = docSnap.data();
@@ -1275,7 +1236,6 @@
           });
         });
 
-        // Fetch Biaya Pengolahan (Kas Keluar)
         const snapOlah = await getDocs(collection(db, "pengolahan"));
         snapOlah.forEach(docSnap => {
           const d = docSnap.data();
@@ -1293,7 +1253,6 @@
           }
         });
 
-        // Fetch Investor Transaksi (Kas Masuk / Tarik Modal Kas Keluar)
         const snapInv = await getDocs(collection(db, "investors"));
         snapInv.forEach(docSnap => {
           const d = docSnap.data();
@@ -1324,7 +1283,6 @@
           }
         });
 
-        // Sort per tanggal terbaru
         flowItems.sort((a, b) => (b.tgl > a.tgl ? 1 : -1));
 
         document.getElementById("cf_total_in").innerText = `Rp ${totalKasIn.toLocaleString('id-ID')}`;
@@ -1527,7 +1485,7 @@
         barangDocsCache[key] = d;
       });
       renderBarangItems(barangDocsCache);
-    }, (err) => console.log("Listen barang notice:", err));
+    });
 
     onSnapshot(collection(db, "master_barang"), (snapshot) => {
       snapshot.forEach(docSnap => {
@@ -1536,7 +1494,7 @@
         barangDocsCache[key] = d;
       });
       renderBarangItems(barangDocsCache);
-    }, (err) => console.log("Listen master_barang notice:", err));
+    });
 
     // 5. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
@@ -1570,7 +1528,7 @@
         e.target.reset();
         document.getElementById("p_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
-        updatePenjualanDropdown();
+        loadMultiPenjualanItems();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
@@ -1579,9 +1537,11 @@
 
     onSnapshot(collection(db, "pembelian"), (snapshot) => {
       const list = document.getElementById("tabelPembelianBody");
-      const oSelect = document.getElementById("o_select_item");
+      const multiAntreanBox = document.getElementById("multi_select_antrean_container");
       list.innerHTML = "";
-      oSelect.innerHTML = '<option value="">-- Pilih Antrean (Tunggu Olah) --</option>';
+      multiAntreanBox.innerHTML = "";
+
+      let antreanCount = 0;
 
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -1592,7 +1552,7 @@
             <div>
               <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'} • ${d.Tanggal_beli || ''} • PIC: ${d.pic_pembelian || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'} (${d.Jumlah_beli || 0} ${d.Satuan || ''})</h4>
-              <p class="text-xs text-emerald-600 font-bold">Total: Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')} ${d.Biaya_pembelian ? `(Inc. Biaya: Rp ${Number(d.Biaya_pembelian).toLocaleString('id-ID')})` : ''}</p>
+              <p class="text-xs text-emerald-600 font-bold">Total: Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')}</p>
             </div>
             <div class="text-right">
               <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded ${d.Status_penjualan === 'tunggu olah' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${d.Status_penjualan || '-'}</span>
@@ -1600,18 +1560,33 @@
           </div>`;
 
         if (d.Status === 'olahan' && (d.Status_penjualan || '').toLowerCase() === 'tunggu olah') {
-          oSelect.innerHTML += `<option value="${id}">${d.no_trx_beli} - ${d.nama_brg} (${d.Jumlah_beli} ${d.Satuan})</option>`;
+          antreanCount++;
+          multiAntreanBox.innerHTML += `
+            <label class="flex items-center gap-3 p-2 bg-white rounded-lg border border-slate-200 hover:border-purple-300 cursor-pointer text-xs">
+              <input type="checkbox" name="antrean_olah" value="${id}" class="w-4 h-4 rounded text-purple-600 focus:ring-purple-500">
+              <div>
+                <span class="font-bold text-slate-800 block">${d.no_trx_beli} - ${d.nama_brg}</span>
+                <span class="text-[10px] text-purple-700 font-semibold">Berat: ${d.Jumlah_beli} ${d.Satuan}</span>
+              </div>
+            </label>`;
         }
       });
+
+      if (antreanCount === 0) {
+        multiAntreanBox.innerHTML = `<p class="text-xs text-slate-400">Tidak ada antrean barang (tunggu olah).</p>`;
+      }
       
-      updatePenjualanDropdown();
+      loadMultiPenjualanItems();
     });
 
-    // 6. PENGOLAHAN
+    // 6. PENGOLAHAN (MULTI-SELECT ANTREAN)
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const pId = document.getElementById("o_select_item").value;
-      if (!pId) return alert("Pilih item antrean!");
+      
+      const selectedAntreanCheckboxes = document.querySelectorAll("input[name='antrean_olah']:checked");
+      if (selectedAntreanCheckboxes.length === 0) {
+        return alert("Pilih minimal 1 item antrean yang akan diolah!");
+      }
 
       const rows = document.querySelectorAll("#containerHasilOlah .hasil-olah-row");
       if (rows.length === 0) return alert("Masukkan minimal 1 hasil barang pengolahan!");
@@ -1629,40 +1604,44 @@
       if (hasilOlahItems.length === 0) return alert("Isi data hasil barang dengan benar!");
 
       try {
-        const pRef = doc(db, "pembelian", pId);
-        const pSnap = await getDoc(pRef);
-        const pData = pSnap.data();
+        const biayaOlahTotal = parseFloat(document.getElementById("o_biaya").value) || 0;
+        const biayaPerItem = biayaOlahTotal / selectedAntreanCheckboxes.length;
 
-        const biayaOlah = parseFloat(document.getElementById("o_biaya").value) || 0;
+        for (const cb of selectedAntreanCheckboxes) {
+          const pId = cb.value;
+          const pRef = doc(db, "pembelian", pId);
+          const pSnap = await getDoc(pRef);
+          const pData = pSnap.data();
 
-        for (const item of hasilOlahItems) {
-          await addDoc(collection(db, "pengolahan"), {
-            no_trx_beli: pData.no_trx_beli,
-            Tanggal_beli: pData.Tanggal_beli,
-            nama_brg: pData.nama_brg,
-            Satuan: pData.Satuan,
-            Jumlah: pData.Jumlah_beli,
-            Harga_satuan: pData.Harga_satuan,
-            Total_harga: pData.Total_harga,
-            biaya_olah: biayaOlah,
-            pic_pengolahan: currentUserNameOrEmail,
-            status: "selesai olah",
-            nama_brg_setelah_olah: item.nama,
-            Satuan_setelah_olah: item.satuan,
-            Jumlah_setelah_olah: item.jumlah,
-            Status_penjualan: "Belum terjual",
-            created_at: serverTimestamp()
-          });
+          for (const item of hasilOlahItems) {
+            await addDoc(collection(db, "pengolahan"), {
+              no_trx_beli: pData.no_trx_beli,
+              Tanggal_beli: pData.Tanggal_beli,
+              nama_brg: pData.nama_brg,
+              Satuan: pData.Satuan,
+              Jumlah: pData.Jumlah_beli,
+              Harga_satuan: pData.Harga_satuan,
+              Total_harga: pData.Total_harga,
+              biaya_olah: biayaPerItem,
+              pic_pengolahan: currentUserNameOrEmail,
+              status: "selesai olah",
+              nama_brg_setelah_olah: item.nama,
+              Satuan_setelah_olah: item.satuan,
+              Jumlah_setelah_olah: item.jumlah,
+              Status_penjualan: "Belum terjual",
+              created_at: serverTimestamp()
+            });
+          }
+
+          await updateDoc(pRef, { Status_penjualan: "selesai olah" });
         }
 
-        await updateDoc(pRef, { Status_penjualan: "selesai olah" });
-
-        alert(`Pengolahan selesai! ${hasilOlahItems.length} jenis barang hasil olahan disimpan.`);
+        alert(`Pengolahan selesai! ${selectedAntreanCheckboxes.length} item antrean berhasil diolah.`);
         e.target.reset();
         document.getElementById("o_pic").value = currentUserNameOrEmail;
         document.getElementById("containerHasilOlah").innerHTML = "";
         addHasilOlahRow();
-        updatePenjualanDropdown();
+        loadMultiPenjualanItems();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
@@ -1679,21 +1658,22 @@
             <div>
               <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'} • PIC: ${d.pic_pengolahan || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg} ➔ ${d.nama_brg_setelah_olah}</h4>
-              <p class="text-xs text-purple-600 font-bold">Hasil: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah} ${d.biaya_olah ? `(Biaya Olah: Rp ${Number(d.biaya_olah).toLocaleString('id-ID')})` : ''}</p>
+              <p class="text-xs text-purple-600 font-bold">Hasil: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah}</p>
             </div>
             <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-700">${d.Status_penjualan || 'Belum terjual'}</span>
           </div>`;
       });
       
-      updatePenjualanDropdown();
+      loadMultiPenjualanItems();
     });
 
-    // UPDATE PENJUALAN DROPDOWN
-    async function updatePenjualanDropdown() {
-      const jSelect = document.getElementById("j_select_barang");
-      if (!jSelect) return;
-      
-      jSelect.innerHTML = '<option value="">-- Pilih Barang (Barang Jadi / Hasil Olahan) --</option>';
+    // 7. PENJUALAN (MULTI SELECT BARANG SIAP JUAL)
+    async function loadMultiPenjualanItems() {
+      const container = document.getElementById("multi_select_jual_container");
+      if (!container) return;
+
+      container.innerHTML = "";
+      let itemCount = 0;
 
       try {
         const snapBeli = await getDocs(collection(db, "pembelian"));
@@ -1701,7 +1681,21 @@
           const d = docSnap.data();
           const st = (d.Status_penjualan || "").toLowerCase().trim();
           if (st === "barang jadi") {
-            jSelect.innerHTML += `<option value="pembelian|${docSnap.id}">${d.no_trx_beli || 'TRX'} - ${d.nama_brg || 'Barang'} [Barang Jadi] (${d.Jumlah_beli || 0} ${d.Satuan || ''})</option>`;
+            itemCount++;
+            container.innerHTML += `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2 item-multi-jual-row">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" class="cb-item-jual w-4 h-4 text-amber-600 rounded focus:ring-amber-500" data-type="pembelian" data-id="${docSnap.id}" data-nama="${d.nama_brg}" data-satuan="${d.Satuan}" onchange="calculateMultiJualTotal()">
+                  <div>
+                    <span class="font-bold text-xs text-slate-800 block">${d.no_trx_beli} - ${d.nama_brg} [Barang Jadi]</span>
+                    <span class="text-[10px] text-amber-700 font-semibold">Stok: ${d.Jumlah_beli} ${d.Satuan}</span>
+                  </div>
+                </label>
+                <div class="flex items-center gap-2">
+                  <input type="number" step="0.01" class="qty-jual-input w-20 px-2 py-1 border border-slate-200 rounded-lg text-xs font-bold" placeholder="Qty" value="${d.Jumlah_beli}" onchange="calculateMultiJualTotal()">
+                  <input type="number" class="price-jual-input w-28 px-2 py-1 border border-slate-200 rounded-lg text-xs font-bold" placeholder="Harga/Satuan" value="0" onchange="calculateMultiJualTotal()">
+                </div>
+              </div>`;
           }
         });
 
@@ -1710,56 +1704,109 @@
           const d = docSnap.data();
           const st = (d.Status_penjualan || "").toLowerCase().trim();
           if (st === "belum terjual" || st === "selesai olah") {
-            jSelect.innerHTML += `<option value="pengolahan|${docSnap.id}">${d.no_trx_beli || 'TRX'} - ${d.nama_brg_setelah_olah || 'Barang'} [Hasil Olahan] (${d.Jumlah_setelah_olah || 0} ${d.Satuan_setelah_olah || ''})</option>`;
+            itemCount++;
+            container.innerHTML += `
+              <div class="p-3 bg-white rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-2 item-multi-jual-row">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" class="cb-item-jual w-4 h-4 text-amber-600 rounded focus:ring-amber-500" data-type="pengolahan" data-id="${docSnap.id}" data-nama="${d.nama_brg_setelah_olah}" data-satuan="${d.Satuan_setelah_olah}" onchange="calculateMultiJualTotal()">
+                  <div>
+                    <span class="font-bold text-xs text-slate-800 block">${d.no_trx_beli} - ${d.nama_brg_setelah_olah} [Hasil Olahan]</span>
+                    <span class="text-[10px] text-amber-700 font-semibold">Stok: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah}</span>
+                  </div>
+                </label>
+                <div class="flex items-center gap-2">
+                  <input type="number" step="0.01" class="qty-jual-input w-20 px-2 py-1 border border-slate-200 rounded-lg text-xs font-bold" placeholder="Qty" value="${d.Jumlah_setelah_olah}" onchange="calculateMultiJualTotal()">
+                  <input type="number" class="price-jual-input w-28 px-2 py-1 border border-slate-200 rounded-lg text-xs font-bold" placeholder="Harga/Satuan" value="0" onchange="calculateMultiJualTotal()">
+                </div>
+              </div>`;
           }
         });
+
+        if (itemCount === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-400">Tidak ada barang siap jual saat ini.</p>`;
+        }
       } catch (err) {
-        console.error("Gagal memperbarui dropdown penjualan:", err);
+        console.error("Gagal memuat barang siap jual:", err);
       }
     }
 
-    // 7. PENJUALAN
+    window.calculateMultiJualTotal = () => {
+      const rows = document.querySelectorAll(".item-multi-jual-row");
+      let totalOmzet = 0;
+
+      rows.forEach(r => {
+        const cb = r.querySelector(".cb-item-jual");
+        if (cb && cb.checked) {
+          const qty = parseFloat(r.querySelector(".qty-jual-input").value) || 0;
+          const price = parseFloat(r.querySelector(".price-jual-input").value) || 0;
+          totalOmzet += (qty * price);
+        }
+      });
+
+      const display = document.getElementById("display_total_multi_jual");
+      if (display) display.innerText = `Rp ${totalOmzet.toLocaleString('id-ID')}`;
+    };
+
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const selectedVal = document.getElementById("j_select_barang").value;
-      if (!selectedVal) return alert("Pilih barang siap jual terlebih dahulu!");
+      
+      const rows = document.querySelectorAll(".item-multi-jual-row");
+      const selectedItems = [];
 
-      const [type, itemDocId] = selectedVal.split("|");
-      const qtyJual = parseFloat(document.getElementById("j_jumlah").value) || 0;
-      const hargaJual = parseFloat(document.getElementById("j_harga_satuan").value) || 0;
-      const biayaPenjualan = parseFloat(document.getElementById("j_biaya").value) || 0;
+      rows.forEach(r => {
+        const cb = r.querySelector(".cb-item-jual");
+        if (cb && cb.checked) {
+          const qty = parseFloat(r.querySelector(".qty-jual-input").value) || 0;
+          const price = parseFloat(r.querySelector(".price-jual-input").value) || 0;
+          if (qty > 0 && price > 0) {
+            selectedItems.push({
+              type: cb.getAttribute("data-type"),
+              id: cb.getAttribute("data-id"),
+              nama: cb.getAttribute("data-nama"),
+              satuan: cb.getAttribute("data-satuan"),
+              qty: qty,
+              price: price
+            });
+          }
+        }
+      });
+
+      if (selectedItems.length === 0) {
+        return alert("Pilih minimal 1 barang dan isi Qty serta Harga Jual dengan benar!");
+      }
+
+      const biayaPenjualanTotal = parseFloat(document.getElementById("j_biaya").value) || 0;
+      const biayaPerItem = biayaPenjualanTotal / selectedItems.length;
+      const notaNo = document.getElementById("j_nota").value;
 
       try {
-        const itemRef = doc(db, type, itemDocId);
-        const itemSnap = await getDoc(itemRef);
-        
-        if (!itemSnap.exists()) return alert("Data barang tidak ditemukan di database.");
-        const itemData = itemSnap.data();
+        for (const item of selectedItems) {
+          const itemRef = doc(db, item.type, item.id);
+          const itemSnap = await getDoc(itemRef);
+          const itemData = itemSnap.data();
 
-        const namaBrg = type === 'pembelian' ? itemData.nama_brg : itemData.nama_brg_setelah_olah;
-        const satuan = type === 'pembelian' ? itemData.Satuan : itemData.Satuan_setelah_olah;
+          await addDoc(collection(db, "penjualan"), {
+            no_trx_jual: notaNo,
+            Tanggal_jual: new Date().toISOString().split('T')[0],
+            No_trx_beli: itemData.no_trx_beli || "-",
+            nama_brg: item.nama,
+            Satuan: item.satuan,
+            Jumlah: item.qty,
+            Harga_jual: item.price,
+            Biaya_penjualan: biayaPerItem,
+            Total_jual: (item.qty * item.price) - biayaPerItem,
+            pic_penjualan: currentUserNameOrEmail,
+            created_at: serverTimestamp()
+          });
 
-        await addDoc(collection(db, "penjualan"), {
-          no_trx_jual: document.getElementById("j_nota").value,
-          Tanggal_jual: new Date().toISOString().split('T')[0],
-          No_trx_beli: itemData.no_trx_beli || "-",
-          nama_brg: namaBrg,
-          Satuan: satuan,
-          Jumlah: qtyJual,
-          Harga_jual: hargaJual,
-          Biaya_penjualan: biayaPenjualan,
-          Total_jual: (qtyJual * hargaJual) - biayaPenjualan,
-          pic_penjualan: currentUserNameOrEmail,
-          created_at: serverTimestamp()
-        });
+          await updateDoc(itemRef, { Status_penjualan: "Terjual" });
+        }
 
-        await updateDoc(itemRef, { Status_penjualan: "Terjual" });
-
-        alert("Penjualan Berhasil!");
+        alert(`Penjualan berhasil! ${selectedItems.length} item dimasukkan dalam Nota Penjualan.`);
         e.target.reset();
         document.getElementById("j_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
-        updatePenjualanDropdown();
+        loadMultiPenjualanItems();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
         loadCashFlowData();
@@ -1776,7 +1823,6 @@
             <div>
               <span class="text-[10px] font-bold text-slate-400">${d.no_trx_jual || '-'} • Ref: ${d.No_trx_beli || '-'} • PIC: ${d.pic_penjualan || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg} (${d.Jumlah} ${d.Satuan})</h4>
-              ${d.Biaya_penjualan ? `<p class="text-[11px] text-slate-500">Biaya Jual: Rp ${Number(d.Biaya_penjualan).toLocaleString('id-ID')}</p>` : ''}
             </div>
             <span class="text-sm font-black text-amber-600">Rp ${Number(d.Total_jual || 0).toLocaleString('id-ID')}</span>
           </div>`;
@@ -1928,73 +1974,37 @@
       } catch (err) { alert("Gagal update role: " + err.message); }
     };
 
-    // TEMPLATE DOWNLOAD EXCEL
     window.downloadExcelTemplate = () => {
       const type = document.getElementById("excelTableType").value;
       let data = [];
       let filename = `Template_${type}.xlsx`;
 
       if (type === "users") {
-        data = [{
-          Nama: "Reva Surya",
-          Email: "reva@example.com",
-          Role: "tamu"
-        }];
+        data = [{ Nama: "Reva Surya", Email: "reva@example.com", Role: "tamu" }];
       } else if (type === "pembelian") {
         data = [{
-          no_trx_beli: "BUY-20261107-1001",
-          Tanggal_beli: "2026-11-07",
-          nama_brg: "Perak SGE Murni",
-          Satuan: "gram",
-          Jumlah_beli: 500,
-          Harga_satuan: 15000,
-          Biaya_pembelian: 50000,
-          pic_pembelian: "admin@delta.com",
-          Status: "olahan"
+          no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak SGE Murni",
+          Satuan: "gram", Jumlah_beli: 500, Harga_satuan: 15000, Biaya_pembelian: 50000,
+          pic_pembelian: "admin@delta.com", Status: "olahan"
         }];
       } else if (type === "pengolahan") {
         data = [{
-          no_trx_beli: "BUY-20261107-1001",
-          Tanggal_beli: "2026-11-07",
-          nama_brg: "Perak Mentah",
-          Satuan: "gram",
-          Jumlah: 500,
-          Harga_satuan: 15000,
-          Total_harga: 7500000,
-          biaya_olah: 100000,
-          pic_pengolahan: "admin@delta.com",
-          status: "selesai olah",
-          nama_brg_setelah_olah: "Perak Batangan 999",
-          Satuan_setelah_olah: "gram",
-          Jumlah_setelah_olah: 495,
-          Status_penjualan: "Belum terjual"
+          no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak Mentah",
+          Satuan: "gram", Jumlah: 500, Harga_satuan: 15000, Total_harga: 7500000,
+          biaya_olah: 100000, pic_pengolahan: "admin@delta.com", status: "selesai olah",
+          nama_brg_setelah_olah: "Perak Batangan 999", Satuan_setelah_olah: "gram",
+          Jumlah_setelah_olah: 495, Status_penjualan: "Belum terjual"
         }];
       } else if (type === "penjualan") {
         data = [{
-          no_trx_jual: "POS-20261107-2001",
-          Tanggal_jual: "2026-11-07",
-          No_trx_beli: "BUY-20261107-1001",
-          nama_brg: "Perak Batangan 999",
-          Satuan: "gram",
-          Jumlah: 100,
-          Harga_jual: 18000,
-          Biaya_penjualan: 20000,
-          pic_penjualan: "admin@delta.com"
+          no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001",
+          nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000,
+          Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com"
         }];
       } else if (type === "investors") {
-        data = [{
-          Nama: "Budi Santoso",
-          Nomor_hp: "081234567890",
-          tanggal_investasi: "2026-11-07",
-          Jumlah: 50000000,
-          Status: "tambah modal"
-        }];
+        data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
       } else if (type === "barang") {
-        data = [{
-          kode_brg: "BRG-20261107-001",
-          nama_brg: "Perak Granul SGE",
-          Satuan: "gram"
-        }];
+        data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
       }
 
       const ws = XLSX.utils.json_to_sheet(data);
@@ -2003,7 +2013,6 @@
       XLSX.writeFile(wb, filename);
     };
 
-    // PROCESS EXCEL IMPORT
     window.processExcelImport = async () => {
       const fileInput = document.getElementById("excelFileInput");
       const tableType = document.getElementById("excelTableType").value;
@@ -2082,7 +2091,7 @@
           alert(`Sukses! ${successCount} baris data berhasil diimport.`);
           fileInput.value = "";
           if (tableType === "users") loadUsersList();
-          updatePenjualanDropdown();
+          loadMultiPenjualanItems();
           initResumeDashboard();
           calculateNeracaAndUserSummary();
           loadCashFlowData();

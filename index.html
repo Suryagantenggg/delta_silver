@@ -264,65 +264,115 @@
         </div>
       </section>
 
-      <!-- 2. MENU BARU: NERACA KEUANGAN & RESUME AKTIVITAS USER -->
+      <!-- 2. MENU BARU: NERACA KEUANGAN (DENGAN 2 SUB-TAB: RINGKASAN & ARUS KAS) -->
       <section id="main-tab-neraca" class="main-tab-content hidden space-y-6">
         
-        <!-- CARD RINGKASAN NERACA KEUANGAN (ATAS) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <!-- Card 1: Total Pembelian -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Pembelian</span>
-              <i class="ph-bold ph-arrow-circle-down-right text-rose-500 text-xl"></i>
+        <!-- SUB TAB SWITCHER FOR NERACA -->
+        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
+          <button id="sub-neraca-ringkasan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('neraca', 'ringkasan')">
+            <i class="ph-bold ph-scales"></i> Ringkasan Neraca
+          </button>
+          <button id="sub-neraca-aruskas" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('neraca', 'aruskas')">
+            <i class="ph-bold ph-swap"></i> Arus Kas (Cash Flow)
+          </button>
+        </div>
+
+        <!-- SUB CONTENT 1: RINGKASAN NERACA -->
+        <div id="subcontent-neraca-ringkasan" class="sub-content-neraca block space-y-6">
+          <!-- CARD RINGKASAN NERACA KEUANGAN (ATAS) -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Card 1: Total Pembelian -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Pembelian</span>
+                <i class="ph-bold ph-arrow-circle-down-right text-rose-500 text-xl"></i>
+              </div>
+              <h3 id="neraca_total_beli" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+              <p class="text-[11px] text-slate-400">Total Nominal Belanja / Pengeluaran</p>
             </div>
-            <h3 id="neraca_total_beli" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
-            <p class="text-[11px] text-slate-400">Total Nominal Belanja / Pengeluaran</p>
+
+            <!-- Card 2: Total Penjualan -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-emerald-500">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Penjualan</span>
+                <i class="ph-bold ph-arrow-circle-up-right text-emerald-500 text-xl"></i>
+              </div>
+              <h3 id="neraca_total_jual" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+              <p class="text-[11px] text-slate-400">Total Nominal Omzet / Pendapatan</p>
+            </div>
+
+            <!-- Card 3: Selisih Margin (Profit) -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="text-xs font-bold uppercase tracking-wider">Estimasi Gross Profit</span>
+                <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
+              </div>
+              <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+              <p class="text-[11px] text-slate-400">Selisih Penjualan - Pembelian</p>
+            </div>
+
+            <!-- Card 4: Total Biaya Operasional -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-purple-500">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Biaya Operasional</span>
+                <i class="ph-bold ph-receipt text-purple-500 text-xl"></i>
+              </div>
+              <h3 id="neraca_total_biaya_op" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+              <p class="text-[11px] text-slate-400">Akumulasi Beli + Olah + Jual</p>
+            </div>
           </div>
 
-          <!-- Card 2: Total Penjualan -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-emerald-500">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Penjualan</span>
-              <i class="ph-bold ph-arrow-circle-up-right text-emerald-500 text-xl"></i>
+          <!-- RESUME AKTIVITAS & BIAYA OPERASIONAL PER USER -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <i class="ph-bold ph-users-three text-brand-600 text-lg"></i> Resume Aktivitas & Biaya Operasional Per User (PIC)
+              </h2>
+              <button onclick="calculateNeracaAndUserSummary()" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+                <i class="ph-bold ph-arrows-clockwise"></i> Refresh Data
+              </button>
             </div>
-            <h3 id="neraca_total_jual" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
-            <p class="text-[11px] text-slate-400">Total Nominal Omzet / Pendapatan</p>
-          </div>
 
-          <!-- Card 3: Selisih Margin (Profit) -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Estimasi Gross Profit</span>
-              <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
+            <div id="containerUserSummary" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <p class="text-xs text-slate-400">Memuat resume aktivitas per user...</p>
             </div>
-            <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
-            <p class="text-[11px] text-slate-400">Selisih Penjualan - Pembelian</p>
-          </div>
-
-          <!-- Card 4: Total Biaya Operasional -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-purple-500">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Total Biaya Operasional</span>
-              <i class="ph-bold ph-receipt text-purple-500 text-xl"></i>
-            </div>
-            <h3 id="neraca_total_biaya_op" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
-            <p class="text-[11px] text-slate-400">Akumulasi Beli + Olah + Jual</p>
           </div>
         </div>
 
-        <!-- RESUME AKTIVITAS & BIAYA OPERASIONAL PER USER -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-              <i class="ph-bold ph-users-three text-brand-600 text-lg"></i> Resume Aktivitas & Biaya Operasional Per User (PIC)
-            </h2>
-            <button onclick="calculateNeracaAndUserSummary()" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
-              <i class="ph-bold ph-arrows-clockwise"></i> Refresh Data
-            </button>
+        <!-- SUB CONTENT 2: ARUS KAS (CASH FLOW) -->
+        <div id="subcontent-neraca-aruskas" class="sub-content-neraca hidden space-y-6">
+          <!-- RINGKASAN ARUS KAS NET -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-emerald-900 space-y-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Total Kas Masuk (Inflow)</span>
+              <h3 id="cf_total_in" class="text-2xl font-black text-emerald-800">Rp 0</h3>
+              <p class="text-[10px] text-emerald-600">Penjualan POS + Modal Investor (+)</p>
+            </div>
+
+            <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-rose-900 space-y-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-rose-700">Total Kas Keluar (Outflow)</span>
+              <h3 id="cf_total_out" class="text-2xl font-black text-rose-800">Rp 0</h3>
+              <p class="text-[10px] text-rose-600">Pembelian + Biaya Op + Tarik Modal (-)</p>
+            </div>
+
+            <div class="bg-brand-50 border border-brand-200 p-4 rounded-2xl text-brand-900 space-y-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-brand-700">Saldo Kas Net (Net Flow)</span>
+              <h3 id="cf_total_net" class="text-2xl font-black text-brand-800">Rp 0</h3>
+              <p class="text-[10px] text-brand-600">Selisih Kas Masuk - Kas Keluar</p>
+            </div>
           </div>
 
-          <div id="containerUserSummary" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p class="text-xs text-slate-400">Memuat resume aktivitas per user...</p>
+          <!-- TABEL RINCIAN MUTASI ARUS KAS -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                <i class="ph-bold ph-list-numbers text-brand-600 text-lg"></i> Mutasi Arus Kas Keluar & Masuk
+              </h3>
+              <button onclick="loadCashFlowData()" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+                <i class="ph-bold ph-arrows-clockwise"></i> Refresh Arus Kas
+              </button>
+            </div>
+            <div id="tabelCashFlowBody" class="space-y-2.5"><p class="text-xs text-slate-400">Memuat rincian arus kas...</p></div>
           </div>
         </div>
 
@@ -959,10 +1009,11 @@
       }
       if (tabName === "neraca") {
         calculateNeracaAndUserSummary();
+        loadCashFlowData();
       }
     };
 
-    // LOGIKA INTERNAL SUB TAB SWITCHER (INPUT DATA & TRANSAKSI)
+    // LOGIKA INTERNAL SUB TAB SWITCHER
     window.switchSubTab = (parentGroup, subName) => {
       document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
       const targetSub = document.getElementById(`subcontent-${parentGroup}-${subName}`);
@@ -975,20 +1026,20 @@
         btn.classList.add("text-slate-600");
       });
 
-      const activeSubBtn = document.getElementById(`sub-${parentGroup === 'inputdata' ? 'input' : 'trans'}-${subName}`);
+      const activeSubBtn = document.getElementById(`sub-${parentGroup}-${subName}`);
       if (activeSubBtn) {
         activeSubBtn.classList.remove("text-slate-600");
         activeSubBtn.classList.add("bg-white", "shadow-sm");
-        if (subName === 'barang') activeSubBtn.classList.add("text-brand-600");
-        if (subName === 'investor') activeSubBtn.classList.add("text-indigo-600");
+        if (subName === 'barang' || subName === 'ringkasan') activeSubBtn.classList.add("text-brand-600");
+        if (subName === 'investor' || subName === 'aruskas') activeSubBtn.classList.add("text-indigo-600");
         if (subName === 'asset') activeSubBtn.classList.add("text-cyan-600");
         if (subName === 'pembelian') activeSubBtn.classList.add("text-emerald-600");
         if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
         if (subName === 'penjualan') activeSubBtn.classList.add("text-amber-600");
       }
 
-      if (subName === "penjualan") {
-        updatePenjualanDropdown();
+      if (parentGroup === "neraca" && subName === "aruskas") {
+        loadCashFlowData();
       }
     };
 
@@ -996,17 +1047,13 @@
     async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
       let totalPembelianOlahan = 0;
       let totalMasukOlah = 0;
-      
       let totalHasilOlah = 0;
       let totalJualOlahan = 0;
-
       let totalPembelianNonOlahan = 0;
       let totalJualNonOlahan = 0;
-
       let totalAkumulasiTerjual = 0;
 
       try {
-        // Fetch Pembelian
         const snapBeli = await getDocs(collection(db, "pembelian"));
         snapBeli.forEach(docSnap => {
           const d = docSnap.data();
@@ -1024,7 +1071,6 @@
           }
         });
 
-        // Fetch Pengolahan
         const snapOlah = await getDocs(collection(db, "pengolahan"));
         snapOlah.forEach(docSnap => {
           const d = docSnap.data();
@@ -1036,7 +1082,6 @@
           totalHasilOlah += parseFloat(d.Jumlah_setelah_olah || 0);
         });
 
-        // Fetch Penjualan
         const snapJual = await getDocs(collection(db, "penjualan"));
         snapJual.forEach(docSnap => {
           const d = docSnap.data();
@@ -1055,7 +1100,6 @@
           }
         });
 
-        // PERHITUNGAN NET RESUME STOK REALTIME
         const netBelumDiolah = Math.max(0, totalPembelianOlahan - totalMasukOlah);
         const netHasilOlahanReady = Math.max(0, totalHasilOlah - totalJualOlahan);
         const netNonOlahanReady = Math.max(0, totalPembelianNonOlahan - totalJualNonOlahan);
@@ -1077,7 +1121,7 @@
       let sumBiayaOlah = 0;
       let sumBiayaJual = 0;
 
-      const userStats = {}; // { 'Nama User': { trxBeli: 0, trxOlah: 0, trxJual: 0, bBeli: 0, bOlah: 0, bJual: 0 } }
+      const userStats = {};
 
       function getUserObj(picName) {
         const key = picName || 'Tidak Teridentifikasi';
@@ -1088,7 +1132,6 @@
       }
 
       try {
-        // Pembelian
         const snapBeli = await getDocs(collection(db, "pembelian"));
         snapBeli.forEach(docSnap => {
           const d = docSnap.data();
@@ -1104,7 +1147,6 @@
           u.bBeli += bBeli;
         });
 
-        // Pengolahan
         const snapOlah = await getDocs(collection(db, "pengolahan"));
         snapOlah.forEach(docSnap => {
           const d = docSnap.data();
@@ -1118,7 +1160,6 @@
           u.bOlah += bOlah;
         });
 
-        // Penjualan
         const snapJual = await getDocs(collection(db, "penjualan"));
         snapJual.forEach(docSnap => {
           const d = docSnap.data();
@@ -1142,7 +1183,6 @@
         document.getElementById("neraca_margin").innerText = `Rp ${grossProfit.toLocaleString('id-ID')}`;
         document.getElementById("neraca_total_biaya_op").innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
 
-        // Render Cards Resume User
         const userContainer = document.getElementById("containerUserSummary");
         userContainer.innerHTML = "";
 
@@ -1190,6 +1230,137 @@
         });
       } catch (err) {
         console.error("Gagal menghitung neraca user summary:", err);
+      }
+    };
+
+    // 3. LOGIKA BARU: RENDER MUTASI ARUS KAS (CASH FLOW)
+    window.loadCashFlowData = async () => {
+      const container = document.getElementById("tabelCashFlowBody");
+      container.innerHTML = `<p class="text-xs text-slate-400">Mengkalkulasi arus kas...</p>`;
+
+      const flowItems = [];
+      let totalKasIn = 0;
+      let totalKasOut = 0;
+
+      try {
+        // Fetch Penjualan (Kas Masuk)
+        const snapJual = await getDocs(collection(db, "penjualan"));
+        snapJual.forEach(docSnap => {
+          const d = docSnap.data();
+          const nominal = parseFloat(d.Total_jual || 0);
+          totalKasIn += nominal;
+          flowItems.push({
+            tgl: d.Tanggal_jual || d.created_at?.toDate()?.toISOString().split('T')[0] || '-',
+            jenis: 'Penjualan (POS)',
+            keterangan: `${d.no_trx_jual || 'POS'} - ${d.nama_brg || 'Barang'} (${d.Jumlah || 0} ${d.Satuan || ''})`,
+            tipe: 'in',
+            nominal: nominal,
+            pic: d.pic_penjualan || '-'
+          });
+        });
+
+        // Fetch Pembelian (Kas Keluar)
+        const snapBeli = await getDocs(collection(db, "pembelian"));
+        snapBeli.forEach(docSnap => {
+          const d = docSnap.data();
+          const nominal = parseFloat(d.Total_harga || 0);
+          totalKasOut += nominal;
+          flowItems.push({
+            tgl: d.Tanggal_beli || d.created_at?.toDate()?.toISOString().split('T')[0] || '-',
+            jenis: 'Pembelian Stock',
+            keterangan: `${d.no_trx_beli || 'BUY'} - ${d.nama_brg || 'Barang'} (${d.Jumlah_beli || 0} ${d.Satuan || ''})`,
+            tipe: 'out',
+            nominal: nominal,
+            pic: d.pic_pembelian || '-'
+          });
+        });
+
+        // Fetch Biaya Pengolahan (Kas Keluar)
+        const snapOlah = await getDocs(collection(db, "pengolahan"));
+        snapOlah.forEach(docSnap => {
+          const d = docSnap.data();
+          const biayaOlah = parseFloat(d.biaya_olah || 0);
+          if (biayaOlah > 0) {
+            totalKasOut += biayaOlah;
+            flowItems.push({
+              tgl: d.Tanggal_beli || d.created_at?.toDate()?.toISOString().split('T')[0] || '-',
+              jenis: 'Biaya Process Olah',
+              keterangan: `Ref: ${d.no_trx_beli || 'TRX'} (${d.nama_brg_setelah_olah || 'Barang'})`,
+              tipe: 'out',
+              nominal: biayaOlah,
+              pic: d.pic_pengolahan || '-'
+            });
+          }
+        });
+
+        // Fetch Investor Transaksi (Kas Masuk / Tarik Modal Kas Keluar)
+        const snapInv = await getDocs(collection(db, "investors"));
+        snapInv.forEach(docSnap => {
+          const d = docSnap.data();
+          const nominal = parseFloat(d.Jumlah || 0);
+          const st = (d.Status || '').toLowerCase();
+          const isTambah = st.includes("tambah") || st === "tambah modal";
+
+          if (isTambah) {
+            totalKasIn += nominal;
+            flowItems.push({
+              tgl: d.tanggal_investasi || '-',
+              jenis: 'Injeksi Modal Investor',
+              keterangan: `Investor: ${d.Nama || 'Investor'}`,
+              tipe: 'in',
+              nominal: nominal,
+              pic: 'Investor'
+            });
+          } else {
+            totalKasOut += nominal;
+            flowItems.push({
+              tgl: d.tanggal_investasi || '-',
+              jenis: 'Penarikan Modal Investor',
+              keterangan: `Investor: ${d.Nama || 'Investor'}`,
+              tipe: 'out',
+              nominal: nominal,
+              pic: 'Super Admin'
+            });
+          }
+        });
+
+        // Sort per tanggal terbaru
+        flowItems.sort((a, b) => (b.tgl > a.tgl ? 1 : -1));
+
+        document.getElementById("cf_total_in").innerText = `Rp ${totalKasIn.toLocaleString('id-ID')}`;
+        document.getElementById("cf_total_out").innerText = `Rp ${totalKasOut.toLocaleString('id-ID')}`;
+        const netFlow = totalKasIn - totalKasOut;
+        document.getElementById("cf_total_net").innerText = `Rp ${netFlow.toLocaleString('id-ID')}`;
+
+        if (flowItems.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-400">Belum ada mutasi arus kas tercatat.</p>`;
+          return;
+        }
+
+        let html = "";
+        flowItems.forEach(item => {
+          const isIn = item.tipe === 'in';
+          html += `
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold px-2 py-0.5 rounded text-[10px] ${isIn ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${item.jenis}</span>
+                  <span class="text-slate-400 font-medium">${item.tgl}</span>
+                </div>
+                <p class="font-bold text-slate-800">${item.keterangan}</p>
+                <p class="text-[10px] text-slate-500">PIC: ${item.pic}</p>
+              </div>
+              <div class="text-right">
+                <span class="text-sm font-black ${isIn ? 'text-emerald-600' : 'text-rose-600'}">
+                  ${isIn ? '+' : '-'} Rp ${item.nominal.toLocaleString('id-ID')}
+                </span>
+              </div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        console.error("Gagal memuat arus kas:", err);
       }
     };
 
@@ -1286,7 +1457,7 @@
       XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
     };
 
-    // 3. MASTER BARANG
+    // 4. MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1367,7 +1538,7 @@
       renderBarangItems(barangDocsCache);
     }, (err) => console.log("Listen master_barang notice:", err));
 
-    // 4. PEMBELIAN
+    // 5. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const namaBarang = document.getElementById("p_select_master_barang").value;
@@ -1402,6 +1573,7 @@
         updatePenjualanDropdown();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
+        loadCashFlowData();
       } catch (err) { alert(err.message); }
     });
 
@@ -1435,7 +1607,7 @@
       updatePenjualanDropdown();
     });
 
-    // 5. PENGOLAHAN
+    // 6. PENGOLAHAN
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pId = document.getElementById("o_select_item").value;
@@ -1493,6 +1665,7 @@
         updatePenjualanDropdown();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
+        loadCashFlowData();
       } catch (err) { alert(err.message); }
     });
 
@@ -1545,7 +1718,7 @@
       }
     }
 
-    // 6. PENJUALAN
+    // 7. PENJUALAN
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const selectedVal = document.getElementById("j_select_barang").value;
@@ -1589,6 +1762,7 @@
         updatePenjualanDropdown();
         initResumeDashboard();
         calculateNeracaAndUserSummary();
+        loadCashFlowData();
       } catch (err) { alert(err.message); }
     });
 
@@ -1609,7 +1783,7 @@
       });
     });
 
-    // 7. INVESTOR
+    // 8. INVESTOR
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;
@@ -1629,6 +1803,7 @@
         });
         alert("Transaksi Investor Disimpan!");
         e.target.reset();
+        loadCashFlowData();
       } catch (err) { alert(err.message); }
     });
 
@@ -1677,7 +1852,7 @@
       }
     });
 
-    // 8. ASSET
+    // 9. ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1714,7 +1889,7 @@
       });
     });
 
-    // 9. USER MANAGEMENT & IMPORT EXCEL
+    // 10. USER MANAGEMENT & IMPORT EXCEL
     async function loadUsersList() {
       const list = document.getElementById("tabelUsersBody");
       list.innerHTML = "";
@@ -1910,6 +2085,7 @@
           updatePenjualanDropdown();
           initResumeDashboard();
           calculateNeracaAndUserSummary();
+          loadCashFlowData();
         } catch (err) {
           console.error(err);
           log.innerText = `❌ Error Import: ${err.message}`;

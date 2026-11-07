@@ -707,7 +707,7 @@
       });
     };
 
-    // 1. MASTER BARANG
+    // 1. MASTER BARANG (LOGIKA FLEKSIBEL UNTUK MEMBACA SEGALA NAMA FIELD)
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -725,19 +725,32 @@
 
     onSnapshot(collection(db, "barang"), (snapshot) => {
       const list = document.getElementById("tabelBarangBody");
+      if (!list) return;
       list.innerHTML = "";
-      if (snapshot.empty) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
+
+      if (snapshot.empty) {
+        list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
+        return;
+      }
+
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
+        const kode = d.kode_brg || d.Kode_brg || d.kode || '-';
+        const nama = d.nama_brg || d.Nama_brg || d.nama || d.nama_barang || '-';
+        const satuan = d.Satuan || d.satuan || '-';
+
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
             <div>
-              <span class="text-[10px] font-bold text-slate-400">${d.kode_brg || '-'}</span>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'}</h4>
+              <span class="text-[10px] font-bold text-slate-400">${kode}</span>
+              <h4 class="text-sm font-bold text-slate-800">${nama}</h4>
             </div>
-            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${d.Satuan || '-'}</span>
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${satuan}</span>
           </div>`;
       });
+    }, (err) => {
+      console.error("Gagal membaca koleksi barang:", err);
+      document.getElementById("tabelBarangBody").innerHTML = `<p class="text-xs text-rose-500 font-bold">Error load data: ${err.message}</p>`;
     });
 
     // 2. PEMBELIAN
@@ -925,7 +938,7 @@
       });
     });
 
-    // 5. INVESTOR
+    // 5. INVESTOR (DENGAN PENANGANAN INSENSITIVE KASUS TAMBAH MODAL)
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;
@@ -958,11 +971,15 @@
 
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
-        const nama = d.Nama || "Anonim";
-        const jumlah = d.Jumlah || 0;
-        const isTambah = d.Status === "tambah modal";
+        const nama = d.Nama || d.nama || "Anonim";
+        const jumlah = parseFloat(d.Jumlah || d.jumlah || 0);
+        
+        // Logika insensitive untuk mengecek string status tambah/tarik modal
+        const rawStatus = (d.Status || d.status || "").toString().toLowerCase().trim();
+        const isTambah = rawStatus.includes("tambah") || rawStatus === "tambah modal";
 
-        if (!investorMap[nama]) investorMap[nama] = { hp: d.Nomor_hp, total: 0 };
+        if (!investorMap[nama]) investorMap[nama] = { hp: d.Nomor_hp || d.nomor_hp || '-', total: 0 };
+        
         if (isTambah) {
           investorMap[nama].total += jumlah;
           totalModalGrup += jumlah;
@@ -983,7 +1000,7 @@
               <p class="text-xs text-slate-400">${data.hp || ''}</p>
             </div>
             <div class="text-right">
-              <span class="text-sm font-black text-indigo-600">Rp ${Number(data.total).toLocaleString('id-ID')}</span>
+              <span class="text-sm font-black ${data.total >= 0 ? 'text-indigo-600' : 'text-rose-600'}">Rp ${Number(data.total).toLocaleString('id-ID')}</span>
               <span class="text-xs font-bold block text-slate-500">Porsi: ${porsiPct}%</span>
             </div>
           </div>`;
@@ -1237,13 +1254,13 @@
                 created_at: serverTimestamp()
               };
             } else if (tableType === "pembelian") {
-              const qty = parseFloat(row.Jumlah_beli || 0);
-              const price = parseFloat(row.Harga_satuan || 0);
+              const qty = parseFloat(row.Jumlah_beli || row.jumlah_beli || 0);
+              const price = parseFloat(row.Harga_satuan || row.harga_satuan || 0);
               batchDoc.Total_harga = qty * price;
-              batchDoc.Status_penjualan = (row.Status === "non olahan") ? "Barang jadi" : "tunggu olah";
+              batchDoc.Status_penjualan = ((row.Status || row.status) === "non olahan") ? "Barang jadi" : "tunggu olah";
             } else if (tableType === "penjualan") {
-              const qty = parseFloat(row.Jumlah || 0);
-              const price = parseFloat(row.Harga_jual || 0);
+              const qty = parseFloat(row.Jumlah || row.jumlah || 0);
+              const price = parseFloat(row.Harga_jual || row.harga_jual || 0);
               batchDoc.Total_jual = qty * price;
             }
 

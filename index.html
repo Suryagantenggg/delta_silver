@@ -707,34 +707,40 @@
       });
     };
 
-    // 1. MASTER BARANG (LOGIKA FLEKSIBEL UNTUK MEMBACA SEGALA NAMA FIELD)
+    // 1. MASTER BARANG (LOGIKA DUAL-COLLECTION DENGAN MEMBACA "barang" DAN "master_barang")
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        await addDoc(collection(db, "barang"), {
+        const itemData = {
           kode_brg: document.getElementById("b_kode").value,
           nama_brg: document.getElementById("b_nama").value,
           Satuan: document.getElementById("b_satuan").value,
           created_at: serverTimestamp()
-        });
+        };
+        // Simpan ke kedua koleksi agar konsisten
+        await addDoc(collection(db, "barang"), itemData);
+        await addDoc(collection(db, "master_barang"), itemData);
+        
         alert("Master barang disimpan!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    onSnapshot(collection(db, "barang"), (snapshot) => {
+    // Helper untuk merender item barang ke UI
+    function renderBarangItems(allDocsMap) {
       const list = document.getElementById("tabelBarangBody");
       if (!list) return;
       list.innerHTML = "";
 
-      if (snapshot.empty) {
-        list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
+      const keys = Object.keys(allDocsMap);
+      if (keys.length === 0) {
+        list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang di database.</p>';
         return;
       }
 
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
+      keys.forEach(id => {
+        const d = allDocsMap[id];
         const kode = d.kode_brg || d.Kode_brg || d.kode || '-';
         const nama = d.nama_brg || d.Nama_brg || d.nama || d.nama_barang || '-';
         const satuan = d.Satuan || d.satuan || '-';
@@ -748,10 +754,29 @@
             <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${satuan}</span>
           </div>`;
       });
-    }, (err) => {
-      console.error("Gagal membaca koleksi barang:", err);
-      document.getElementById("tabelBarangBody").innerHTML = `<p class="text-xs text-rose-500 font-bold">Error load data: ${err.message}</p>`;
-    });
+    }
+
+    const barangDocsCache = {};
+
+    // Listener Realtime Koleksi "barang"
+    onSnapshot(collection(db, "barang"), (snapshot) => {
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        const key = d.kode_brg || d.Kode_brg || docSnap.id;
+        barangDocsCache[key] = d;
+      });
+      renderBarangItems(barangDocsCache);
+    }, (err) => console.log("Listen barang notice:", err));
+
+    // Listener Realtime Koleksi "master_barang"
+    onSnapshot(collection(db, "master_barang"), (snapshot) => {
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        const key = d.kode_brg || d.Kode_brg || docSnap.id;
+        barangDocsCache[key] = d;
+      });
+      renderBarangItems(barangDocsCache);
+    }, (err) => console.log("Listen master_barang notice:", err));
 
     // 2. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
@@ -938,7 +963,7 @@
       });
     });
 
-    // 5. INVESTOR (DENGAN PENANGANAN INSENSITIVE KASUS TAMBAH MODAL)
+    // 5. INVESTOR
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;
@@ -974,7 +999,6 @@
         const nama = d.Nama || d.nama || "Anonim";
         const jumlah = parseFloat(d.Jumlah || d.jumlah || 0);
         
-        // Logika insensitive untuk mengecek string status tambah/tarik modal
         const rawStatus = (d.Status || d.status || "").toString().toLowerCase().trim();
         const isTambah = rawStatus.includes("tambah") || rawStatus === "tambah modal";
 
@@ -1208,7 +1232,7 @@
       XLSX.writeFile(wb, filename);
     };
 
-    // PROCESS EXCEL IMPORT
+    // PROCESS EXCEL IMPORT (OTOMATIS SIMPAN KE KEDUA KOLEKSI JIKA TARGETNYA BARANG)
     window.processExcelImport = async () => {
       const fileInput = document.getElementById("excelFileInput");
       const tableType = document.getElementById("excelTableType").value;
@@ -1253,18 +1277,32 @@
                 role: (row.Role || row.role || "tamu").toLowerCase(),
                 created_at: serverTimestamp()
               };
+              await addDoc(collection(db, "users"), batchDoc);
+            } else if (tableType === "barang") {
+              batchDoc = {
+                kode_brg: row.kode_brg || row.Kode_brg || row.kode || "",
+                nama_brg: row.nama_brg || row.Nama_brg || row.nama || "",
+                Satuan: row.Satuan || row.satuan || "",
+                created_at: serverTimestamp()
+              };
+              // Simpan ke dua koleksi sekaligus
+              await addDoc(collection(db, "barang"), batchDoc);
+              await addDoc(collection(db, "master_barang"), batchDoc);
             } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || row.jumlah_beli || 0);
               const price = parseFloat(row.Harga_satuan || row.harga_satuan || 0);
               batchDoc.Total_harga = qty * price;
               batchDoc.Status_penjualan = ((row.Status || row.status) === "non olahan") ? "Barang jadi" : "tunggu olah";
+              await addDoc(collection(db, "pembelian"), batchDoc);
             } else if (tableType === "penjualan") {
               const qty = parseFloat(row.Jumlah || row.jumlah || 0);
               const price = parseFloat(row.Harga_jual || row.harga_jual || 0);
               batchDoc.Total_jual = qty * price;
+              await addDoc(collection(db, "penjualan"), batchDoc);
+            } else {
+              await addDoc(collection(db, tableType), batchDoc);
             }
 
-            await addDoc(collection(db, tableType), batchDoc);
             successCount++;
           }
 

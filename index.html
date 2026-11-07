@@ -292,15 +292,6 @@
               <p class="text-[11px] text-slate-400">Total Nominal Omzet / Pendapatan</p>
             </div>
 
-            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
-              <div class="flex justify-between items-center text-slate-400">
-                <span class="text-xs font-bold uppercase tracking-wider">Estimasi Gross Profit</span>
-                <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
-              </div>
-              <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
-              <p class="text-[11px] text-slate-400">Selisih Penjualan - Pembelian</p>
-            </div>
-
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-purple-500">
               <div class="flex justify-between items-center text-slate-400">
                 <span class="text-xs font-bold uppercase tracking-wider">Total Biaya Operasional</span>
@@ -308,6 +299,15 @@
               </div>
               <h3 id="neraca_total_biaya_op" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
               <p class="text-[11px] text-slate-400">Akumulasi Beli + Olah + Jual</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="text-xs font-bold uppercase tracking-wider">Laba Bersih</span>
+                <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
+              </div>
+              <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+              <p class="text-[11px] text-slate-400">(Penjualan - Pembelian) - Biaya Op</p>
             </div>
           </div>
 
@@ -457,7 +457,7 @@
           </div>
 
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal Investor</h3>
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal & Estimasi Hasil Pembagian Laba Bersih</h3>
             <div id="tabelInvestorBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data investor...</p></div>
           </div>
         </div>
@@ -810,6 +810,7 @@
     let currentUserRole = "tamu";
     let currentUserNameOrEmail = "";
     let lastLaporanData = [];
+    let currentGlobalLabaBersih = 0; // Variabel global penampung laba bersih terkini
     const barangDocsCache = {};
 
     function generateAutoCode(prefix) {
@@ -988,6 +989,9 @@
         calculateNeracaAndUserSummary();
         loadCashFlowData();
       }
+      if (tabName === "inputdata") {
+        calculateNeracaAndUserSummary();
+      }
     };
 
     window.switchSubTab = (parentGroup, subName) => {
@@ -1016,6 +1020,9 @@
 
       if (parentGroup === "neraca" && subName === "aruskas") {
         loadCashFlowData();
+      }
+      if (parentGroup === "inputdata" && subName === "investor") {
+        calculateNeracaAndUserSummary();
       }
     };
 
@@ -1151,12 +1158,14 @@
           u.bJual += bJual;
         });
 
-        const grossProfit = sumJualNominal - sumBeliNominal;
         const totalBiayaOperasional = sumBiayaBeli + sumBiayaOlah + sumBiayaJual;
+        // LABA BERSIH: (PENJUALAN - PEMBELIAN) - BIAYA OPERASIONAL
+        const labaBersih = (sumJualNominal - sumBeliNominal) - totalBiayaOperasional;
+        currentGlobalLabaBersih = labaBersih;
 
         document.getElementById("neraca_total_beli").innerText = `Rp ${sumBeliNominal.toLocaleString('id-ID')}`;
         document.getElementById("neraca_total_jual").innerText = `Rp ${sumJualNominal.toLocaleString('id-ID')}`;
-        document.getElementById("neraca_margin").innerText = `Rp ${grossProfit.toLocaleString('id-ID')}`;
+        document.getElementById("neraca_margin").innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
         document.getElementById("neraca_total_biaya_op").innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
 
         const userContainer = document.getElementById("containerUserSummary");
@@ -1730,11 +1739,23 @@
       totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
 
       for (const [nama, data] of Object.entries(investorMap)) {
-        const porsiPct = totalModalGrup > 0 ? ((data.total / totalModalGrup) * 100).toFixed(2) : 0;
+        const porsiRatio = totalModalGrup > 0 ? (data.total / totalModalGrup) : 0;
+        const porsiPct = (porsiRatio * 100).toFixed(2);
+        
+        // KALKULASI PEMBAGIAN LABA BERSIH BERDASARKAN PORSI INVESTASI
+        const nominalLabaInvestor = currentGlobalLabaBersih * porsiRatio;
+
         list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
-            <div><h4 class="text-sm font-bold text-slate-800">${nama}</h4><p class="text-xs text-slate-400">${data.hp}</p></div>
-            <div class="text-right"><span class="text-sm font-black ${data.total >= 0 ? 'text-indigo-600' : 'text-rose-600'}">Rp ${Number(data.total).toLocaleString('id-ID')}</span><span class="text-xs font-bold block text-slate-500">Porsi: ${porsiPct}%</span></div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-3">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">${nama}</h4>
+              <p class="text-xs text-slate-400">${data.hp}</p>
+            </div>
+            <div class="text-right space-y-0.5">
+              <span class="text-sm font-black ${data.total >= 0 ? 'text-indigo-600' : 'text-rose-600'}">Modal: Rp ${Number(data.total).toLocaleString('id-ID')}</span>
+              <span class="text-xs font-bold block text-slate-500">Porsi: ${porsiPct}%</span>
+              <span class="text-xs font-extrabold block text-emerald-600">Bagi Laba: Rp ${Number(nominalLabaInvestor).toLocaleString('id-ID')}</span>
+            </div>
           </div>`;
       }
     });

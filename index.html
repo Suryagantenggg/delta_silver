@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>StockManager Pro</title>
+  <title>StockManager Pro - Delta Silver</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,20 +27,26 @@
       }
     }
   </script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white pb-24 md:pb-8">
 
-  <!-- AUTH CONTAINER (MODAL / OVERLAY) -->
+  <!-- 1. AUTH OVERLAY (LOGIN / SIGNUP / FORGOT) -->
   <div id="authOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 md:p-8 relative overflow-hidden">
       
-      <!-- LOGO HEADER -->
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
-          <i class="ph-bold ph-cubes text-3xl"></i>
+          <i class="ph-bold ph-diamonds-four text-3xl"></i>
         </div>
-        <h2 class="text-2xl font-black text-slate-900">StockManager Pro</h2>
-        <p class="text-xs text-slate-500 font-medium">Sistem Manajemen Stok & Pengolahan</p>
+        <h2 class="text-2xl font-black text-slate-900">Delta Silver POS</h2>
+        <p class="text-xs text-slate-500 font-medium">Sistem Operasional & Pengolahan Silver</p>
       </div>
 
       <!-- FORM LOGIN -->
@@ -102,18 +108,37 @@
     </div>
   </div>
 
-  <!-- APP MAIN CONTAINER -->
-  <div id="appContainer" class="max-w-4xl mx-auto px-4 pt-4 hidden">
+  <!-- 2. GUEST PENDING OVERLAY (ROLE TAMU) -->
+  <div id="pendingGuestOverlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-40 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+        <i class="ph-bold ph-hourglass text-3xl animate-bounce"></i>
+      </div>
+      <h3 class="text-xl font-black text-slate-900">Menunggu Persetujuan Admin</h3>
+      <p class="text-xs text-slate-500 leading-relaxed">
+        Akun Anda telah terdaftar sebagai <span class="font-bold text-amber-600">Tamu</span>. Silakan hubungi Super Admin untuk menyetujui dan memberikan Role Akses yang sesuai.
+      </p>
+      <button onclick="handleLogout()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition">
+        Logout / Keluar
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. APP MAIN CONTAINER -->
+  <div id="appContainer" class="max-w-5xl mx-auto px-4 pt-4 hidden">
     
     <!-- TOP HEADER -->
     <header class="flex items-center justify-between mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center font-bold">
-          <i class="ph-bold ph-boxes text-xl"></i>
+        <div class="w-10 h-10 bg-brand-600 text-white rounded-xl flex items-center justify-center font-bold shadow-md shadow-brand-500/30">
+          <i class="ph-bold ph-diamonds-four text-xl"></i>
         </div>
         <div>
-          <h1 class="text-base font-bold text-slate-900 leading-tight">StockManager</h1>
-          <p id="userEmailDisplay" class="text-xs text-slate-400 font-medium">Loading user...</p>
+          <h1 class="text-base font-bold text-slate-900 leading-tight">Delta Silver POS</h1>
+          <div class="flex items-center gap-2">
+            <span id="userEmailDisplay" class="text-xs text-slate-400 font-medium">Loading...</span>
+            <span id="userRoleBadge" class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-brand-50 text-brand-600">TAMU</span>
+          </div>
         </div>
       </div>
       <button onclick="handleLogout()" class="w-9 h-9 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center hover:bg-rose-100 transition">
@@ -122,353 +147,498 @@
     </header>
 
     <!-- DESKTOP TOP NAVIGATION TABS -->
-    <nav class="hidden md:flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto">
-      <button class="nav-btn active flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition" onclick="switchTab('barang')">
-        <i class="ph-bold ph-package text-base"></i> Barang
+    <nav class="hidden md:flex items-center gap-1.5 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto">
+      <button class="nav-btn active flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition" onclick="switchTab('master')">
+        <i class="ph-bold ph-package text-base"></i> Master
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('pembelian')">
-        <i class="ph-bold ph-shopping-cart text-base"></i> Beli
+      <button class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('pembelian')">
+        <i class="ph-bold ph-shopping-cart-simple text-base"></i> Pembelian
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('pengolahan')">
-        <i class="ph-bold ph-gear text-base"></i> Olah
+      <button class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('pengolahan')">
+        <i class="ph-bold ph-arrows-clockwise text-base"></i> Pengolahan
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('penjualan')">
-        <i class="ph-bold ph-currency-dollar text-base"></i> Jual
+      <button class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('penjualan')">
+        <i class="ph-bold ph-receipt text-base"></i> Penjualan
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('investors')">
+      <button class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('investors')">
         <i class="ph-bold ph-hand-coins text-base"></i> Investor
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('asset')">
-        <i class="ph-bold ph-buildings text-base"></i> Asset
+      <button class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('laporan')">
+        <i class="ph-bold ph-chart-line-up text-base"></i> Laporan
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500" onclick="switchTab('user')">
-        <i class="ph-bold ph-user-gear text-base"></i> User
+      <button id="navBtnUser" class="nav-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hidden" onclick="switchTab('user')">
+        <i class="ph-bold ph-users-three text-base"></i> RBAC User
       </button>
     </nav>
 
-    <!-- CONTENT SECTIONS -->
+    <!-- MAIN CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB MASTER BARANG -->
-      <section id="tab-barang" class="tab-content block space-y-6">
+      <!-- 1. TAB MASTER (BARANG & ASSET) -->
+      <section id="tab-master" class="tab-content block space-y-6">
+        
+        <!-- MASTER BARANG -->
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-plus-circle text-brand-600 text-lg"></i> Input Master Barang
+            <i class="ph-bold ph-cube text-brand-600 text-lg"></i> Form Master Barang
           </h2>
-          <form id="formBarang" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form id="formMasterBarang" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode SKU (Otomatis)</label>
-                <input type="text" id="b_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Barang (Auto)</label>
+                <input type="text" id="mb_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
-                <input type="text" id="b_nama" required placeholder="Biji Kopi Arabika" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori</label>
-                <select id="b_kategori" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                  <option value="BAHAN_BAKU">Bahan Baku</option>
-                  <option value="BARANG_JADI">Barang Jadi</option>
-                  <option value="HASIL_OLAHAN">Hasil Olahan</option>
-                </select>
+                <input type="text" id="mb_nama" required placeholder="Perak Murni / Butiran" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan Ukuran</label>
-                <input type="text" id="b_satuan" required placeholder="kg / pcs / liter" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <input type="text" id="mb_satuan" required placeholder="Gram / Kg / Pcs" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
             <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-brand-500/20">
-              Simpan Data Barang
+              Simpan Master Barang
             </button>
           </form>
         </div>
 
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Barang</h3>
-          <div id="tabelBarangBody" class="space-y-3">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Master Barang</h3>
+          <div id="listMasterBarang" class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <p class="text-xs text-slate-400">Memuat data barang...</p>
           </div>
         </div>
+
+        <!-- MASTER ASSET -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm mt-8">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <i class="ph-bold ph-buildings text-cyan-600 text-lg"></i> Form Master Asset Operasional
+          </h2>
+          <form id="formMasterAsset" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Asset (Auto)</label>
+                <input type="text" id="ma_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Asset / Peralatan</label>
+                <input type="text" id="ma_nama" required placeholder="Timbangan Digital Presisi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
+                <input type="text" id="ma_satuan" required placeholder="Unit / Set" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah</label>
+                <input type="number" id="ma_jumlah" required placeholder="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Per Satuan (Rp)</label>
+                <input type="number" id="ma_harga" required placeholder="5000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+            <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-cyan-500/20">
+              Simpan Master Asset
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Asset Operasional</h3>
+          <div id="listMasterAsset" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <p class="text-xs text-slate-400">Memuat data asset...</p>
+          </div>
+        </div>
+
       </section>
 
-      <!-- 2. TAB PEMBELIAN (PILIH TERUTAMA BAHAN BAKU / BARANG JADI) -->
+      <!-- 2. TAB PEMBELIAN -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-shopping-cart-simple text-emerald-600 text-lg"></i> Transaksi Pembelian (+Stok)
+            <i class="ph-bold ph-shopping-cart-simple text-emerald-600 text-lg"></i> Form Transaksi Pembelian
           </h2>
           <form id="formPembelian" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Faktur Beli (Otomatis)</label>
-              <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Trx Beli (Auto)</label>
+                <input type="text" id="p_no_trx" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Pembelian</label>
+                <input type="date" id="p_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Pembelian</label>
-              <select id="p_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang (Master)</label>
+                <select id="p_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <option value="">-- Pilih Barang --</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kategori Pembelian</label>
+                <select id="p_kategori_olah" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <option value="Non-Olahan">Non-Olahan (Langsung Siap Jual / Barang Jadi)</option>
+                  <option value="Olahan">Olahan (Perlu Olah / Masuk Antrean Tunggu Olah)</option>
+                </select>
+              </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
+                <input type="text" id="p_satuan" readonly placeholder="Otomatis" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 text-sm">
+              </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Beli</label>
                 <input type="number" step="0.01" id="p_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Beli Satuan (Rp)</label>
-                <input type="number" id="p_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga per Satuan (Rp)</label>
+                <input type="number" id="p_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-500 uppercase">Total Harga Pembelian:</span>
+              <span id="p_display_total" class="text-base font-black text-emerald-600">Rp 0</span>
             </div>
             <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-emerald-500/20">
-              Simpan Pembelian & Tambah Stok
+              Simpan Transaksi Pembelian
             </button>
           </form>
         </div>
-      </section>
 
-      <!-- 3. TAB PENGOLAHAN (FILTER KHUSUS BAHAN BAKU PEMBELIAN) -->
-      <section id="tab-pengolahan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok
-          </h2>
-          <form id="formPengolahan" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Batch Produksi (Otomatis)</label>
-              <input type="text" id="o_batch" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
-            </div>
-            <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100 space-y-3">
-              <span class="text-xs font-bold text-purple-700 uppercase">1. Potong Bahan Baku (-)</span>
-              <p class="text-[11px] text-purple-600">Hanya menampilkan Bahan Baku hasil Pembelian yang stoknya tersedia.</p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select id="o_select_bahan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Pilih Bahan Baku</option></select>
-                <input type="number" step="0.01" id="o_jumlah_bahan" required placeholder="Qty Terpakai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-3">
-              <span class="text-xs font-bold text-emerald-700 uppercase">2. Tambah Barang Hasil (+)</span>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select id="o_select_hasil" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Pilih Barang Hasil</option></select>
-                <input type="number" step="0.01" id="o_jumlah_hasil" required placeholder="Qty Dihasilkan" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
-              Proses Transaksi Olah Stok
-            </button>
-          </form>
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Pembelian</h3>
+          <div id="listPembelian" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat riwayat pembelian...</p>
+          </div>
         </div>
       </section>
 
-      <!-- 4. TAB PENJUALAN (FILTER BARANG JADI & HASIL OLAHAN) -->
+      <!-- 3. TAB PENGOLAHAN -->
+      <section id="tab-pengolahan" class="tab-content hidden space-y-6">
+        
+        <!-- PENGOLAHAN LIST TUNGGU OLAH -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <i class="ph-bold ph-hourglass text-amber-600 text-lg"></i> Antrean Barang Status "Tunggu Olah"
+          </h2>
+          <p class="text-xs text-slate-500 mb-4">Pilih salah satu item di bawah untuk diproses ke tahap akhir (selesai olah).</p>
+          <div id="listTungguOlah" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat antrean olahan...</p>
+          </div>
+        </div>
+
+        <!-- FORM EKSEKUSI OLAH -->
+        <div id="cardEksekusiOlah" class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-4 hidden">
+          <div class="flex justify-between items-center border-b border-purple-100 pb-3">
+            <h3 class="text-sm font-bold text-purple-900 uppercase tracking-wider">Eksekusi Pengolahan Barang</h3>
+            <span id="eo_badge_faktur" class="text-xs font-extrabold bg-purple-100 text-purple-700 px-2.5 py-1 rounded-lg">Faktur: -</span>
+          </div>
+
+          <form id="formEksekusiOlah" class="space-y-4">
+            <input type="hidden" id="eo_doc_id">
+            
+            <div class="p-3 bg-purple-50 rounded-xl space-y-1">
+              <p class="text-xs text-purple-700"><strong>Bahan Awal:</strong> <span id="eo_bahan_awal">-</span></p>
+              <p class="text-xs text-purple-700"><strong>Jumlah Awal:</strong> <span id="eo_jumlah_awal">-</span></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang Setelah Olah</label>
+                <input type="text" id="eo_nama_hasil" required placeholder="Perak Batangan 99.9%" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan Hasil</label>
+                <input type="text" id="eo_satuan_hasil" required placeholder="Gram / Batang" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Hasil Olah</label>
+                <input type="number" step="0.01" id="eo_jumlah_hasil" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <button type="submit" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
+                Selesaikan Pengolahan & Siapkan untuk Dijual
+              </button>
+              <button type="button" onclick="batalEksekusiOlah()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-sm transition">
+                Batal
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- LIST SELESAI OLAH -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Pengolahan (Selesai Olah)</h3>
+          <div id="listSelesaiOlah" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat riwayat olahan selesai...</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 4. TAB PENJUALAN (POS KASIR) -->
       <section id="tab-penjualan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Penjualan POS Kasir (-Stok)
+            <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir
           </h2>
           <form id="formPenjualan" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Nota Penjualan (Otomatis)</label>
-              <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Trx Jual (Auto)</label>
+                <input type="text" id="j_no_trx" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Penjualan</label>
+                <input type="date" id="j_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Jual</label>
-              <p class="text-[11px] text-amber-600 mb-1">Hanya menampilkan Barang Jadi (Pembelian) & Hasil Olahan.</p>
-              <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang (Hanya yang "Belum Terjual")</label>
+              <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <option value="">-- Pilih Barang Siap Jual --</option>
+              </select>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual</label>
                 <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
-                <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual per Satuan (Rp)</label>
+                <input type="number" id="j_harga_jual" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Metode Bayar</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Metode Pembayaran</label>
                 <select id="j_metode" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                  <option value="CASH">CASH</option>
-                  <option value="TRANSFER">TRANSFER</option>
+                  <option value="CASH">CASH / TUNAI</option>
+                  <option value="TRANSFER">TRANSFER BANK</option>
                   <option value="QRIS">QRIS</option>
                 </select>
               </div>
             </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-500 uppercase">Total Nilai Penjualan:</span>
+              <span id="j_display_total" class="text-base font-black text-amber-600">Rp 0</span>
+            </div>
+
             <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-500/20">
               Simpan Transaksi Penjualan
             </button>
           </form>
         </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Penjualan</h3>
+          <div id="listPenjualan" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat riwayat penjualan...</p>
+          </div>
+        </div>
       </section>
 
-      <!-- 5. TAB INVESTOR -->
+      <!-- 5. TAB INVESTOR & MODAL -->
       <section id="tab-investors" class="tab-content hidden space-y-6">
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
-          <div>
-            <p class="text-xs font-semibold opacity-80 uppercase tracking-wider mb-1">Total Dana Investasi</p>
-            <h3 id="totalInvestasiDisplay" class="text-2xl md:text-3xl font-black">Rp 0</h3>
+        
+        <!-- PERSENTASE PORSI MODAL REALTIME -->
+        <div class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white p-6 rounded-3xl shadow-xl space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-xs font-semibold opacity-80 uppercase tracking-wider">Total Modal Aktif Investasi</p>
+              <h3 id="inv_total_modal_display" class="text-2xl md:text-3xl font-black">Rp 0</h3>
+            </div>
+            <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
+              <i class="ph-bold ph-hand-coins text-2xl"></i>
+            </div>
           </div>
-          <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
-            <i class="ph-bold ph-hand-coins text-2xl"></i>
+          <div id="inv_porsi_cards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 pt-2 border-t border-white/10">
+            <p class="text-xs text-blue-200">Memuat porsi saham...</p>
           </div>
         </div>
 
+        <!-- FORM TAMBAH MODAL -->
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-user-plus text-indigo-600 text-lg"></i> Input Data Investor
+            <i class="ph-bold ph-plus-circle text-blue-600 text-lg"></i> Form Tambah Modal Investor
           </h2>
-          <form id="formInvestor" class="space-y-4">
+          <form id="formTambahModal" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Investor</label>
-                <input type="text" id="inv_nama" required placeholder="Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <input type="text" id="inv_tambah_nama" required placeholder="Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nomor HP / WA</label>
-                <input type="tel" id="inv_hp" required placeholder="081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Transaksi</label>
+                <input type="date" id="inv_tambah_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Investasi</label>
-                <input type="date" id="inv_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Investasi (Rp)</label>
-                <input type="number" id="inv_jumlah" required placeholder="10000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Modal Masuk (Rp)</label>
+              <input type="number" id="inv_tambah_jumlah" required placeholder="10000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
             </div>
-            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-indigo-500/20">
-              Simpan Data Investor
+            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-blue-500/20">
+              Setor Modal Investor
             </button>
           </form>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Investor</h3>
-          <div id="tabelInvestorBody" class="space-y-3">
-            <p class="text-xs text-slate-400">Memuat data investor...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. TAB ASSET -->
-      <section id="tab-asset" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-buildings text-cyan-600 text-lg"></i> Input Asset Operasional
+        <!-- FORM TARIK MODAL (KHUSUS SUPER ADMIN) -->
+        <div id="cardTarikModal" class="bg-rose-50/60 p-5 rounded-2xl border border-rose-200 shadow-sm space-y-4 hidden">
+          <h2 class="text-sm font-bold text-rose-900 uppercase tracking-wider flex items-center gap-2">
+            <i class="ph-bold ph-minus-circle text-rose-600 text-lg"></i> Form Tarik Modal Investor (Khusus Super Admin)
           </h2>
-          <form id="formAsset" class="space-y-4">
+          <form id="formTarikModal" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Asset</label>
-                <input type="text" id="a_kode" required placeholder="AST-001" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Investor</label>
+                <select id="inv_tarik_select" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <option value="">-- Pilih Investor --</option>
+                </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Peralatan</label>
-                <input type="text" id="a_nama" required placeholder="Mesin Olah Kopi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Penarikan</label>
+                <input type="date" id="inv_tarik_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Beli (Rp)</label>
-                <input type="number" id="a_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Umur (Bulan)</label>
-                <input type="number" id="a_umur" required placeholder="12" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-cyan-500/20">
-              Simpan Asset
-            </button>
-          </form>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Asset</h3>
-          <div id="tabelAssetBody" class="space-y-3">
-            <p class="text-xs text-slate-400">Memuat asset...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 7. TAB USER & ROLE -->
-      <section id="tab-user" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> User Profile & Role Management
-          </h2>
-          <form id="formUser" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Nama User</label>
-              <input type="text" id="u_nama" required placeholder="Admin Utama" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Email</label>
-              <input type="email" id="u_email" required placeholder="admin@example.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Role Akses</label>
-              <select id="u_role" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                <option value="admin">Super Admin</option>
-                <option value="kasir">Kasir</option>
-                <option value="gudang">Admin Gudang</option>
-              </select>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Penarikan (Rp)</label>
+              <input type="number" id="inv_tarik_jumlah" required placeholder="5000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
             </div>
             <button type="submit" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-rose-500/20">
-              Simpan Profile User
+              Eksekusi Penarikan Modal
             </button>
           </form>
         </div>
 
-        <!-- MIGRATION IMPORT CARD -->
-        <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-3">
-          <div class="flex items-center gap-2 text-amber-900 font-bold text-sm">
-            <i class="ph-bold ph-database text-lg text-amber-600"></i> Migrasi Data dari Database Lama
+        <!-- MUTASI INVESTOR -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Transaksi Modal Investor</h3>
+          <div id="listMutasiInvestor" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat mutasi modal...</p>
           </div>
-          <p class="text-xs text-amber-800 leading-relaxed">
-            Tarik dan import data otomatis dari proyek Firebase lama (<b>refining-perak-app</b>) ke proyek Firebase baru ini (<b>delta-silver</b>).
-          </p>
-          <button type="button" onclick="importFromOldDatabase()" id="btnImportData" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-600/20 flex items-center justify-center gap-2">
-            <i class="ph-bold ph-download-simple"></i> Tarik & Import Semua Data Sekarang
-          </button>
-          <div id="importStatus" class="text-xs font-semibold text-amber-900 hidden pt-1"></div>
+        </div>
+
+      </section>
+
+      <!-- 6. TAB LAPORAN -->
+      <section id="tab-laporan" class="tab-content hidden space-y-6">
+        
+        <!-- SUMMARY CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+            <span class="text-[10px] font-bold text-emerald-600 uppercase">Total Beli</span>
+            <h4 id="rep_card_beli" class="text-lg font-black text-emerald-900 mt-1">Rp 0</h4>
+          </div>
+          <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+            <span class="text-[10px] font-bold text-amber-600 uppercase">Total Jual</span>
+            <h4 id="rep_card_jual" class="text-lg font-black text-amber-900 mt-1">Rp 0</h4>
+          </div>
+          <div class="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+            <span class="text-[10px] font-bold text-indigo-600 uppercase">Estimasi Laba</span>
+            <h4 id="rep_card_profit" class="text-lg font-black text-indigo-900 mt-1">Rp 0</h4>
+          </div>
+          <div class="p-4 bg-cyan-50 rounded-2xl border border-cyan-100">
+            <span class="text-[10px] font-bold text-cyan-600 uppercase">Total Nilai Asset</span>
+            <h4 id="rep_card_asset" class="text-lg font-black text-cyan-900 mt-1">Rp 0</h4>
+          </div>
+        </div>
+
+        <!-- FILTER LAPORAN -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="flex justify-between items-center">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Filter Laporan Rekapitulasi</h2>
+            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="ph-bold ph-printer"></i> Cetak PDF
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Mulai</label>
+              <input type="date" id="rep_start_date" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Akhir</label>
+              <input type="date" id="rep_end_date" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Modul Laporan</label>
+              <select id="rep_kategori" onchange="renderLaporan()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                <option value="PENJUALAN">Laporan Penjualan</option>
+                <option value="PEMBELIAN">Laporan Pembelian</option>
+                <option value="PENGOLAHAN">Laporan Pengolahan</option>
+                <option value="ASSET">Laporan Asset</option>
+                <option value="INVESTOR">Laporan Investor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- AREA CETAK PRINTABLE -->
+        <div id="printableArea" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+          <h3 id="rep_tabel_title" class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b pb-2">Detail Data Laporan</h3>
+          <div id="rep_table_container" class="space-y-2">
+            <p class="text-xs text-slate-400">Memuat laporan...</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 7. TAB USER RBAC (SUPER ADMIN & ADMIN ONLY) -->
+      <section id="tab-user" class="tab-content hidden space-y-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Manajemen Role Access (RBAC) User
+          </h2>
+          <p class="text-xs text-slate-500">Ubah peran/role user terdaftar untuk membuka hak akses fitur aplikasi.</p>
+          <div id="listUserRBAC" class="space-y-3">
+            <p class="text-xs text-slate-400">Memuat pengguna...</p>
+          </div>
         </div>
       </section>
 
     </main>
 
     <!-- MOBILE BOTTOM NAVIGATION BAR -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
-      <button class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-2 rounded-xl text-brand-600" onclick="switchTab('barang')">
-        <i class="ph-bold ph-package text-xl"></i>
-        <span class="text-[10px] font-bold">Barang</span>
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-1.5 py-2 flex justify-around items-center z-30 shadow-lg">
+      <button class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600" onclick="switchTab('master')">
+        <i class="ph-bold ph-package text-lg"></i>
+        <span class="text-[9px] font-bold">Master</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pembelian')">
-        <i class="ph-bold ph-shopping-cart text-xl"></i>
-        <span class="text-[10px] font-bold">Beli</span>
+      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchTab('pembelian')">
+        <i class="ph-bold ph-shopping-cart-simple text-lg"></i>
+        <span class="text-[9px] font-bold">Beli</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pengolahan')">
-        <i class="ph-bold ph-gear text-xl"></i>
-        <span class="text-[10px] font-bold">Olah</span>
+      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchTab('pengolahan')">
+        <i class="ph-bold ph-arrows-clockwise text-lg"></i>
+        <span class="text-[9px] font-bold">Olah</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('penjualan')">
-        <i class="ph-bold ph-currency-dollar text-xl"></i>
-        <span class="text-[10px] font-bold">Jual</span>
+      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchTab('penjualan')">
+        <i class="ph-bold ph-receipt text-lg"></i>
+        <span class="text-[9px] font-bold">Jual</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('investors')">
-        <i class="ph-bold ph-hand-coins text-xl"></i>
-        <span class="text-[10px] font-bold">Investor</span>
+      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchTab('investors')">
+        <i class="ph-bold ph-hand-coins text-lg"></i>
+        <span class="text-[9px] font-bold">Investor</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('user')">
-        <i class="ph-bold ph-user-gear text-xl"></i>
-        <span class="text-[10px] font-bold">User</span>
+      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchTab('laporan')">
+        <i class="ph-bold ph-chart-line-up text-lg"></i>
+        <span class="text-[9px] font-bold">Laporan</span>
       </button>
     </nav>
 
   </div>
 
-  <!-- FIREBASE MODULE SCRIPTS -->
+  <!-- FIREBASE ENGINE & APPLICATION LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
@@ -476,12 +646,12 @@
       sendPasswordResetEmail, signOut, onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      getFirestore, collection, addDoc, doc, getDoc, getDocs,
-      onSnapshot, writeBatch, serverTimestamp 
+      getFirestore, collection, addDoc, doc, getDoc, getDocs, updateDoc,
+      onSnapshot, writeBatch, serverTimestamp, setDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // KREDENSIAL DATABASE BARU
-    const firebaseConfigBaru = {
+    // KREDENSIAL FIREBASE DELTA SILVER
+    const firebaseConfig = {
       apiKey: "AIzaSyC7DFLmaWssvGemkTWgteZE3Cu42Rq_F2s",
       authDomain: "delta-silver.firebaseapp.com",
       projectId: "delta-silver",
@@ -491,28 +661,22 @@
       measurementId: "G-DVQ68CDEV1"
     };
 
-    // KREDENSIAL DATABASE LAMA FOR MIGRATION
-    const firebaseConfigLama = {
-      apiKey: "AIzaSyDs8_zsiK6lbZa_8Jva5t0CoYbgT3rVHSw",
-      authDomain: "refining-perak-app.firebaseapp.com",
-      projectId: "refining-perak-app",
-      storageBucket: "refining-perak-app.firebasestorage.app",
-      messagingSenderId: "45607676754",
-      appId: "1:45607676754:web:785719de3ae74fa235a88b",
-      measurementId: "G-54H37SLNPY"
-    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    const appBaru = initializeApp(firebaseConfigBaru, "barumain");
-    const auth = getAuth(appBaru);
-    const db = getFirestore(appBaru);
-
-    const appLama = initializeApp(firebaseConfigLama, "lamamigration");
-    const dbLama = getFirestore(appLama);
-
+    // GLOBAL APP STATE
     let currentUser = null;
+    let currentUserRole = "tamu"; // Default tamu
+    let globalMasterBarang = [];
+    let globalPembelian = [];
+    let globalPengolahan = [];
+    let globalPenjualan = [];
+    let globalInvestors = [];
+    let globalAssets = [];
 
-    // HELPER AUTO GENERATE CODE
-    function generateAutoCode(prefix) {
+    // AUTO CODE GENERATOR
+    function generateCode(prefix) {
       const d = new Date();
       const dateStr = d.getFullYear().toString() +
         String(d.getMonth() + 1).padStart(2, '0') +
@@ -522,31 +686,19 @@
     }
 
     function refreshAutoCodes() {
-      document.getElementById("b_kode").value = generateAutoCode("BRG");
-      document.getElementById("p_faktur").value = generateAutoCode("INV-BUY");
-      document.getElementById("o_batch").value = generateAutoCode("BATCH");
-      document.getElementById("j_nota").value = generateAutoCode("POS");
+      document.getElementById("mb_kode").value = generateCode("BRG");
+      document.getElementById("ma_kode").value = generateCode("AST");
+      document.getElementById("p_no_trx").value = generateCode("TRX-BUY");
+      document.getElementById("j_no_trx").value = generateCode("TRX-SELL");
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("p_tanggal").value = today;
+      document.getElementById("j_tanggal").value = today;
+      document.getElementById("inv_tambah_tanggal").value = today;
+      document.getElementById("inv_tarik_tanggal").value = today;
     }
 
-    // AUTH OBSERVER
-    onAuthStateChanged(auth, (user) => {
-      const authOverlay = document.getElementById("authOverlay");
-      const appContainer = document.getElementById("appContainer");
-      const userDisplay = document.getElementById("userEmailDisplay");
-
-      currentUser = user;
-
-      if (user) {
-        authOverlay.classList.add("hidden");
-        appContainer.classList.remove("hidden");
-        userDisplay.innerText = user.email;
-        refreshAutoCodes();
-      } else {
-        authOverlay.classList.remove("hidden");
-        appContainer.classList.add("hidden");
-      }
-    });
-
+    // AUTH SWITCH VIEW
     window.switchAuthView = (view) => {
       document.getElementById("formLogin").classList.add("hidden");
       document.getElementById("formSignUp").classList.add("hidden");
@@ -557,6 +709,7 @@
       if (view === "forgot") document.getElementById("formForgot").classList.remove("hidden");
     };
 
+    // AUTH ACTIONS
     document.getElementById("formLogin").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -568,29 +721,103 @@
       e.preventDefault();
       try {
         const res = await createUserWithEmailAndPassword(auth, document.getElementById("signupEmail").value, document.getElementById("signupPassword").value);
-        await addDoc(collection(db, "users"), {
+        // Buat record user baru dengan role default 'tamu'
+        await setDoc(doc(db, "users", res.user.uid), {
           uid: res.user.uid,
           nama: document.getElementById("signupNama").value,
           email: document.getElementById("signupEmail").value,
-          role_id: "admin",
+          role: "tamu",
           created_at: serverTimestamp()
         });
-        alert("Akun berhasil dibuat!");
-      } catch (err) { alert("Daftar Gagal: " + err.message); }
+        alert("Akun berhasil didaftarkan! Menunggu persetujuan Super Admin.");
+      } catch (err) { alert("Pendaftaran Gagal: " + err.message); }
     });
 
     document.getElementById("formForgot").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
         await sendPasswordResetEmail(auth, document.getElementById("forgotEmail").value);
-        alert("Link reset password telah dikirim!");
+        alert("Link reset password telah dikirim ke email!");
         switchAuthView("login");
       } catch (err) { alert(err.message); }
     });
 
     window.handleLogout = () => signOut(auth);
 
+    // AUTH OBSERVER & ROLE ENGINE
+    onAuthStateChanged(auth, async (user) => {
+      const authOverlay = document.getElementById("authOverlay");
+      const pendingGuestOverlay = document.getElementById("pendingGuestOverlay");
+      const appContainer = document.getElementById("appContainer");
+      const userDisplay = document.getElementById("userEmailDisplay");
+      const roleBadge = document.getElementById("userRoleBadge");
+
+      currentUser = user;
+
+      if (user) {
+        authOverlay.classList.add("hidden");
+        userDisplay.innerText = user.email;
+
+        // Ambil data user dari collection users
+        const uSnap = await getDoc(doc(db, "users", user.uid));
+        if (uSnap.exists()) {
+          currentUserRole = (uSnap.data().role || "tamu").toLowerCase();
+        } else {
+          currentUserRole = "tamu";
+        }
+
+        roleBadge.innerText = currentUserRole.toUpperCase();
+
+        if (currentUserRole === "tamu") {
+          pendingGuestOverlay.classList.remove("hidden");
+          appContainer.classList.add("hidden");
+        } else {
+          pendingGuestOverlay.classList.add("hidden");
+          appContainer.classList.remove("hidden");
+          applyRBACVisibility();
+          refreshAutoCodes();
+          initRealtimeListeners();
+        }
+      } else {
+        authOverlay.classList.remove("hidden");
+        pendingGuestOverlay.classList.add("hidden");
+        appContainer.classList.add("hidden");
+      }
+    });
+
+    // IMPLEMENTASI ATURAN RBAC
+    function applyRBACVisibility() {
+      const navUser = document.getElementById("navBtnUser");
+      const cardTarikModal = document.getElementById("cardTarikModal");
+
+      // Super Admin & Admin
+      if (currentUserRole === "super admin" || currentUserRole === "admin") {
+        navUser.classList.remove("hidden");
+      } else {
+        navUser.classList.add("hidden");
+      }
+
+      // Penarikan Modal Khusus Super Admin
+      if (currentUserRole === "super admin") {
+        cardTarikModal.classList.remove("hidden");
+      } else {
+        cardTarikModal.classList.add("hidden");
+      }
+
+      // Investor Hanya Akses Laporan & Investor
+      if (currentUserRole === "investor") {
+        switchTab("investors");
+      }
+    }
+
+    // TAB SWITCHING LOGIC
     window.switchTab = (tabName) => {
+      // Pembatasan Akses Investor
+      if (currentUserRole === "investor" && tabName !== "investors" && tabName !== "laporan") {
+        alert("Akses Ditolak: Role Investor hanya diizinkan mengakses menu Investor dan Laporan.");
+        return;
+      }
+
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.getElementById(`tab-${tabName}`).classList.remove("hidden");
 
@@ -602,335 +829,567 @@
         btn.classList.remove("text-brand-600");
         btn.classList.add("text-slate-400");
       });
+
+      if (tabName === "laporan") renderLaporan();
     };
 
-    // 1. MASTER BARANG (AUTO KODE SKU, NAMA, KATEGORI, SATUAN)
-    document.getElementById("formBarang").addEventListener("submit", async (e) => {
+    // REALTIME LISTENERS
+    function initRealtimeListeners() {
+      // 1. MASTER BARANG
+      onSnapshot(collection(db, "master_barang"), (snap) => {
+        globalMasterBarang = [];
+        const list = document.getElementById("listMasterBarang");
+        const selectBeli = document.getElementById("p_select_barang");
+        
+        list.innerHTML = "";
+        selectBeli.innerHTML = '<option value="">-- Pilih Barang --</option>';
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalMasterBarang.push(d);
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_brg || '-'}</span>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'}</h4>
+              </div>
+              <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">${d.Satuan || '-'}</span>
+            </div>`;
+
+          selectBeli.innerHTML += `<option value="${d.id}">${d.nama_brg} (${d.Satuan})</option>`;
+        });
+      });
+
+      // 2. MASTER ASSET
+      onSnapshot(collection(db, "master_asset"), (snap) => {
+        globalAssets = [];
+        const list = document.getElementById("listMasterAsset");
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalAssets.push(d);
+
+          const totalAssetVal = (d.Jumlah || 0) * (d.Harga || 0);
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_aset || '-'}</span>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama_aset || '-'}</h4>
+                <p class="text-xs text-slate-400">${d.Jumlah || 0} ${d.Satuan || ''} @ Rp ${Number(d.Harga || 0).toLocaleString('id-ID')}</p>
+              </div>
+              <span class="text-sm font-black text-cyan-600">Rp ${Number(totalAssetVal).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+        updateSummaryCards();
+      });
+
+      // 3. PEMBELIAN
+      onSnapshot(collection(db, "pembelian"), (snap) => {
+        globalPembelian = [];
+        const list = document.getElementById("listPembelian");
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalPembelian.push(d);
+
+          const badgeStatus = d.Status === 'Barang jadi' 
+            ? `<span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">Barang jadi</span>`
+            : `<span class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Bahan Olahan</span>`;
+
+          const badgeJual = d.Status_penjualan === 'Terjual'
+            ? `<span class="text-[10px] font-bold bg-gray-200 text-gray-700 px-2 py-0.5 rounded">Terjual</span>`
+            : `<span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Belum Terjual</span>`;
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'}</span>
+                  ${badgeStatus} ${badgeJual}
+                </div>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'} (${d.Jumlah_beli} ${d.Satuan})</h4>
+                <p class="text-xs text-slate-400">Petugas: ${d.petugas || '-'} • ${d.Tanggal_beli || '-'}</p>
+              </div>
+              <span class="text-sm font-black text-emerald-600">Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+
+        populatePenjualanDropdown();
+        updateSummaryCards();
+      });
+
+      // 4. PENGOLAHAN
+      onSnapshot(collection(db, "pengolahan"), (snap) => {
+        globalPengolahan = [];
+        const listTunggu = document.getElementById("listTungguOlah");
+        const listSelesai = document.getElementById("listSelesaiOlah");
+
+        listTunggu.innerHTML = "";
+        listSelesai.innerHTML = "";
+
+        let countTunggu = 0;
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalPengolahan.push(d);
+
+          if (d.status === "tunggu olah") {
+            countTunggu++;
+            listTunggu.innerHTML += `
+              <div class="p-4 bg-amber-50/60 rounded-xl border border-amber-200 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] font-bold text-amber-700 uppercase">Faktur Beli: ${d.no_trx_beli || '-'}</span>
+                  <h4 class="text-sm font-bold text-slate-800">${d.nama_brg_awal || d.nama_brg}</h4>
+                  <p class="text-xs text-slate-500">Jumlah Awal: ${d.Jumlah_beli} ${d.Satuan}</p>
+                </div>
+                <button onclick="bukaEksekusiOlah('${d.id}', '${d.no_trx_beli}', '${d.nama_brg_awal || d.nama_brg}', '${d.Jumlah_beli} ${d.Satuan}')" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-xs transition shadow-sm">
+                  Olah Sekarang
+                </button>
+              </div>`;
+          } else if (d.status === "selesai olah") {
+            const badgeJual = d.Status_penjualan === 'Terjual'
+              ? `<span class="text-[10px] font-bold bg-gray-200 text-gray-700 px-2 py-0.5 rounded">Terjual</span>`
+              : `<span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Belum Terjual</span>`;
+
+            listSelesai.innerHTML += `
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold text-slate-400">Hasil Olah Faktur: ${d.no_trx_beli || '-'}</span>
+                    ${badgeJual}
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-800">${d.nama_brg_setelah_olah || '-'}</h4>
+                  <p class="text-xs text-slate-400">Hasil: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah} • Petugas: ${d.petugas_olah || '-'}</p>
+                </div>
+                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg">Selesai Olah</span>
+              </div>`;
+          }
+        });
+
+        if (countTunggu === 0) listTunggu.innerHTML = '<p class="text-xs text-slate-400">Tidak ada antrean tunggu olah saat ini.</p>';
+
+        populatePenjualanDropdown();
+      });
+
+      // 5. PENJUALAN
+      onSnapshot(collection(db, "penjualan"), (snap) => {
+        globalPenjualan = [];
+        const list = document.getElementById("listPenjualan");
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalPenjualan.push(d);
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400">${d.no_trx_jual || '-'} • ${d.metode || '-'}</span>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'} (${d.Jumlah} Unit)</h4>
+                <p class="text-xs text-slate-400">Petugas: ${d.petugas || '-'} • ${d.Tanggal_jual || '-'}</p>
+              </div>
+              <span class="text-sm font-black text-amber-600">Rp ${Number(d.Total_jual || 0).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+
+        updateSummaryCards();
+      });
+
+      // 6. INVESTOR
+      onSnapshot(collection(db, "investors"), (snap) => {
+        globalInvestors = [];
+        const list = document.getElementById("listMutasiInvestor");
+        const selectTarik = document.getElementById("inv_tarik_select");
+        const porsiCards = document.getElementById("inv_porsi_cards");
+        const displayTotal = document.getElementById("inv_total_modal_display");
+
+        list.innerHTML = "";
+        selectTarik.innerHTML = '<option value="">-- Pilih Investor --</option>';
+        porsiCards.innerHTML = "";
+
+        let totalModalAktif = 0;
+        const investorMap = {};
+
+        snap.forEach(docSnap => {
+          const d = { id: docSnap.id, ...docSnap.data() };
+          globalInvestors.push(d);
+
+          const isTambah = d.jenis === "SETOR";
+          const jumlah = d.jumlah_investasi || 0;
+
+          if (isTambah) totalModalAktif += jumlah;
+          else totalModalAktif -= jumlah;
+
+          if (!investorMap[d.nama_investor]) investorMap[d.nama_investor] = 0;
+          investorMap[d.nama_investor] += isTambah ? jumlah : -jumlah;
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+              <div>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama_investor || '-'}</h4>
+                <p class="text-xs text-slate-400">${d.tanggal_investasi || '-'} • ${isTambah ? 'Setor Modal' : 'Penarikan Modal'}</p>
+              </div>
+              <span class="text-sm font-black ${isTambah ? 'text-blue-600' : 'text-rose-600'}">
+                ${isTambah ? '+' : '-'} Rp ${Number(jumlah).toLocaleString('id-ID')}
+              </span>
+            </div>`;
+        });
+
+        displayTotal.innerText = `Rp ${Number(totalModalAktif).toLocaleString('id-ID')}`;
+
+        // Render Cards Porsi Persentase Modal
+        Object.keys(investorMap).forEach(nama => {
+          const saldo = investorMap[nama];
+          const persen = totalModalAktif > 0 ? ((saldo / totalModalAktif) * 100).toFixed(1) : 0;
+          
+          if (saldo > 0) {
+            selectTarik.innerHTML += `<option value="${nama}">${nama} (Saldo: Rp ${Number(saldo).toLocaleString('id-ID')})</option>`;
+          }
+
+          porsiCards.innerHTML += `
+            <div class="bg-white/10 p-3 rounded-xl backdrop-blur">
+              <span class="text-[10px] font-bold text-blue-100 block">${nama}</span>
+              <div class="flex justify-between items-baseline mt-1">
+                <span class="text-xs font-black">${persen}%</span>
+                <span class="text-[11px] font-semibold text-blue-200">Rp ${Number(saldo).toLocaleString('id-ID')}</span>
+              </div>
+            </div>`;
+        });
+
+        updateSummaryCards();
+      });
+
+      // 7. USER RBAC LIST
+      onSnapshot(collection(db, "users"), (snap) => {
+        const list = document.getElementById("listUserRBAC");
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          const uid = docSnap.id;
+
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h4 class="text-sm font-bold text-slate-800">${d.nama || 'Tanpa Nama'}</h4>
+                <p class="text-xs text-slate-400">${d.email}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select onchange="updateUserRole('${uid}', this.value)" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold bg-white">
+                  <option value="tamu" ${d.role === 'tamu' ? 'selected' : ''}>Tamu (Blokir)</option>
+                  <option value="petugas" ${d.role === 'petugas' ? 'selected' : ''}>Petugas</option>
+                  <option value="investor" ${d.role === 'investor' ? 'selected' : ''}>Investor</option>
+                  <option value="admin" ${d.role === 'admin' ? 'selected' : ''}>Admin</option>
+                  <option value="super admin" ${d.role === 'super admin' ? 'selected' : ''}>Super Admin</option>
+                </select>
+              </div>
+            </div>`;
+        });
+      });
+    }
+
+    // UPDATE USER ROLE ACTION
+    window.updateUserRole = async (uid, newRole) => {
+      try {
+        await updateDoc(doc(db, "users", uid), { role: newRole });
+        alert("Role user berhasil diperbarui!");
+      } catch (err) { alert(err.message); }
+    };
+
+    // FORM MASTER BARANG SUBMIT
+    document.getElementById("formMasterBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        await addDoc(collection(db, "barang"), {
-          kode_barang: document.getElementById("b_kode").value,
-          nama_barang: document.getElementById("b_nama").value,
-          kategori: document.getElementById("b_kategori").value,
-          satuan: document.getElementById("b_satuan").value,
-          stok_terkini: 0,
+        await addDoc(collection(db, "master_barang"), {
+          kode_brg: document.getElementById("mb_kode").value,
+          nama_brg: document.getElementById("mb_nama").value,
+          Satuan: document.getElementById("mb_satuan").value,
           created_at: serverTimestamp()
         });
-        alert("Barang berhasil disimpan!");
+        alert("Master Barang Disimpan!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // LISTENER REALTIME BARANG + POPULASI DROPDOWN DENGAN FILTERING SESUAI ATURAN
-    onSnapshot(collection(db, "barang"), (snapshot) => {
-      const list = document.getElementById("tabelBarangBody");
-      const pSelect = document.getElementById("p_select_barang");
-      const oBahanSelect = document.getElementById("o_select_bahan");
-      const oHasilSelect = document.getElementById("o_select_hasil");
-      const jSelect = document.getElementById("j_select_barang");
-
-      list.innerHTML = "";
-      pSelect.innerHTML = '<option value="">-- Pilih Barang Pembelian --</option>';
-      oBahanSelect.innerHTML = '<option value="">-- Pilih Bahan Baku (Pembelian) --</option>';
-      oHasilSelect.innerHTML = '<option value="">-- Pilih Barang Hasil Olahan --</option>';
-      jSelect.innerHTML = '<option value="">-- Pilih Barang Jual --</option>';
-
-      if (snapshot.empty) list.innerHTML = '<p class="text-xs text-slate-400">Belum ada barang.</p>';
-
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        const id = docSnap.id;
-        const stok = d.stok_terkini || 0;
-        
-        // Render List Daftar Barang
-        list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_barang || '-'} • ${d.kategori || '-'}</span>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_barang || 'Tanpa Nama'}</h4>
-            </div>
-            <div class="text-right">
-              <span class="text-xs text-slate-400 block">Stok Terkini</span>
-              <span class="text-sm font-black text-slate-900">${stok} ${d.satuan || ''}</span>
-            </div>
-          </div>`;
-
-        // 1. POPULASI PEMBELIAN (Dapat membeli Bahan Baku / Barang Jadi)
-        if (d.kategori === 'BAHAN_BAKU' || d.kategori === 'BARANG_JADI') {
-          pSelect.innerHTML += `<option value="${id}">${d.nama_barang} [${d.kategori}] (Stok saat ini: ${stok} ${d.satuan || ''})</option>`;
-        }
-
-        // 2. POPULASI PENGOLAHAN BAHAN BAKU (Hanya Kategori BAHAN_BAKU dari Pembelian dengan Stok > 0)
-        if (d.kategori === 'BAHAN_BAKU' && stok > 0) {
-          oBahanSelect.innerHTML += `<option value="${id}">${d.nama_barang} (Stok Siap Olah: ${stok} ${d.satuan || ''})</option>`;
-        }
-
-        // 3. POPULASI PENGOLAHAN BARANG HASIL (Hanya Kategori HASIL_OLAHAN)
-        if (d.kategori === 'HASIL_OLAHAN') {
-          oHasilSelect.innerHTML += `<option value="${id}">${d.nama_barang} (Stok: ${stok} ${d.satuan || ''})</option>`;
-        }
-
-        // 4. POPULASI PENJUALAN (Hanya Barang Jadi dari Pembelian & Hasil Olahan dengan Stok > 0)
-        if ((d.kategori === 'BARANG_JADI' || d.kategori === 'HASIL_OLAHAN') && stok > 0) {
-          jSelect.innerHTML += `<option value="${id}">${d.nama_barang} [${d.kategori}] (Stok Siap Jual: ${stok} ${d.satuan || ''})</option>`;
-        }
-      });
+    // FORM MASTER ASSET SUBMIT
+    document.getElementById("formMasterAsset").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "master_asset"), {
+          kode_aset: document.getElementById("ma_kode").value,
+          nama_aset: document.getElementById("ma_nama").value,
+          Satuan: document.getElementById("ma_satuan").value,
+          Jumlah: parseFloat(document.getElementById("ma_jumlah").value),
+          Harga: parseFloat(document.getElementById("ma_harga").value),
+          created_at: serverTimestamp()
+        });
+        alert("Master Asset Disimpan!");
+        e.target.reset();
+        refreshAutoCodes();
+      } catch (err) { alert(err.message); }
     });
 
-    // 2. PEMBELIAN (+ STOK + AUTO FAKTUR + PETUGAS)
+    // AUTO POPULATE SATUAN MASTER BARANG DI PEMBELIAN
+    document.getElementById("p_select_barang").addEventListener("change", (e) => {
+      const selected = globalMasterBarang.find(b => b.id === e.target.value);
+      document.getElementById("p_satuan").value = selected ? selected.Satuan : "";
+    });
+
+    // FORM PEMBELIAN SUBMIT
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const bId = document.getElementById("p_select_barang").value;
+      const barang = globalMasterBarang.find(b => b.id === bId);
+      if (!barang) return alert("Pilih barang master terlebih dahulu!");
+
+      const isOlahan = document.getElementById("p_kategori_olah").value === "Olahan";
       const qty = parseFloat(document.getElementById("p_jumlah").value);
-      const harga = parseFloat(document.getElementById("p_harga").value);
-      const noFaktur = document.getElementById("p_faktur").value;
+      const hargaSatuan = parseFloat(document.getElementById("p_harga_satuan").value);
+      const totalHarga = qty * hargaSatuan;
+      const noTrxBeli = document.getElementById("p_no_trx").value;
+      const tglBeli = document.getElementById("p_tanggal").value;
 
       try {
-        const batch = writeBatch(db);
-        const bRef = doc(db, "barang", bId);
-        const bSnap = await getDoc(bRef);
-        
-        batch.update(bRef, { stok_terkini: (bSnap.data().stok_terkini || 0) + qty });
-        batch.set(doc(collection(db, "pembelian")), {
-          no_faktur: noFaktur,
-          barang_id: bId,
-          jumlah: qty,
-          harga_satuan: harga,
-          total_bayar: qty * harga,
-          petugas_email: currentUser ? currentUser.email : "Anonim",
-          tanggal_beli: serverTimestamp()
-        });
+        if (!isOlahan) {
+          // NON-OLAHAN -> Barang Jadi & Belum Terjual
+          await addDoc(collection(db, "pembelian"), {
+            no_trx_beli: noTrxBeli,
+            Tanggal_beli: tglBeli,
+            barang_id: bId,
+            nama_brg: barang.nama_brg,
+            Satuan: barang.Satuan,
+            Jumlah_beli: qty,
+            Harga_satuan: hargaSatuan,
+            Total_harga: totalHarga,
+            Status: "Barang jadi",
+            Status_penjualan: "Belum terjual",
+            petugas: currentUser.email,
+            created_at: serverTimestamp()
+          });
+        } else {
+          // OLAHAN -> Pengolahan (Tunggu Olah)
+          await addDoc(collection(db, "pengolahan"), {
+            no_trx_beli: noTrxBeli,
+            Tanggal_beli: tglBeli,
+            barang_id: bId,
+            nama_brg_awal: barang.nama_brg,
+            Satuan: barang.Satuan,
+            Jumlah_beli: qty,
+            Harga_satuan: hargaSatuan,
+            Total_harga: totalHarga,
+            status: "tunggu olah",
+            Status_penjualan: "Belum olah",
+            petugas: currentUser.email,
+            created_at: serverTimestamp()
+          });
+        }
 
-        await batch.commit();
-        alert("Pembelian berhasil & stok bertambah!");
+        alert("Pembelian berhasil disimpan!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // 3. PENGOLAHAN (- BAHAN, + HASIL + AUTO BATCH + PETUGAS)
-    document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
+    // OPEN EKSEKUSI OLAH CARD
+    window.bukaEksekusiOlah = (id, noTrx, namaAwal, jumlahAwal) => {
+      document.getElementById("cardEksekusiOlah").classList.remove("hidden");
+      document.getElementById("eo_doc_id").value = id;
+      document.getElementById("eo_badge_faktur").innerText = `Faktur: ${noTrx}`;
+      document.getElementById("eo_bahan_awal").innerText = namaAwal;
+      document.getElementById("eo_jumlah_awal").innerText = jumlahAwal;
+    };
+
+    window.batalEksekusiOlah = () => {
+      document.getElementById("cardEksekusiOlah").classList.add("hidden");
+    };
+
+    // SUBMIT EKSEKUSI OLAH
+    document.getElementById("formEksekusiOlah").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const bahanId = document.getElementById("o_select_bahan").value;
-      const qtyBahan = parseFloat(document.getElementById("o_jumlah_bahan").value);
-      const hasilId = document.getElementById("o_select_hasil").value;
-      const qtyHasil = parseFloat(document.getElementById("o_jumlah_hasil").value);
-      const kodeBatch = document.getElementById("o_batch").value;
+      const docId = document.getElementById("eo_doc_id").value;
 
       try {
-        const batch = writeBatch(db);
-        const bahanRef = doc(db, "barang", bahanId);
-        const hasilRef = doc(db, "barang", hasilId);
-        
-        const bahanSnap = await getDoc(bahanRef);
-        const hasilSnap = await getDoc(hasilRef);
-
-        if ((bahanSnap.data().stok_terkini || 0) < qtyBahan) return alert("Stok bahan baku tidak mencukupi!");
-
-        batch.update(bahanRef, { stok_terkini: bahanSnap.data().stok_terkini - qtyBahan });
-        batch.update(hasilRef, { stok_terkini: (hasilSnap.data().stok_terkini || 0) + qtyHasil });
-        batch.set(doc(collection(db, "pengolahan")), {
-          kode_batch: kodeBatch,
-          bahan_id: bahanId,
-          jumlah_bahan_terpakai: qtyBahan,
-          hasil_id: hasilId,
-          jumlah_hasil: qtyHasil,
-          petugas_email: currentUser ? currentUser.email : "Anonim",
-          tanggal_pengolahan: serverTimestamp()
+        await updateDoc(doc(db, "pengolahan", docId), {
+          nama_brg_setelah_olah: document.getElementById("eo_nama_hasil").value,
+          Satuan_setelah_olah: document.getElementById("eo_satuan_hasil").value,
+          Jumlah_setelah_olah: parseFloat(document.getElementById("eo_jumlah_hasil").value),
+          status: "selesai olah",
+          Status_penjualan: "Belum terjual",
+          petugas_olah: currentUser.email,
+          tanggal_selesai_olah: serverTimestamp()
         });
 
-        await batch.commit();
-        alert("Proses olah stok berhasil!");
+        alert("Pengolahan Selesai & Siap Dijual!");
+        batalEksekusiOlah();
         e.target.reset();
-        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // 4. PENJUALAN (- STOK + HARGA SATUAN + AUTO NOTA + PETUGAS)
+    // POPULATE PENJUALAN DROPDOWN (ONLY "Belum terjual")
+    function populatePenjualanDropdown() {
+      const selectJual = document.getElementById("j_select_barang");
+      selectJual.innerHTML = '<option value="">-- Pilih Barang Siap Jual --</option>';
+
+      // A. Dari Pembelian Non-Olahan (Status = Barang jadi & Belum terjual)
+      globalPembelian.filter(p => p.Status === "Barang jadi" && p.Status_penjualan === "Belum terjual").forEach(p => {
+        selectJual.innerHTML += `<option value="PEMBELIAN_${p.id}">${p.nama_brg} (${p.Jumlah_beli} ${p.Satuan}) - Beli [Faktur: ${p.no_trx_beli}]</option>`;
+      });
+
+      // B. Dari Pengolahan Selesai (status = selesai olah & Belum terjual)
+      globalPengolahan.filter(o => o.status === "selesai olah" && o.Status_penjualan === "Belum terjual").forEach(o => {
+        selectJual.innerHTML += `<option value="PENGOLAHAN_${o.id}">${o.nama_brg_setelah_olah} (${o.Jumlah_setelah_olah} ${o.Satuan_setelah_olah}) - Olahan [Faktur: ${o.no_trx_beli}]</option>`;
+      });
+    }
+
+    // FORM PENJUALAN SUBMIT
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const bId = document.getElementById("j_select_barang").value;
+      const val = document.getElementById("j_select_barang").value;
+      if (!val) return alert("Pilih barang yang akan dijual!");
+
+      const [sourceType, targetId] = val.split("_");
       const qty = parseFloat(document.getElementById("j_jumlah").value);
-      const hargaSatuan = parseFloat(document.getElementById("j_harga_satuan").value);
-      const noNota = document.getElementById("j_nota").value;
+      const hargaJual = parseFloat(document.getElementById("j_harga_jual").value);
+      const totalJual = qty * hargaJual;
+      const noTrxJual = document.getElementById("j_no_trx").value;
+      const tglJual = document.getElementById("j_tanggal").value;
+      const metode = document.getElementById("j_metode").value;
+
+      let namaBrg = "";
 
       try {
         const batch = writeBatch(db);
-        const bRef = doc(db, "barang", bId);
-        const bSnap = await getDoc(bRef);
 
-        if ((bSnap.data().stok_terkini || 0) < qty) return alert("Stok barang tidak mencukupi!");
+        if (sourceType === "PEMBELIAN") {
+          const itemRef = doc(db, "pembelian", targetId);
+          const snap = await getDoc(itemRef);
+          namaBrg = snap.data().nama_brg;
+          batch.update(itemRef, { Status_penjualan: "Terjual" });
+        } else if (sourceType === "PENGOLAHAN") {
+          const itemRef = doc(db, "pengolahan", targetId);
+          const snap = await getDoc(itemRef);
+          namaBrg = snap.data().nama_brg_setelah_olah;
+          batch.update(itemRef, { Status_penjualan: "Terjual" });
+        }
 
-        batch.update(bRef, { stok_terkini: bSnap.data().stok_terkini - qty });
         batch.set(doc(collection(db, "penjualan")), {
-          no_nota: noNota,
-          barang_id: bId,
-          jumlah: qty,
-          harga_satuan: hargaSatuan,
-          total_penjualan: qty * hargaSatuan,
-          metode: document.getElementById("j_metode").value,
-          petugas_email: currentUser ? currentUser.email : "Anonim",
-          tanggal_jual: serverTimestamp()
+          no_trx_jual: noTrxJual,
+          Tanggal_jual: tglJual,
+          sumber_ref: val,
+          nama_brg: namaBrg,
+          Jumlah: qty,
+          Harga_jual: hargaJual,
+          Total_jual: totalJual,
+          metode: metode,
+          petugas: currentUser.email,
+          created_at: serverTimestamp()
         });
 
         await batch.commit();
-        alert("Penjualan berhasil!");
+        alert("Transaksi Penjualan Berhasil!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    // 5. INVESTOR
-    document.getElementById("formInvestor").addEventListener("submit", async (e) => {
+    // FORM TAMBAH MODAL INVESTOR
+    document.getElementById("formTambahModal").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
         await addDoc(collection(db, "investors"), {
-          nama_investor: document.getElementById("inv_nama").value,
-          no_hp: document.getElementById("inv_hp").value,
-          tanggal_investasi: document.getElementById("inv_tanggal").value,
-          jumlah_investasi: parseFloat(document.getElementById("inv_jumlah").value),
+          nama_investor: document.getElementById("inv_tambah_nama").value,
+          tanggal_investasi: document.getElementById("inv_tambah_tanggal").value,
+          jumlah_investasi: parseFloat(document.getElementById("inv_tambah_jumlah").value),
+          jenis: "SETOR",
+          petugas: currentUser.email,
           created_at: serverTimestamp()
         });
-        alert("Data investor disimpan!");
+        alert("Setoran Modal Disimpan!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    onSnapshot(collection(db, "investors"), (snapshot) => {
-      const list = document.getElementById("tabelInvestorBody");
-      const totalDisplay = document.getElementById("totalInvestasiDisplay");
-      list.innerHTML = "";
-      let total = 0;
-
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        total += (d.jumlah_investasi || 0);
-
-        list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-            <div>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_investor || '-'}</h4>
-              <p class="text-xs text-slate-400">${d.no_hp || ''} • ${d.tanggal_investasi || ''}</p>
-            </div>
-            <span class="text-sm font-black text-indigo-600">Rp ${Number(d.jumlah_investasi || 0).toLocaleString('id-ID')}</span>
-          </div>`;
-      });
-
-      totalDisplay.innerText = `Rp ${Number(total).toLocaleString('id-ID')}`;
-    });
-
-    // 6. ASSET
-    document.getElementById("formAsset").addEventListener("submit", async (e) => {
+    // FORM TARIK MODAL INVESTOR (SUPER ADMIN ONLY)
+    document.getElementById("formTarikModal").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        await addDoc(collection(db, "assets"), {
-          kode_asset: document.getElementById("a_kode").value,
-          nama_asset: document.getElementById("a_nama").value,
-          harga_perolehan: parseFloat(document.getElementById("a_harga").value),
-          umur_ekonomis_bulan: parseInt(document.getElementById("a_umur").value),
+        await addDoc(collection(db, "investors"), {
+          nama_investor: document.getElementById("inv_tarik_select").value,
+          tanggal_investasi: document.getElementById("inv_tarik_tanggal").value,
+          jumlah_investasi: parseFloat(document.getElementById("inv_tarik_jumlah").value),
+          jenis: "TARIK",
+          petugas: currentUser.email,
           created_at: serverTimestamp()
         });
-        alert("Asset disimpan!");
+        alert("Penarikan Modal Disimpan!");
         e.target.reset();
+        refreshAutoCodes();
       } catch (err) { alert(err.message); }
     });
 
-    onSnapshot(collection(db, "assets"), (snapshot) => {
-      const list = document.getElementById("tabelAssetBody");
-      list.innerHTML = "";
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase">${d.kode_asset || '-'}</span>
-              <h4 class="text-sm font-bold text-slate-800">${d.nama_asset || '-'}</h4>
-            </div>
-            <div class="text-right">
-              <span class="text-sm font-black text-cyan-600">Rp ${Number(d.harga_perolehan || 0).toLocaleString('id-ID')}</span>
-              <span class="text-xs text-slate-400 block">${d.umur_ekonomis_bulan || 0} Bln</span>
-            </div>
-          </div>`;
-      });
-    });
+    // UPDATE SUMMARY CARDS IN LAPORAN
+    function updateSummaryCards() {
+      let totBeli = globalPembelian.reduce((acc, c) => acc + (c.Total_harga || 0), 0);
+      let totJual = globalPenjualan.reduce((acc, c) => acc + (c.Total_jual || 0), 0);
+      let totAsset = globalAssets.reduce((acc, c) => acc + ((c.Jumlah || 0) * (c.Harga || 0)), 0);
 
-    // 7. USER PROFILE
-    document.getElementById("formUser").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        await addDoc(collection(db, "users"), {
-          nama: document.getElementById("u_nama").value,
-          email: document.getElementById("u_email").value,
-          role_id: document.getElementById("u_role").value,
-          created_at: serverTimestamp()
+      document.getElementById("rep_card_beli").innerText = `Rp ${Number(totBeli).toLocaleString('id-ID')}`;
+      document.getElementById("rep_card_jual").innerText = `Rp ${Number(totJual).toLocaleString('id-ID')}`;
+      document.getElementById("rep_card_profit").innerText = `Rp ${Number(totJual - totBeli).toLocaleString('id-ID')}`;
+      document.getElementById("rep_card_asset").innerText = `Rp ${Number(totAsset).toLocaleString('id-ID')}`;
+    }
+
+    // RENDER LAPORAN TABEL
+    window.renderLaporan = () => {
+      const cat = document.getElementById("rep_kategori").value;
+      const title = document.getElementById("rep_tabel_title");
+      const container = document.getElementById("rep_table_container");
+
+      title.innerText = `Detail Laporan: ${cat}`;
+      container.innerHTML = "";
+
+      if (cat === "PENJUALAN") {
+        if (globalPenjualan.length === 0) return container.innerHTML = "<p class='text-xs text-slate-400'>Belum ada data penjualan.</p>";
+        globalPenjualan.forEach(d => {
+          container.innerHTML += `
+            <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center text-xs border border-slate-100">
+              <div>
+                <span class="font-bold text-slate-800">${d.no_trx_jual || '-'}</span> • ${d.nama_brg} (${d.Jumlah} Unit)
+                <p class="text-[10px] text-slate-400">${d.Tanggal_jual} • ${d.metode}</p>
+              </div>
+              <span class="font-black text-amber-600">Rp ${Number(d.Total_jual || 0).toLocaleString('id-ID')}</span>
+            </div>`;
         });
-        alert("User disimpan!");
-        e.target.reset();
-      } catch (err) { alert(err.message); }
-    });
-
-    // FITUR MIGRASI PENYEMPURNAAN
-    window.importFromOldDatabase = async () => {
-      const btn = document.getElementById("btnImportData");
-      const status = document.getElementById("importStatus");
-      btn.disabled = true;
-      btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Memproses Import...`;
-      status.classList.remove("hidden");
-      status.innerText = "Membaca data dari database lama...";
-
-      const targets = [
-        { target: "barang", variants: ["barang", "Barang", "items", "products"] },
-        { target: "pembelian", variants: ["pembelian", "Pembelian", "purchases"] },
-        { target: "pengolahan", variants: ["pengolahan", "Pengolahan", "productions"] },
-        { target: "penjualan", variants: ["penjualan", "Penjualan", "sales"] },
-        { target: "assets", variants: ["assets", "Assets", "asset"] },
-        { target: "investors", variants: ["investors", "Investors", "investor"] },
-        { target: "users", variants: ["users", "Users", "user"] }
-      ];
-
-      let totalMigrated = 0;
-
-      try {
-        for (const item of targets) {
-          let foundSnapshot = null;
-          let activeVariant = "";
-
-          for (const variant of item.variants) {
-            try {
-              const snap = await getDocs(collection(dbLama, variant));
-              if (!snap.empty) {
-                foundSnapshot = snap;
-                activeVariant = variant;
-                break;
-              }
-            } catch (e) { console.log(`Cek koleksi ${variant}: `, e); }
-          }
-
-          if (foundSnapshot && !foundSnapshot.empty) {
-            status.innerText = `Mengimport ${foundSnapshot.size} dokumen dari koleksi '${activeVariant}'...`;
-            for (const docSnap of foundSnapshot.docs) {
-              const data = docSnap.data();
-              await addDoc(collection(db, item.target), data);
-              totalMigrated++;
-            }
-          }
-        }
-
-        if (totalMigrated > 0) {
-          status.innerText = `✅ Selesai! Berhasil memindahkan ${totalMigrated} data ke database baru. Silakan refresh halaman.`;
-          alert(`Sukses! ${totalMigrated} data berhasil diimport.`);
-        } else {
-          status.innerText = `⚠️ 0 data dipindahkan. Pastikan Rules Firestore pada proyek 'refining-perak-app' dan 'delta-silver' sudah di-Publish (allow read, write: if true;).`;
-          alert("Gagal Import: 0 Data Ditemukan. Periksa izin Rules di Firebase Console.");
-        }
-      } catch (err) {
-        console.error(err);
-        status.innerText = `❌ Error saat migrasi: ${err.message}`;
-        alert(`Gagal Import: ${err.message}`);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="ph-bold ph-download-simple"></i> Tarik & Import Semua Data Sekarang`;
+      } else if (cat === "PEMBELIAN") {
+        if (globalPembelian.length === 0) return container.innerHTML = "<p class='text-xs text-slate-400'>Belum ada data pembelian.</p>";
+        globalPembelian.forEach(d => {
+          container.innerHTML += `
+            <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center text-xs border border-slate-100">
+              <div>
+                <span class="font-bold text-slate-800">${d.no_trx_beli || '-'}</span> • ${d.nama_brg} (${d.Jumlah_beli} ${d.Satuan})
+                <p class="text-[10px] text-slate-400">${d.Tanggal_beli} • ${d.Status}</p>
+              </div>
+              <span class="font-black text-emerald-600">Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+      } else if (cat === "ASSET") {
+        if (globalAssets.length === 0) return container.innerHTML = "<p class='text-xs text-slate-400'>Belum ada data asset.</p>";
+        globalAssets.forEach(d => {
+          container.innerHTML += `
+            <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center text-xs border border-slate-100">
+              <div>
+                <span class="font-bold text-slate-800">${d.kode_aset || '-'}</span> • ${d.nama_aset}
+                <p class="text-[10px] text-slate-400">${d.Jumlah} ${d.Satuan}</p>
+              </div>
+              <span class="font-black text-cyan-600">Rp ${Number((d.Jumlah || 0) * (d.Harga || 0)).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
       }
     };
   </script>

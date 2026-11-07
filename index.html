@@ -140,18 +140,21 @@
       </button>
     </header>
 
-    <!-- NAVIGATION TABS (DESKTOP RINGKAS 4 MENU) -->
+    <!-- NAVIGATION TABS DESKTOP (5 MENU UTAMA) -->
     <nav class="hidden md:flex items-center justify-between gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
-      <button id="desk-nav-laporan" class="nav-btn active flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchMainTab('laporan')">
+      <button id="desk-nav-laporan" class="nav-btn active flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchMainTab('laporan')">
         <i class="ph-bold ph-chart-line text-base"></i> Laporan
       </button>
-      <button id="desk-nav-inputdata" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('inputdata')">
+      <button id="desk-nav-neraca" class="nav-btn flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('neraca')">
+        <i class="ph-bold ph-scales text-base"></i> Neraca
+      </button>
+      <button id="desk-nav-inputdata" class="nav-btn flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('inputdata')">
         <i class="ph-bold ph-folder-plus text-base"></i> Input Data
       </button>
-      <button id="desk-nav-transaksi" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('transaksi')">
+      <button id="desk-nav-transaksi" class="nav-btn flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('transaksi')">
         <i class="ph-bold ph-arrows-down-up text-base"></i> Transaksi
       </button>
-      <button id="desk-nav-user" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('user')">
+      <button id="desk-nav-user" class="nav-btn flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('user')">
         <i class="ph-bold ph-user-gear text-base"></i> Menu User
       </button>
     </nav>
@@ -261,7 +264,71 @@
         </div>
       </section>
 
-      <!-- 2. MENU UTAMA: INPUT DATA (GABUNGAN 3 TAB INTERNAL: BARANG, INVESTOR, ASSET) -->
+      <!-- 2. MENU BARU: NERACA KEUANGAN & RESUME AKTIVITAS USER -->
+      <section id="main-tab-neraca" class="main-tab-content hidden space-y-6">
+        
+        <!-- CARD RINGKASAN NERACA KEUANGAN (ATAS) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- Card 1: Total Pembelian -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
+            <div class="flex justify-between items-center text-slate-400">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Pembelian</span>
+              <i class="ph-bold ph-arrow-circle-down-right text-rose-500 text-xl"></i>
+            </div>
+            <h3 id="neraca_total_beli" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+            <p class="text-[11px] text-slate-400">Total Nominal Belanja / Pengeluaran</p>
+          </div>
+
+          <!-- Card 2: Total Penjualan -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-emerald-500">
+            <div class="flex justify-between items-center text-slate-400">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Penjualan</span>
+              <i class="ph-bold ph-arrow-circle-up-right text-emerald-500 text-xl"></i>
+            </div>
+            <h3 id="neraca_total_jual" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+            <p class="text-[11px] text-slate-400">Total Nominal Omzet / Pendapatan</p>
+          </div>
+
+          <!-- Card 3: Selisih Margin (Profit) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
+            <div class="flex justify-between items-center text-slate-400">
+              <span class="text-xs font-bold uppercase tracking-wider">Estimasi Gross Profit</span>
+              <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
+            </div>
+            <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+            <p class="text-[11px] text-slate-400">Selisih Penjualan - Pembelian</p>
+          </div>
+
+          <!-- Card 4: Total Biaya Operasional -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-purple-500">
+            <div class="flex justify-between items-center text-slate-400">
+              <span class="text-xs font-bold uppercase tracking-wider">Total Biaya Operasional</span>
+              <i class="ph-bold ph-receipt text-purple-500 text-xl"></i>
+            </div>
+            <h3 id="neraca_total_biaya_op" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
+            <p class="text-[11px] text-slate-400">Akumulasi Beli + Olah + Jual</p>
+          </div>
+        </div>
+
+        <!-- RESUME AKTIVITAS & BIAYA OPERASIONAL PER USER -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <i class="ph-bold ph-users-three text-brand-600 text-lg"></i> Resume Aktivitas & Biaya Operasional Per User (PIC)
+            </h2>
+            <button onclick="calculateNeracaAndUserSummary()" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+              <i class="ph-bold ph-arrows-clockwise"></i> Refresh Data
+            </button>
+          </div>
+
+          <div id="containerUserSummary" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-xs text-slate-400">Memuat resume aktivitas per user...</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. MENU UTAMA: INPUT DATA (GABUNGAN 3 TAB INTERNAL: BARANG, INVESTOR, ASSET) -->
       <section id="main-tab-inputdata" class="main-tab-content hidden space-y-6">
         
         <!-- SUB TAB SWITCHER FOR INPUT DATA -->
@@ -411,7 +478,7 @@
 
       </section>
 
-      <!-- 3. MENU UTAMA: TRANSAKSI (GABUNGAN 3 TAB INTERNAL: PEMBELIAN, PENGOLAHAN, PENJUALAN) -->
+      <!-- 4. MENU UTAMA: TRANSAKSI (GABUNGAN 3 TAB INTERNAL: PEMBELIAN, PENGOLAHAN, PENJUALAN) -->
       <section id="main-tab-transaksi" class="main-tab-content hidden space-y-6">
         
         <!-- SUB TAB SWITCHER FOR TRANSAKSI -->
@@ -586,7 +653,7 @@
 
       </section>
 
-      <!-- 4. MENU UTAMA: MENU USER & IMPORT EXCEL LOKAL -->
+      <!-- 5. MENU UTAMA: MENU USER & IMPORT EXCEL LOKAL -->
       <section id="main-tab-user" class="main-tab-content hidden space-y-6">
         
         <!-- FITUR IMPORT EXCEL LOKAL -->
@@ -646,23 +713,27 @@
 
     </main>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR (DILENGKAPI 4 MENU RINGKAS UNTUK MONITORING MOBILE) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-3 py-2 flex justify-around items-center z-40 shadow-lg">
+    <!-- MOBILE BOTTOM NAVIGATION BAR (5 MENU UTAMA MOBILE) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
       <button id="mob-nav-laporan" class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600" onclick="switchMainTab('laporan')">
-        <i class="ph-bold ph-chart-line text-xl"></i>
-        <span class="text-[10px] font-bold">Laporan</span>
+        <i class="ph-bold ph-chart-line text-lg"></i>
+        <span class="text-[9px] font-bold">Laporan</span>
+      </button>
+      <button id="mob-nav-neraca" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('neraca')">
+        <i class="ph-bold ph-scales text-lg"></i>
+        <span class="text-[9px] font-bold">Neraca</span>
       </button>
       <button id="mob-nav-inputdata" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('inputdata')">
-        <i class="ph-bold ph-folder-plus text-xl"></i>
-        <span class="text-[10px] font-bold">Input Data</span>
+        <i class="ph-bold ph-folder-plus text-lg"></i>
+        <span class="text-[9px] font-bold">Input Data</span>
       </button>
       <button id="mob-nav-transaksi" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('transaksi')">
-        <i class="ph-bold ph-arrows-down-up text-xl"></i>
-        <span class="text-[10px] font-bold">Transaksi</span>
+        <i class="ph-bold ph-arrows-down-up text-lg"></i>
+        <span class="text-[9px] font-bold">Transaksi</span>
       </button>
       <button id="mob-nav-user" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('user')">
-        <i class="ph-bold ph-user-gear text-xl"></i>
-        <span class="text-[10px] font-bold">User</span>
+        <i class="ph-bold ph-user-gear text-lg"></i>
+        <span class="text-[9px] font-bold">User</span>
       </button>
     </nav>
 
@@ -792,7 +863,7 @@
           // SET MENU LAPORAN SEBAGAI LANDING PAGE UTAMA
           switchMainTab('laporan');
 
-          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG
+          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG & NERACA
           initResumeDashboard();
 
           // Reset baris awal hasil olah jika kosong
@@ -852,7 +923,7 @@
 
     window.handleLogout = () => signOut(auth);
 
-    // LOGIKA NAVIGASI UTAMA (4 TAB MENU UTAMA)
+    // LOGIKA NAVIGASI UTAMA (5 TAB MENU UTAMA)
     window.switchMainTab = (tabName) => {
       document.querySelectorAll(".main-tab-content").forEach(el => el.classList.add("hidden"));
       const targetTab = document.getElementById(`main-tab-${tabName}`);
@@ -886,16 +957,17 @@
       if (tabName === "laporan") {
         filterLaporan();
       }
+      if (tabName === "neraca") {
+        calculateNeracaAndUserSummary();
+      }
     };
 
     // LOGIKA INTERNAL SUB TAB SWITCHER (INPUT DATA & TRANSAKSI)
     window.switchSubTab = (parentGroup, subName) => {
-      // Sembunyikan semua sub-content di bawah parent tersebut
       document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
       const targetSub = document.getElementById(`subcontent-${parentGroup}-${subName}`);
       if (targetSub) targetSub.classList.remove("hidden");
 
-      // Reset style tombol sub tab
       const parentContainer = targetSub.parentElement;
       const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
       buttons.forEach(btn => {
@@ -920,7 +992,7 @@
       }
     };
 
-    // 1. RESUME WIDGET RINGKASAN STOK REALTIME DENGAN PERHITUNGAN PENGURANGAN NET
+    // 1. RESUME WIDGET RINGKASAN STOK REALTIME
     async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
       let totalPembelianOlahan = 0;
       let totalMasukOlah = 0;
@@ -996,6 +1068,130 @@
         console.error("Gagal memuat resume stok:", err);
       }
     }
+
+    // 2. KEKALAN PERHITUNGAN NERACA KEUANGAN & USER RESUME AKTIVITAS
+    window.calculateNeracaAndUserSummary = async () => {
+      let sumBeliNominal = 0;
+      let sumJualNominal = 0;
+      let sumBiayaBeli = 0;
+      let sumBiayaOlah = 0;
+      let sumBiayaJual = 0;
+
+      const userStats = {}; // { 'Nama User': { trxBeli: 0, trxOlah: 0, trxJual: 0, bBeli: 0, bOlah: 0, bJual: 0 } }
+
+      function getUserObj(picName) {
+        const key = picName || 'Tidak Teridentifikasi';
+        if (!userStats[key]) {
+          userStats[key] = { trxBeli: 0, trxOlah: 0, trxJual: 0, bBeli: 0, bOlah: 0, bJual: 0 };
+        }
+        return userStats[key];
+      }
+
+      try {
+        // Pembelian
+        const snapBeli = await getDocs(collection(db, "pembelian"));
+        snapBeli.forEach(docSnap => {
+          const d = docSnap.data();
+          const tot = parseFloat(d.Total_harga || 0);
+          const bBeli = parseFloat(d.Biaya_pembelian || 0);
+          const pic = d.pic_pembelian || d.PIC_pembelian;
+
+          sumBeliNominal += tot;
+          sumBiayaBeli += bBeli;
+
+          const u = getUserObj(pic);
+          u.trxBeli += 1;
+          u.bBeli += bBeli;
+        });
+
+        // Pengolahan
+        const snapOlah = await getDocs(collection(db, "pengolahan"));
+        snapOlah.forEach(docSnap => {
+          const d = docSnap.data();
+          const bOlah = parseFloat(d.biaya_olah || 0);
+          const pic = d.pic_pengolahan || d.PIC_pengolahan;
+
+          sumBiayaOlah += bOlah;
+
+          const u = getUserObj(pic);
+          u.trxOlah += 1;
+          u.bOlah += bOlah;
+        });
+
+        // Penjualan
+        const snapJual = await getDocs(collection(db, "penjualan"));
+        snapJual.forEach(docSnap => {
+          const d = docSnap.data();
+          const tot = parseFloat(d.Total_jual || 0);
+          const bJual = parseFloat(d.Biaya_penjualan || 0);
+          const pic = d.pic_penjualan || d.PIC_penjualan;
+
+          sumJualNominal += tot;
+          sumBiayaJual += bJual;
+
+          const u = getUserObj(pic);
+          u.trxJual += 1;
+          u.bJual += bJual;
+        });
+
+        const grossProfit = sumJualNominal - sumBeliNominal;
+        const totalBiayaOperasional = sumBiayaBeli + sumBiayaOlah + sumBiayaJual;
+
+        document.getElementById("neraca_total_beli").innerText = `Rp ${sumBeliNominal.toLocaleString('id-ID')}`;
+        document.getElementById("neraca_total_jual").innerText = `Rp ${sumJualNominal.toLocaleString('id-ID')}`;
+        document.getElementById("neraca_margin").innerText = `Rp ${grossProfit.toLocaleString('id-ID')}`;
+        document.getElementById("neraca_total_biaya_op").innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
+
+        // Render Cards Resume User
+        const userContainer = document.getElementById("containerUserSummary");
+        userContainer.innerHTML = "";
+
+        const keys = Object.keys(userStats);
+        if (keys.length === 0) {
+          userContainer.innerHTML = `<p class="text-xs text-slate-400">Belum ada aktivitas transaksi user.</p>`;
+          return;
+        }
+
+        keys.forEach(userKey => {
+          const u = userStats[userKey];
+          const totalBiayaUser = u.bBeli + u.bOlah + u.bJual;
+
+          userContainer.innerHTML += `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
+              <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-user-circle text-brand-600"></i> ${userKey}
+                  </h4>
+                </div>
+                <span class="text-xs font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg">
+                  Total Biaya: Rp ${totalBiayaUser.toLocaleString('id-ID')}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="p-2 bg-white rounded-xl border border-slate-100">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">Pembelian</span>
+                  <span class="font-bold text-emerald-600">${u.trxBeli} Trx</span>
+                  <p class="text-[10px] text-slate-500">Biaya: Rp ${u.bBeli.toLocaleString('id-ID')}</p>
+                </div>
+                <div class="p-2 bg-white rounded-xl border border-slate-100">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">Pengolahan</span>
+                  <span class="font-bold text-purple-600">${u.trxOlah} Trx</span>
+                  <p class="text-[10px] text-slate-500">Biaya: Rp ${u.bOlah.toLocaleString('id-ID')}</p>
+                </div>
+                <div class="p-2 bg-white rounded-xl border border-slate-100">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">Penjualan</span>
+                  <span class="font-bold text-amber-600">${u.trxJual} Trx</span>
+                  <p class="text-[10px] text-slate-500">Biaya: Rp ${u.bJual.toLocaleString('id-ID')}</p>
+                </div>
+              </div>
+            </div>`;
+        });
+      } catch (err) {
+        console.error("Gagal menghitung neraca user summary:", err);
+      }
+    };
 
     // PRESET FILTER TANGGAL
     window.setFilterPreset = (preset) => {
@@ -1090,7 +1286,7 @@
       XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
     };
 
-    // 2. MASTER BARANG
+    // 3. MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1171,7 +1367,7 @@
       renderBarangItems(barangDocsCache);
     }, (err) => console.log("Listen master_barang notice:", err));
 
-    // 3. PEMBELIAN
+    // 4. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const namaBarang = document.getElementById("p_select_master_barang").value;
@@ -1205,6 +1401,7 @@
         refreshAutoCodes();
         updatePenjualanDropdown();
         initResumeDashboard();
+        calculateNeracaAndUserSummary();
       } catch (err) { alert(err.message); }
     });
 
@@ -1238,7 +1435,7 @@
       updatePenjualanDropdown();
     });
 
-    // 4. PENGOLAHAN
+    // 5. PENGOLAHAN
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pId = document.getElementById("o_select_item").value;
@@ -1295,6 +1492,7 @@
         addHasilOlahRow();
         updatePenjualanDropdown();
         initResumeDashboard();
+        calculateNeracaAndUserSummary();
       } catch (err) { alert(err.message); }
     });
 
@@ -1347,7 +1545,7 @@
       }
     }
 
-    // 5. PENJUALAN
+    // 6. PENJUALAN
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const selectedVal = document.getElementById("j_select_barang").value;
@@ -1390,6 +1588,7 @@
         refreshAutoCodes();
         updatePenjualanDropdown();
         initResumeDashboard();
+        calculateNeracaAndUserSummary();
       } catch (err) { alert(err.message); }
     });
 
@@ -1410,7 +1609,7 @@
       });
     });
 
-    // 6. INVESTOR (HANYA SUPER ADMIN BISA TARIK MODAL)
+    // 7. INVESTOR
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;
@@ -1478,7 +1677,7 @@
       }
     });
 
-    // 7. ASSET
+    // 8. ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1515,7 +1714,7 @@
       });
     });
 
-    // 8. USER MANAGEMENT & IMPORT EXCEL
+    // 9. USER MANAGEMENT & IMPORT EXCEL
     async function loadUsersList() {
       const list = document.getElementById("tabelUsersBody");
       list.innerHTML = "";
@@ -1710,6 +1909,7 @@
           if (tableType === "users") loadUsersList();
           updatePenjualanDropdown();
           initResumeDashboard();
+          calculateNeracaAndUserSummary();
         } catch (err) {
           console.error(err);
           log.innerText = `❌ Error Import: ${err.message}`;

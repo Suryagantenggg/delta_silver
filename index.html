@@ -204,7 +204,7 @@
         </div>
       </section>
 
-      <!-- 2. TAB PEMBELIAN (NAMA BARANG MENGGUNAKAN DROPDOWN SELECT MASTER BARANG) -->
+      <!-- 2. TAB PEMBELIAN -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -644,6 +644,7 @@
           appContainer.classList.remove("hidden");
           refreshAutoCodes();
           loadUsersList();
+          updatePenjualanDropdown();
         }
       } else {
         authOverlay.classList.remove("hidden");
@@ -708,6 +709,10 @@
         btn.classList.remove("text-brand-600");
         btn.classList.add("text-slate-400");
       });
+
+      if (tabName === "penjualan") {
+        updatePenjualanDropdown();
+      }
     };
 
     // 1. MASTER BARANG
@@ -820,6 +825,7 @@
         alert("Transaksi Pembelian Disimpan!");
         e.target.reset();
         refreshAutoCodes();
+        updatePenjualanDropdown();
       } catch (err) { alert(err.message); }
     });
 
@@ -845,10 +851,12 @@
             </div>
           </div>`;
 
-        if (d.Status === 'olahan' && d.Status_penjualan === 'tunggu olah') {
+        if (d.Status === 'olahan' && (d.Status_penjualan || '').toLowerCase() === 'tunggu olah') {
           oSelect.innerHTML += `<option value="${id}">${d.no_trx_beli} - ${d.nama_brg} (${d.Jumlah_beli} ${d.Satuan})</option>`;
         }
       });
+      
+      updatePenjualanDropdown();
     });
 
     // 3. PENGOLAHAN
@@ -882,6 +890,7 @@
 
         alert("Pengolahan selesai & stok siap jual diperbarui!");
         e.target.reset();
+        updatePenjualanDropdown();
       } catch (err) { alert(err.message); }
     });
 
@@ -900,39 +909,45 @@
             <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-700">${d.Status_penjualan || 'Belum terjual'}</span>
           </div>`;
       });
+      
+      updatePenjualanDropdown();
     });
 
-    // UPDATE PENJUALAN DROPDOWN
-    function updatePenjualanDropdown() {
+    // UPDATE PENJUALAN DROPDOWN (DENGAN MATCHING CASE-INSENSITIVE)
+    async function updatePenjualanDropdown() {
       const jSelect = document.getElementById("j_select_barang");
+      if (!jSelect) return;
+      
       jSelect.innerHTML = '<option value="">-- Pilih Barang (Barang Jadi / Hasil Olahan) --</option>';
 
-      getDocs(collection(db, "pembelian")).then(snap => {
-        snap.forEach(docSnap => {
+      try {
+        const snapBeli = await getDocs(collection(db, "pembelian"));
+        snapBeli.forEach(docSnap => {
           const d = docSnap.data();
-          if (d.Status_penjualan === "Barang jadi") {
-            jSelect.innerHTML += `<option value="pembelian|${docSnap.id}">${d.no_trx_beli} - ${d.nama_brg} [Barang Jadi] (${d.Jumlah_beli} ${d.Satuan})</option>`;
+          const st = (d.Status_penjualan || "").toLowerCase().trim();
+          if (st === "barang jadi") {
+            jSelect.innerHTML += `<option value="pembelian|${docSnap.id}">${d.no_trx_beli || 'TRX'} - ${d.nama_brg || 'Barang'} [Barang Jadi] (${d.Jumlah_beli || 0} ${d.Satuan || ''})</option>`;
           }
         });
-      });
 
-      getDocs(collection(db, "pengolahan")).then(snap => {
-        snap.forEach(docSnap => {
+        const snapOlah = await getDocs(collection(db, "pengolahan"));
+        snapOlah.forEach(docSnap => {
           const d = docSnap.data();
-          if (d.Status_penjualan === "Belum terjual") {
-            jSelect.innerHTML += `<option value="pengolahan|${docSnap.id}">${d.no_trx_beli} - ${d.nama_brg_setelah_olah} [Hasil Olahan] (${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah})</option>`;
+          const st = (d.Status_penjualan || "").toLowerCase().trim();
+          if (st === "belum terjual" || st === "selesai olah") {
+            jSelect.innerHTML += `<option value="pengolahan|${docSnap.id}">${d.no_trx_beli || 'TRX'} - ${d.nama_brg_setelah_olah || 'Barang'} [Hasil Olahan] (${d.Jumlah_setelah_olah || 0} ${d.Satuan_setelah_olah || ''})</option>`;
           }
         });
-      });
+      } catch (err) {
+        console.error("Gagal memperbarui dropdown penjualan:", err);
+      }
     }
-
-    window.addEventListener("click", updatePenjualanDropdown);
 
     // 4. PENJUALAN
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const selectedVal = document.getElementById("j_select_barang").value;
-      if (!selectedVal) return alert("Pilih barang!");
+      if (!selectedVal) return alert("Pilih barang siap jual terlebih dahulu!");
 
       const [type, itemDocId] = selectedVal.split("|");
       const qtyJual = parseFloat(document.getElementById("j_jumlah").value);
@@ -941,6 +956,8 @@
       try {
         const itemRef = doc(db, type, itemDocId);
         const itemSnap = await getDoc(itemRef);
+        
+        if (!itemSnap.exists()) return alert("Data barang tidak ditemukan di database.");
         const itemData = itemSnap.data();
 
         const namaBrg = type === 'pembelian' ? itemData.nama_brg : itemData.nama_brg_setelah_olah;
@@ -949,7 +966,7 @@
         await addDoc(collection(db, "penjualan"), {
           no_trx_jual: document.getElementById("j_nota").value,
           Tanggal_jual: new Date().toISOString().split('T')[0],
-          No_trx_beli: itemData.no_trx_beli,
+          No_trx_beli: itemData.no_trx_beli || "-",
           nama_brg: namaBrg,
           Satuan: satuan,
           Jumlah: qtyJual,
@@ -1329,6 +1346,7 @@
           alert(`Sukses! ${successCount} baris data berhasil diimport.`);
           fileInput.value = "";
           if (tableType === "users") loadUsersList();
+          updatePenjualanDropdown();
         } catch (err) {
           console.error(err);
           log.innerText = `❌ Error Import: ${err.message}`;

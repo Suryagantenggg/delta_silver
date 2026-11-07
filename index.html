@@ -489,10 +489,12 @@
               <div>
                 <label class="block text-xs font-bold mb-1 text-white">1. Pilih Jenis Tabel Target</label>
                 <select id="excelTableType" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 text-sm font-semibold">
+                  <option value="users">User / Pengguna (Tabel_user)</option>
                   <option value="pembelian">Pembelian (Tabel_pembelian)</option>
                   <option value="pengolahan">Pengolahan (Tabel_pengolahan)</option>
                   <option value="penjualan">Penjualan (Tabel_penjualan)</option>
                   <option value="investors">Investor (Tabel_investor)</option>
+                  <option value="barang">Master Barang (Tabel_barang)</option>
                 </select>
               </div>
               <div>
@@ -1126,7 +1128,13 @@
       let data = [];
       let filename = `Template_${type}.xlsx`;
 
-      if (type === "pembelian") {
+      if (type === "users") {
+        data = [{
+          Nama: "Reva Surya",
+          Email: "reva@example.com",
+          Role: "tamu"
+        }];
+      } else if (type === "pembelian") {
         data = [{
           no_trx_beli: "BUY-20261107-1001",
           Tanggal_beli: "2026-11-07",
@@ -1168,6 +1176,12 @@
           tanggal_investasi: "2026-11-07",
           Jumlah: 50000000,
           Status: "tambah modal"
+        }];
+      } else if (type === "barang") {
+        data = [{
+          kode_brg: "BRG-20261107-001",
+          nama_brg: "Perak Granul SGE",
+          Satuan: "gram"
         }];
       }
 
@@ -1213,9 +1227,16 @@
           let successCount = 0;
 
           for (const row of jsonData) {
-            const batchDoc = { ...row, created_at: serverTimestamp() };
+            let batchDoc = { ...row, created_at: serverTimestamp() };
 
-            if (tableType === "pembelian") {
+            if (tableType === "users") {
+              batchDoc = {
+                nama: row.Nama || row.nama || "User",
+                email: row.Email || row.email || "",
+                role: (row.Role || row.role || "tamu").toLowerCase(),
+                created_at: serverTimestamp()
+              };
+            } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || 0);
               const price = parseFloat(row.Harga_satuan || 0);
               batchDoc.Total_harga = qty * price;
@@ -1233,6 +1254,7 @@
           log.innerText = `✅ Berhasil mengunggah ${successCount} data ke database!`;
           alert(`Sukses! ${successCount} baris data berhasil diimport.`);
           fileInput.value = "";
+          if (tableType === "users") loadUsersList();
         } catch (err) {
           console.error(err);
           log.innerText = `❌ Error Import: ${err.message}`;

@@ -140,30 +140,18 @@
       </button>
     </header>
 
-    <!-- NAVIGATION TABS (DESKTOP) -->
-    <nav class="hidden md:flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
-      <button id="desk-nav-laporan" class="nav-btn active flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchTab('laporan')">
+    <!-- NAVIGATION TABS (DESKTOP RINGKAS 4 MENU) -->
+    <nav class="hidden md:flex items-center justify-between gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
+      <button id="desk-nav-laporan" class="nav-btn active flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchMainTab('laporan')">
         <i class="ph-bold ph-chart-line text-base"></i> Laporan
       </button>
-      <button id="desk-nav-barang" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('barang')">
-        <i class="ph-bold ph-package text-base"></i> Master Barang
+      <button id="desk-nav-inputdata" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('inputdata')">
+        <i class="ph-bold ph-folder-plus text-base"></i> Input Data
       </button>
-      <button id="desk-nav-pembelian" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pembelian')">
-        <i class="ph-bold ph-shopping-cart text-base"></i> Pembelian
+      <button id="desk-nav-transaksi" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('transaksi')">
+        <i class="ph-bold ph-arrows-down-up text-base"></i> Transaksi
       </button>
-      <button id="desk-nav-pengolahan" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pengolahan')">
-        <i class="ph-bold ph-gear text-base"></i> Pengolahan
-      </button>
-      <button id="desk-nav-penjualan" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('penjualan')">
-        <i class="ph-bold ph-currency-dollar text-base"></i> Penjualan
-      </button>
-      <button id="desk-nav-investors" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('investors')">
-        <i class="ph-bold ph-hand-coins text-base"></i> Investor
-      </button>
-      <button id="desk-nav-asset" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('asset')">
-        <i class="ph-bold ph-buildings text-base"></i> Asset
-      </button>
-      <button id="desk-nav-user" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('user')">
+      <button id="desk-nav-user" class="nav-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchMainTab('user')">
         <i class="ph-bold ph-user-gear text-base"></i> Menu User
       </button>
     </nav>
@@ -171,12 +159,12 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB LAPORAN (DEFAULT LANDING PAGE) -->
-      <section id="tab-laporan" class="tab-content block space-y-6">
+      <!-- 1. MENU UTAMA: LAPORAN (DEFAULT LANDING PAGE) -->
+      <section id="main-tab-laporan" class="main-tab-content block space-y-6">
         
         <!-- 4 RESUME WIDGET RINGKASAN BARANG STOK REALTIME -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          <!-- Widget 1: Belum Diolah (Sisa Antrean) -->
+          <!-- Widget 1: Mentah Belum Diolah -->
           <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-amber-100">Mentah Belum Diolah</span>
@@ -200,7 +188,7 @@
             <p class="text-[10px] text-purple-100 font-medium">Stok Siap Jual Net</p>
           </div>
 
-          <!-- Widget 3: Non-Olahan Ready (BARU) -->
+          <!-- Widget 3: Non-Olahan Ready -->
           <div class="bg-gradient-to-br from-cyan-600 to-blue-700 text-white p-4 rounded-2xl shadow-sm space-y-1">
             <div class="flex justify-between items-center">
               <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-cyan-100">Barang Jadi (Non-Olah)</span>
@@ -273,297 +261,333 @@
         </div>
       </section>
 
-      <!-- 2. TAB MASTER BARANG -->
-      <section id="tab-barang" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-plus-circle text-brand-600 text-lg"></i> Input Master Barang
-          </h2>
-          <form id="formBarang" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode SKU (Otomatis)</label>
-                <input type="text" id="b_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
-                <input type="text" id="b_nama" required placeholder="Misal: Perak Granul / Perak SGE" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan Ukuran</label>
-              <input type="text" id="b_satuan" required placeholder="gram / kg / pcs" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-brand-500/20">
-              Simpan Master Barang
-            </button>
-          </form>
+      <!-- 2. MENU UTAMA: INPUT DATA (GABUNGAN 3 TAB INTERNAL: BARANG, INVESTOR, ASSET) -->
+      <section id="main-tab-inputdata" class="main-tab-content hidden space-y-6">
+        
+        <!-- SUB TAB SWITCHER FOR INPUT DATA -->
+        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
+          <button id="sub-input-barang" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('inputdata', 'barang')">
+            <i class="ph-bold ph-package"></i> Master Barang
+          </button>
+          <button id="sub-input-investor" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'investor')">
+            <i class="ph-bold ph-hand-coins"></i> Investor
+          </button>
+          <button id="sub-input-asset" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'asset')">
+            <i class="ph-bold ph-buildings"></i> Asset
+          </button>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Barang</h3>
-          <div id="tabelBarangBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
-        </div>
-      </section>
-
-      <!-- 3. TAB PEMBELIAN -->
-      <section id="tab-pembelian" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-shopping-cart-simple text-emerald-600 text-lg"></i> Input Transaksi Pembelian
-          </h2>
-          <form id="formPembelian" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Beli (Auto Generate)</label>
-                <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+        <!-- SUB CONTENT 1: MASTER BARANG -->
+        <div id="subcontent-inputdata-barang" class="sub-content-inputdata block space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-plus-circle text-brand-600 text-lg"></i> Input Master Barang
+            </h2>
+            <form id="formBarang" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Kode SKU (Otomatis)</label>
+                  <input type="text" id="b_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Barang</label>
+                  <input type="text" id="b_nama" required placeholder="Misal: Perak Granul / Perak SGE" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pembelian (Petugas Logged In)</label>
-                <input type="text" id="p_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-emerald-50 text-emerald-800 font-bold text-sm">
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan Ukuran</label>
+                <input type="text" id="b_satuan" required placeholder="gram / kg / pcs" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Master Barang</label>
-                <select id="p_select_master_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                  <option value="">-- Memuat Master Barang... --</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
-                <input type="text" id="p_satuan" required placeholder="gram / kg" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Beli</label>
-                <input type="number" step="0.01" id="p_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Beli / Satuan (Rp)</label>
-                <input type="number" id="p_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Pembelian / Transport (Rp)</label>
-                <input type="number" id="p_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-emerald-700">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilihan Status Barang Olahan</label>
-              <select id="p_status_olahan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                <option value="non olahan">Non Olahan (Langsung Masuk Stok Penjualan / Status: Barang jadi)</option>
-                <option value="olahan">Barang Olahan (Masuk Antrean Pengolahan / Status: tunggu olah)</option>
-              </select>
-            </div>
-            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-emerald-500/20">
-              Simpan Transaksi Pembelian
-            </button>
-          </form>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Pembelian</h3>
-          <div id="tabelPembelianBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
-        </div>
-      </section>
-
-      <!-- 4. TAB PENGOLAHAN -->
-      <section id="tab-pengolahan" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok (Pemurnian)
-          </h2>
-          <form id="formPengolahan" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Antrean (Status: Tunggu Olah)</label>
-                <select id="o_select_item" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pengolah (Petugas Logged In)</label>
-                <input type="text" id="o_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-purple-50 text-purple-800 font-bold text-sm">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Total Biaya Olah / Process Fee (Rp)</label>
-              <input type="number" id="o_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-purple-700">
-            </div>
-
-            <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-4">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Hasil Barang Setelah Olah (Bisa Lebih Dari 1 Item)</span>
-                <button type="button" onclick="addHasilOlahRow()" class="px-3 py-1.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition flex items-center gap-1">
-                  <i class="ph-bold ph-plus"></i> Tambah Hasil Barang
-                </button>
-              </div>
-              
-              <div id="containerHasilOlah" class="space-y-3">
-                <!-- ROW HASIL OLAH DITAMBAHKAN DISINI -->
-              </div>
-            </div>
-
-            <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
-              Selesaikan Pengolahan & Update Status Jadi Selesai Olah
-            </button>
-          </form>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Hasil Pengolahan</h3>
-          <div id="tabelPengolahanBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
-        </div>
-      </section>
-
-      <!-- 5. TAB PENJUALAN -->
-      <section id="tab-penjualan" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir
-          </h2>
-          <form id="formPenjualan" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Jual (Auto Generate)</label>
-                <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Penjualan / Kasir (Logged In)</label>
-                <input type="text" id="j_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-amber-50 text-amber-800 font-bold text-sm">
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Siap Jual (Barang Jadi / Selesai Olah)</label>
-              <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
-                <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
-                <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Penjualan / Ongkir / Admin (Rp)</label>
-                <input type="number" id="j_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-amber-700">
-              </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-500/20">
-              Simpan Penjualan & Update Status Terjual
-            </button>
-          </form>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Penjualan</h3>
-          <div id="tabelPenjualanBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
-        </div>
-      </section>
-
-      <!-- 6. TAB INVESTOR -->
-      <section id="tab-investors" class="tab-content hidden space-y-6">
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
-          <div>
-            <p class="text-xs font-semibold opacity-80 uppercase tracking-wider mb-1">Total Modal Aktif Investor</p>
-            <h3 id="totalInvestasiDisplay" class="text-2xl md:text-3xl font-black">Rp 0</h3>
+              <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-brand-500/20">
+                Simpan Master Barang
+              </button>
+            </form>
           </div>
-          <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
-            <i class="ph-bold ph-hand-coins text-2xl"></i>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Barang</h3>
+            <div id="tabelBarangBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-user-plus text-indigo-600 text-lg"></i> Input Data Investor (Tambah / Tarik Modal)
-          </h2>
-          <form id="formInvestor" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Investor</label>
-                <input type="text" id="inv_nama" required placeholder="Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nomor HP / WA</label>
-                <input type="tel" id="inv_hp" required placeholder="081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
+        <!-- SUB CONTENT 2: INVESTOR -->
+        <div id="subcontent-inputdata-investor" class="sub-content-inputdata hidden space-y-6">
+          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
+            <div>
+              <p class="text-xs font-semibold opacity-80 uppercase tracking-wider mb-1">Total Modal Aktif Investor</p>
+              <h3 id="totalInvestasiDisplay" class="text-2xl md:text-3xl font-black">Rp 0</h3>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Transaksi</label>
-                <input type="date" id="inv_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+            <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
+              <i class="ph-bold ph-hand-coins text-2xl"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-user-plus text-indigo-600 text-lg"></i> Input Data Investor (Tambah / Tarik Modal)
+            </h2>
+            <form id="formInvestor" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Investor</label>
+                  <input type="text" id="inv_nama" required placeholder="Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nomor HP / WA</label>
+                  <input type="tel" id="inv_hp" required placeholder="081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Transaksi</label>
+                  <input type="date" id="inv_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah (Rp)</label>
+                  <input type="number" id="inv_jumlah" required placeholder="10000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Status Aksi</label>
+                  <select id="inv_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                    <option value="tambah modal">tambah modal (+)</option>
+                    <option value="Tarik Modal">Tarik Modal (-) [Khusus Super Admin]</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-indigo-500/20">
+                Simpan Transaksi Investor
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal Investor</h3>
+            <div id="tabelInvestorBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data investor...</p></div>
+          </div>
+        </div>
+
+        <!-- SUB CONTENT 3: ASSET -->
+        <div id="subcontent-inputdata-asset" class="sub-content-inputdata hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-buildings text-cyan-600 text-lg"></i> Input Asset Operasional
+            </h2>
+            <form id="formAsset" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Asset (Otomatis)</label>
+                  <input type="text" id="a_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Asset</label>
+                  <input type="text" id="a_nama" required placeholder="Mesin Lebur Perak" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
+                  <input type="text" id="a_satuan" required placeholder="unit / pcs" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah</label>
+                  <input type="number" id="a_jumlah" required placeholder="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Harga (Rp)</label>
+                  <input type="number" id="a_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                </div>
+              </div>
+              <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-cyan-500/20">
+                Simpan Data Asset
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Asset Operasional</h3>
+            <div id="tabelAssetBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat asset...</p></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. MENU UTAMA: TRANSAKSI (GABUNGAN 3 TAB INTERNAL: PEMBELIAN, PENGOLAHAN, PENJUALAN) -->
+      <section id="main-tab-transaksi" class="main-tab-content hidden space-y-6">
+        
+        <!-- SUB TAB SWITCHER FOR TRANSAKSI -->
+        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
+          <button id="sub-trans-pembelian" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-emerald-600 shadow-sm transition" onclick="switchSubTab('transaksi', 'pembelian')">
+            <i class="ph-bold ph-shopping-cart"></i> Pembelian
+          </button>
+          <button id="sub-trans-pengolahan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('transaksi', 'pengolahan')">
+            <i class="ph-bold ph-gear"></i> Pengolahan
+          </button>
+          <button id="sub-trans-penjualan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('transaksi', 'penjualan')">
+            <i class="ph-bold ph-currency-dollar"></i> Penjualan
+          </button>
+        </div>
+
+        <!-- SUB CONTENT 1: PEMBELIAN -->
+        <div id="subcontent-transaksi-pembelian" class="sub-content-transaksi block space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-shopping-cart-simple text-emerald-600 text-lg"></i> Input Transaksi Pembelian
+            </h2>
+            <form id="formPembelian" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Beli (Auto Generate)</label>
+                  <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pembelian (Petugas Logged In)</label>
+                  <input type="text" id="p_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-emerald-50 text-emerald-800 font-bold text-sm">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Master Barang</label>
+                  <select id="p_select_master_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                    <option value="">-- Memuat Master Barang... --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
+                  <input type="text" id="p_satuan" required placeholder="gram / kg" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Beli</label>
+                  <input type="number" step="0.01" id="p_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Beli / Satuan (Rp)</label>
+                  <input type="number" id="p_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Pembelian / Transport (Rp)</label>
+                  <input type="number" id="p_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-emerald-700">
+                </div>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah (Rp)</label>
-                <input type="number" id="inv_jumlah" required placeholder="10000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Status Aksi</label>
-                <select id="inv_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                  <option value="tambah modal">tambah modal (+)</option>
-                  <option value="Tarik Modal">Tarik Modal (-) [Khusus Super Admin]</option>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilihan Status Barang Olahan</label>
+                <select id="p_status_olahan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <option value="non olahan">Non Olahan (Langsung Masuk Stok Penjualan / Status: Barang jadi)</option>
+                  <option value="olahan">Barang Olahan (Masuk Antrean Pengolahan / Status: tunggu olah)</option>
                 </select>
               </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-indigo-500/20">
-              Simpan Transaksi Investor
-            </button>
-          </form>
+              <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-emerald-500/20">
+                Simpan Transaksi Pembelian
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Pembelian</h3>
+            <div id="tabelPembelianBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
+          </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal Investor</h3>
-          <div id="tabelInvestorBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data investor...</p></div>
+        <!-- SUB CONTENT 2: PENGOLAHAN -->
+        <div id="subcontent-transaksi-pengolahan" class="sub-content-transaksi hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok (Pemurnian)
+            </h2>
+            <form id="formPengolahan" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Antrean (Status: Tunggu Olah)</label>
+                  <select id="o_select_item" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pengolah (Petugas Logged In)</label>
+                  <input type="text" id="o_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-purple-50 text-purple-800 font-bold text-sm">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Total Biaya Olah / Process Fee (Rp)</label>
+                <input type="number" id="o_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-purple-700">
+              </div>
+
+              <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Hasil Barang Setelah Olah (Bisa Lebih Dari 1 Item)</span>
+                  <button type="button" onclick="addHasilOlahRow()" class="px-3 py-1.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition flex items-center gap-1">
+                    <i class="ph-bold ph-plus"></i> Tambah Hasil Barang
+                  </button>
+                </div>
+                
+                <div id="containerHasilOlah" class="space-y-3">
+                  <!-- ROW HASIL OLAH DITAMBAHKAN DISINI -->
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
+                Selesaikan Pengolahan & Update Status Jadi Selesai Olah
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Hasil Pengolahan</h3>
+            <div id="tabelPengolahanBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
+          </div>
         </div>
+
+        <!-- SUB CONTENT 3: PENJUALAN -->
+        <div id="subcontent-transaksi-penjualan" class="sub-content-transaksi hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir
+            </h2>
+            <form id="formPenjualan" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Jual (Auto Generate)</label>
+                  <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Penjualan / Kasir (Logged In)</label>
+                  <input type="text" id="j_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-amber-50 text-amber-800 font-bold text-sm">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Siap Jual (Barang Jadi / Selesai Olah)</label>
+                <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
+                  <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
+                  <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Penjualan / Ongkir / Admin (Rp)</label>
+                  <input type="number" id="j_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-amber-700">
+                </div>
+              </div>
+              <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-500/20">
+                Simpan Penjualan & Update Status Terjual
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Penjualan</h3>
+            <div id="tabelPenjualanBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data...</p></div>
+          </div>
+        </div>
+
       </section>
 
-      <!-- 7. TAB ASSET -->
-      <section id="tab-asset" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-buildings text-cyan-600 text-lg"></i> Input Asset Operasional
-          </h2>
-          <form id="formAsset" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Asset (Otomatis)</label>
-                <input type="text" id="a_kode" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Asset</label>
-                <input type="text" id="a_nama" required placeholder="Mesin Lebur Perak" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Satuan</label>
-                <input type="text" id="a_satuan" required placeholder="unit / pcs" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah</label>
-                <input type="number" id="a_jumlah" required placeholder="1" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Harga (Rp)</label>
-                <input type="number" id="a_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
-              </div>
-            </div>
-            <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-cyan-500/20">
-              Simpan Data Asset
-            </button>
-          </form>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Asset Operasional</h3>
-          <div id="tabelAssetBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat asset...</p></div>
-        </div>
-      </section>
-
-      <!-- 8. TAB MENU USER & IMPORT EXCEL LOKAL -->
-      <section id="tab-user" class="tab-content hidden space-y-6">
+      <!-- 4. MENU UTAMA: MENU USER & IMPORT EXCEL LOKAL -->
+      <section id="main-tab-user" class="main-tab-content hidden space-y-6">
         
         <!-- FITUR IMPORT EXCEL LOKAL -->
         <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg space-y-4">
@@ -622,29 +646,21 @@
 
     </main>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
-      <button id="mob-nav-laporan" class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-2 rounded-xl text-brand-600" onclick="switchTab('laporan')">
+    <!-- MOBILE BOTTOM NAVIGATION BAR (DILENGKAPI 4 MENU RINGKAS UNTUK MONITORING MOBILE) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-3 py-2 flex justify-around items-center z-40 shadow-lg">
+      <button id="mob-nav-laporan" class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600" onclick="switchMainTab('laporan')">
         <i class="ph-bold ph-chart-line text-xl"></i>
         <span class="text-[10px] font-bold">Laporan</span>
       </button>
-      <button id="mob-nav-barang" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('barang')">
-        <i class="ph-bold ph-package text-xl"></i>
-        <span class="text-[10px] font-bold">Barang</span>
+      <button id="mob-nav-inputdata" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('inputdata')">
+        <i class="ph-bold ph-folder-plus text-xl"></i>
+        <span class="text-[10px] font-bold">Input Data</span>
       </button>
-      <button id="mob-nav-pembelian" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pembelian')">
-        <i class="ph-bold ph-shopping-cart text-xl"></i>
-        <span class="text-[10px] font-bold">Beli</span>
+      <button id="mob-nav-transaksi" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('transaksi')">
+        <i class="ph-bold ph-arrows-down-up text-xl"></i>
+        <span class="text-[10px] font-bold">Transaksi</span>
       </button>
-      <button id="mob-nav-pengolahan" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pengolahan')">
-        <i class="ph-bold ph-gear text-xl"></i>
-        <span class="text-[10px] font-bold">Olah</span>
-      </button>
-      <button id="mob-nav-penjualan" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('penjualan')">
-        <i class="ph-bold ph-currency-dollar text-xl"></i>
-        <span class="text-[10px] font-bold">Jual</span>
-      </button>
-      <button id="mob-nav-user" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('user')">
+      <button id="mob-nav-user" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400" onclick="switchMainTab('user')">
         <i class="ph-bold ph-user-gear text-xl"></i>
         <span class="text-[10px] font-bold">User</span>
       </button>
@@ -773,10 +789,10 @@
           loadUsersList();
           updatePenjualanDropdown();
 
-          // SET TAB LAPORAN SEBAGAI LANDING PAGE AWAL
-          switchTab('laporan');
+          // SET MENU LAPORAN SEBAGAI LANDING PAGE UTAMA
+          switchMainTab('laporan');
 
-          // SINKRONISASI REALTIME RINGKASAN STOK RESUME BARANG
+          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG
           initResumeDashboard();
 
           // Reset baris awal hasil olah jika kosong
@@ -836,10 +852,10 @@
 
     window.handleLogout = () => signOut(auth);
 
-    // LOGIKA PERPINDAHAN TAB
-    window.switchTab = (tabName) => {
-      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-      const targetTab = document.getElementById(`tab-${tabName}`);
+    // LOGIKA NAVIGASI UTAMA (4 TAB MENU UTAMA)
+    window.switchMainTab = (tabName) => {
+      document.querySelectorAll(".main-tab-content").forEach(el => el.classList.add("hidden"));
+      const targetTab = document.getElementById(`main-tab-${tabName}`);
       if (targetTab) targetTab.classList.remove("hidden");
 
       // Reset Nav Desktop Style
@@ -864,11 +880,43 @@
         activeMobNav.classList.add("text-brand-600");
       }
 
-      if (tabName === "penjualan") {
+      if (tabName === "transaksi") {
         updatePenjualanDropdown();
       }
       if (tabName === "laporan") {
         filterLaporan();
+      }
+    };
+
+    // LOGIKA INTERNAL SUB TAB SWITCHER (INPUT DATA & TRANSAKSI)
+    window.switchSubTab = (parentGroup, subName) => {
+      // Sembunyikan semua sub-content di bawah parent tersebut
+      document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
+      const targetSub = document.getElementById(`subcontent-${parentGroup}-${subName}`);
+      if (targetSub) targetSub.classList.remove("hidden");
+
+      // Reset style tombol sub tab
+      const parentContainer = targetSub.parentElement;
+      const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
+      buttons.forEach(btn => {
+        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "shadow-sm");
+        btn.classList.add("text-slate-600");
+      });
+
+      const activeSubBtn = document.getElementById(`sub-${parentGroup === 'inputdata' ? 'input' : 'trans'}-${subName}`);
+      if (activeSubBtn) {
+        activeSubBtn.classList.remove("text-slate-600");
+        activeSubBtn.classList.add("bg-white", "shadow-sm");
+        if (subName === 'barang') activeSubBtn.classList.add("text-brand-600");
+        if (subName === 'investor') activeSubBtn.classList.add("text-indigo-600");
+        if (subName === 'asset') activeSubBtn.classList.add("text-cyan-600");
+        if (subName === 'pembelian') activeSubBtn.classList.add("text-emerald-600");
+        if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
+        if (subName === 'penjualan') activeSubBtn.classList.add("text-amber-600");
+      }
+
+      if (subName === "penjualan") {
+        updatePenjualanDropdown();
       }
     };
 
@@ -1362,7 +1410,7 @@
       });
     });
 
-    // 6. INVESTOR
+    // 6. INVESTOR (HANYA SUPER ADMIN BISA TARIK MODAL)
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;

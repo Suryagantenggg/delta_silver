@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Phosphor Icons CDN -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <!-- SheetJS CDN (Membaca & Export File Excel) -->
+  <!-- SheetJS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <script>
@@ -36,7 +36,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white pb-24 md:pb-8">
 
-  <!-- SCREEN PENYEKAT TAMU (PENDING APPROVAL) -->
+  <!-- SCREEN PENYEKAT TAMU -->
   <div id="guestBlockOverlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl">
       <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-3xl">
@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <!-- AUTH CONTAINER (LOGIN / SIGNUP / FORGOT) -->
+  <!-- AUTH CONTAINER -->
   <div id="authOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 md:p-8 relative overflow-hidden">
       <div class="text-center mb-6">
@@ -140,7 +140,7 @@
       </button>
     </header>
 
-    <!-- NAVIGATION TABS (DESKTOP) -->
+    <!-- NAVIGATION TABS -->
     <nav class="hidden md:flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
       <button class="nav-btn active flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchTab('barang')">
         <i class="ph-bold ph-package text-base"></i> Master Barang
@@ -211,9 +211,15 @@
             <i class="ph-bold ph-shopping-cart-simple text-emerald-600 text-lg"></i> Input Transaksi Pembelian
           </h2>
           <form id="formPembelian" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Beli (Auto Generate)</label>
-              <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Beli (Auto Generate)</label>
+                <input type="text" id="p_faktur" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pembelian (Petugas Logged In)</label>
+                <input type="text" id="p_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-emerald-50 text-emerald-800 font-bold text-sm">
+              </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -227,7 +233,7 @@
                 <input type="text" id="p_satuan" required placeholder="gram / kg" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Beli</label>
                 <input type="number" step="0.01" id="p_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
@@ -235,6 +241,10 @@
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Beli / Satuan (Rp)</label>
                 <input type="number" id="p_harga" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Pembelian / Transport (Rp)</label>
+                <input type="number" id="p_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-emerald-700">
               </div>
             </div>
             <div>
@@ -260,32 +270,40 @@
       <section id="tab-pengolahan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok
+            <i class="ph-bold ph-arrows-clockwise text-purple-600 text-lg"></i> Proses Pengolahan Stok (Pemurnian)
           </h2>
           <form id="formPengolahan" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Antrean (Status: Tunggu Olah)</label>
-              <select id="o_select_item" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
-            </div>
-            <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-4">
-              <span class="text-xs font-bold text-purple-800 uppercase tracking-wider">Hasil Eksekusi Pengolahan</span>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label class="block text-[11px] font-semibold text-purple-900 mb-1">Nama Barang Setelah Olah</label>
-                  <input type="text" id="o_nama_setelah" required placeholder="Perak Murni 99.9%" class="w-full px-3.5 py-2 rounded-xl border border-purple-200 text-sm">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-purple-900 mb-1">Satuan Setelah Olah</label>
-                  <input type="text" id="o_satuan_setelah" required placeholder="gram / kg" class="w-full px-3.5 py-2 rounded-xl border border-purple-200 text-sm">
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-purple-900 mb-1">Jumlah Hasil Olah</label>
-                  <input type="number" step="0.01" id="o_jumlah_setelah" required placeholder="0" class="w-full px-3.5 py-2 rounded-xl border border-purple-200 text-sm">
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Antrean (Status: Tunggu Olah)</label>
+                <select id="o_select_item" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Pengolah (Petugas Logged In)</label>
+                <input type="text" id="o_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-purple-50 text-purple-800 font-bold text-sm">
               </div>
             </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Total Biaya Olah / Process Fee (Rp)</label>
+              <input type="number" id="o_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-purple-700">
+            </div>
+
+            <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Hasil Barang Setelah Olah (Bisa Lebih Dari 1 Item)</span>
+                <button type="button" onclick="addHasilOlahRow()" class="px-3 py-1.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition flex items-center gap-1">
+                  <i class="ph-bold ph-plus"></i> Tambah Hasil Barang
+                </button>
+              </div>
+              
+              <div id="containerHasilOlah" class="space-y-3">
+                <!-- ROW HASIL OLAH AKAN DITAMBAHKAN DINAMIS DISINI -->
+              </div>
+            </div>
+
             <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-purple-500/20">
-              Selesaikan Pengolahan & Ubah Status Jadi Selesai Olah
+              Selesaikan Pengolahan & Update Status Jadi Selesai Olah
             </button>
           </form>
         </div>
@@ -303,15 +321,21 @@
             <i class="ph-bold ph-receipt text-amber-600 text-lg"></i> Transaksi Penjualan POS Kasir
           </h2>
           <form id="formPenjualan" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Jual (Auto Generate)</label>
-              <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Transaksi Jual (Auto Generate)</label>
+                <input type="text" id="j_nota" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 text-slate-500 font-bold text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Penjualan / Kasir (Logged In)</label>
+                <input type="text" id="j_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-amber-50 text-amber-800 font-bold text-sm">
+              </div>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Barang Siap Jual (Barang Jadi / Selesai Olah)</label>
               <select id="j_select_barang" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"><option value="">Loading...</option></select>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Jual (Qty)</label>
                 <input type="number" step="0.01" id="j_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
@@ -319,6 +343,10 @@
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Harga Jual / Satuan (Rp)</label>
                 <input type="number" id="j_harga_satuan" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya Penjualan / Ongkir / Admin (Rp)</label>
+                <input type="number" id="j_biaya" placeholder="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-amber-700">
               </div>
             </div>
             <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-amber-500/20">
@@ -590,6 +618,7 @@
 
     let currentUser = null;
     let currentUserRole = "tamu";
+    let currentUserNameOrEmail = "";
     let lastLaporanData = [];
     const barangDocsCache = {};
 
@@ -610,6 +639,32 @@
       document.getElementById("a_kode").value = generateAutoCode("AST");
     }
 
+    // HELPER DYNAMIC HASIL OLAH ROW
+    window.addHasilOlahRow = (nama = '', satuan = '', jumlah = '') => {
+      const container = document.getElementById("containerHasilOlah");
+      const index = container.children.length;
+      const rowDiv = document.createElement("div");
+      rowDiv.className = "grid grid-cols-1 md:grid-cols-12 gap-2 items-center bg-white p-3 rounded-xl border border-purple-200 hasil-olah-row";
+      rowDiv.innerHTML = `
+        <div class="md:col-span-5">
+          <label class="block text-[10px] font-semibold text-purple-900 mb-1">Nama Barang Setelah Olah</label>
+          <input type="text" class="o_nama_setelah w-full px-3 py-1.5 rounded-lg border border-purple-200 text-xs font-semibold" required placeholder="Misal: Perak Murni 99.9%" value="${nama}">
+        </div>
+        <div class="md:col-span-3">
+          <label class="block text-[10px] font-semibold text-purple-900 mb-1">Satuan</label>
+          <input type="text" class="o_satuan_setelah w-full px-3 py-1.5 rounded-lg border border-purple-200 text-xs" required placeholder="gram / kg" value="${satuan}">
+        </div>
+        <div class="md:col-span-3">
+          <label class="block text-[10px] font-semibold text-purple-900 mb-1">Jumlah Hasil</label>
+          <input type="number" step="0.01" class="o_jumlah_setelah w-full px-3 py-1.5 rounded-lg border border-purple-200 text-xs font-bold" required placeholder="0" value="${jumlah}">
+        </div>
+        <div class="md:col-span-1 text-right md:text-center pt-2 md:pt-4">
+          ${index > 0 ? `<button type="button" onclick="this.closest('.hasil-olah-row').remove()" class="p-1.5 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 text-xs" title="Hapus Item"><i class="ph-bold ph-trash"></i></button>` : ''}
+        </div>
+      `;
+      container.appendChild(rowDiv);
+    };
+
     // AUTH OBSERVER & ROLE ACCESS CONTROL
     onAuthStateChanged(auth, async (user) => {
       const authOverlay = document.getElementById("authOverlay");
@@ -624,17 +679,25 @@
         authOverlay.classList.add("hidden");
         userDisplay.innerText = user.email;
 
-        // Fetch User Role from Firestore
+        // Fetch User Role & Nama Profile
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
         if (userDocSnap.exists()) {
-          currentUserRole = (userDocSnap.data().role || "tamu").toLowerCase();
+          const uData = userDocSnap.data();
+          currentUserRole = (uData.role || "tamu").toLowerCase();
+          currentUserNameOrEmail = uData.nama || user.email;
         } else {
           currentUserRole = "tamu";
+          currentUserNameOrEmail = user.email;
         }
 
         roleBadge.innerText = currentUserRole;
+
+        // Isi field PIC pada form
+        document.getElementById("p_pic").value = currentUserNameOrEmail;
+        document.getElementById("o_pic").value = currentUserNameOrEmail;
+        document.getElementById("j_pic").value = currentUserNameOrEmail;
 
         if (currentUserRole === "tamu") {
           guestBlock.classList.remove("hidden");
@@ -645,6 +708,12 @@
           refreshAutoCodes();
           loadUsersList();
           updatePenjualanDropdown();
+
+          // Reset baris awal hasil olah jika kosong
+          const container = document.getElementById("containerHasilOlah");
+          if (container && container.children.length === 0) {
+            addHasilOlahRow();
+          }
         }
       } else {
         authOverlay.classList.remove("hidden");
@@ -734,7 +803,6 @@
       } catch (err) { alert(err.message); }
     });
 
-    // RENDER BARANG KE UI TABEL & POPULASI DROPDOWN PEMBELIAN
     function renderBarangItems(allDocsMap) {
       const list = document.getElementById("tabelBarangBody");
       const pSelect = document.getElementById("p_select_master_barang");
@@ -771,7 +839,6 @@
       });
     }
 
-    // OTOMATIS ISI INPUT SATUAN SAAT BARANG DIPILIH PADA DROPDOWN PEMBELIAN
     document.getElementById("p_select_master_barang").addEventListener("change", (e) => {
       const selectedOption = e.target.options[e.target.selectedIndex];
       const satuan = selectedOption.getAttribute("data-satuan");
@@ -780,7 +847,6 @@
       }
     });
 
-    // Listener Realtime Koleksi "barang"
     onSnapshot(collection(db, "barang"), (snapshot) => {
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -790,7 +856,6 @@
       renderBarangItems(barangDocsCache);
     }, (err) => console.log("Listen barang notice:", err));
 
-    // Listener Realtime Koleksi "master_barang"
     onSnapshot(collection(db, "master_barang"), (snapshot) => {
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -809,21 +874,28 @@
       const statusOlahan = document.getElementById("p_status_olahan").value;
       const statusPenjualan = (statusOlahan === "non olahan") ? "Barang jadi" : "tunggu olah";
 
+      const qty = parseFloat(document.getElementById("p_jumlah").value) || 0;
+      const hargaSatuan = parseFloat(document.getElementById("p_harga").value) || 0;
+      const biayaPembelian = parseFloat(document.getElementById("p_biaya").value) || 0;
+
       try {
         await addDoc(collection(db, "pembelian"), {
           no_trx_beli: document.getElementById("p_faktur").value,
           Tanggal_beli: new Date().toISOString().split('T')[0],
           nama_brg: namaBarang,
           Satuan: document.getElementById("p_satuan").value,
-          Jumlah_beli: parseFloat(document.getElementById("p_jumlah").value),
-          Harga_satuan: parseFloat(document.getElementById("p_harga").value),
-          Total_harga: parseFloat(document.getElementById("p_jumlah").value) * parseFloat(document.getElementById("p_harga").value),
+          Jumlah_beli: qty,
+          Harga_satuan: hargaSatuan,
+          Biaya_pembelian: biayaPembelian,
+          Total_harga: (qty * hargaSatuan) + biayaPembelian,
+          pic_pembelian: currentUserNameOrEmail,
           Status: statusOlahan,
           Status_penjualan: statusPenjualan,
           created_at: serverTimestamp()
         });
         alert("Transaksi Pembelian Disimpan!");
         e.target.reset();
+        document.getElementById("p_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         updatePenjualanDropdown();
       } catch (err) { alert(err.message); }
@@ -842,9 +914,9 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
             <div>
-              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'} • ${d.Tanggal_beli || ''}</span>
+              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'} • ${d.Tanggal_beli || ''} • PIC: ${d.pic_pembelian || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg || '-'} (${d.Jumlah_beli || 0} ${d.Satuan || ''})</h4>
-              <p class="text-xs text-emerald-600 font-bold">Total: Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')}</p>
+              <p class="text-xs text-emerald-600 font-bold">Total: Rp ${Number(d.Total_harga || 0).toLocaleString('id-ID')} ${d.Biaya_pembelian ? `(Inc. Biaya: Rp ${Number(d.Biaya_pembelian).toLocaleString('id-ID')})` : ''}</p>
             </div>
             <div class="text-right">
               <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded ${d.Status_penjualan === 'tunggu olah' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${d.Status_penjualan || '-'}</span>
@@ -859,37 +931,62 @@
       updatePenjualanDropdown();
     });
 
-    // 3. PENGOLAHAN
+    // 3. PENGOLAHAN (DENGAN SUPPORT MULTI-ITEM HASIL OLAH)
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pId = document.getElementById("o_select_item").value;
       if (!pId) return alert("Pilih item antrean!");
+
+      const rows = document.querySelectorAll("#containerHasilOlah .hasil-olah-row");
+      if (rows.length === 0) return alert("Masukkan minimal 1 hasil barang pengolahan!");
+
+      const hasilOlahItems = [];
+      rows.forEach(r => {
+        const nama = r.querySelector(".o_nama_setelah").value.trim();
+        const satuan = r.querySelector(".o_satuan_setelah").value.trim();
+        const jumlah = parseFloat(r.querySelector(".o_jumlah_setelah").value) || 0;
+        if (nama && satuan && jumlah > 0) {
+          hasilOlahItems.push({ nama, satuan, jumlah });
+        }
+      });
+
+      if (hasilOlahItems.length === 0) return alert("Isi data hasil barang dengan benar!");
 
       try {
         const pRef = doc(db, "pembelian", pId);
         const pSnap = await getDoc(pRef);
         const pData = pSnap.data();
 
-        await addDoc(collection(db, "pengolahan"), {
-          no_trx_beli: pData.no_trx_beli,
-          Tanggal_beli: pData.Tanggal_beli,
-          nama_brg: pData.nama_brg,
-          Satuan: pData.Satuan,
-          Jumlah: pData.Jumlah_beli,
-          Harga_satuan: pData.Harga_satuan,
-          Total_harga: pData.Total_harga,
-          status: "selesai olah",
-          nama_brg_setelah_olah: document.getElementById("o_nama_setelah").value,
-          Satuan_setelah_olah: document.getElementById("o_satuan_setelah").value,
-          Jumlah_setelah_olah: parseFloat(document.getElementById("o_jumlah_setelah").value),
-          Status_penjualan: "Belum terjual",
-          created_at: serverTimestamp()
-        });
+        const biayaOlah = parseFloat(document.getElementById("o_biaya").value) || 0;
+
+        // Simpan dokumen pengolahan per item hasil olah ke database
+        for (const item of hasilOlahItems) {
+          await addDoc(collection(db, "pengolahan"), {
+            no_trx_beli: pData.no_trx_beli,
+            Tanggal_beli: pData.Tanggal_beli,
+            nama_brg: pData.nama_brg,
+            Satuan: pData.Satuan,
+            Jumlah: pData.Jumlah_beli,
+            Harga_satuan: pData.Harga_satuan,
+            Total_harga: pData.Total_harga,
+            biaya_olah: biayaOlah,
+            pic_pengolahan: currentUserNameOrEmail,
+            status: "selesai olah",
+            nama_brg_setelah_olah: item.nama,
+            Satuan_setelah_olah: item.satuan,
+            Jumlah_setelah_olah: item.jumlah,
+            Status_penjualan: "Belum terjual",
+            created_at: serverTimestamp()
+          });
+        }
 
         await updateDoc(pRef, { Status_penjualan: "selesai olah" });
 
-        alert("Pengolahan selesai & stok siap jual diperbarui!");
+        alert(`Pengolahan selesai! ${hasilOlahItems.length} jenis barang hasil olahan disimpan.`);
         e.target.reset();
+        document.getElementById("o_pic").value = currentUserNameOrEmail;
+        document.getElementById("containerHasilOlah").innerHTML = "";
+        addHasilOlahRow();
         updatePenjualanDropdown();
       } catch (err) { alert(err.message); }
     });
@@ -902,9 +999,9 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
             <div>
-              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'}</span>
+              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_beli || '-'} • PIC: ${d.pic_pengolahan || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg} ➔ ${d.nama_brg_setelah_olah}</h4>
-              <p class="text-xs text-purple-600 font-bold">Hasil: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah}</p>
+              <p class="text-xs text-purple-600 font-bold">Hasil: ${d.Jumlah_setelah_olah} ${d.Satuan_setelah_olah} ${d.biaya_olah ? `(Biaya Olah: Rp ${Number(d.biaya_olah).toLocaleString('id-ID')})` : ''}</p>
             </div>
             <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-700">${d.Status_penjualan || 'Belum terjual'}</span>
           </div>`;
@@ -913,7 +1010,7 @@
       updatePenjualanDropdown();
     });
 
-    // UPDATE PENJUALAN DROPDOWN (DENGAN MATCHING CASE-INSENSITIVE)
+    // UPDATE PENJUALAN DROPDOWN
     async function updatePenjualanDropdown() {
       const jSelect = document.getElementById("j_select_barang");
       if (!jSelect) return;
@@ -950,8 +1047,9 @@
       if (!selectedVal) return alert("Pilih barang siap jual terlebih dahulu!");
 
       const [type, itemDocId] = selectedVal.split("|");
-      const qtyJual = parseFloat(document.getElementById("j_jumlah").value);
-      const hargaJual = parseFloat(document.getElementById("j_harga_satuan").value);
+      const qtyJual = parseFloat(document.getElementById("j_jumlah").value) || 0;
+      const hargaJual = parseFloat(document.getElementById("j_harga_satuan").value) || 0;
+      const biayaPenjualan = parseFloat(document.getElementById("j_biaya").value) || 0;
 
       try {
         const itemRef = doc(db, type, itemDocId);
@@ -971,7 +1069,9 @@
           Satuan: satuan,
           Jumlah: qtyJual,
           Harga_jual: hargaJual,
-          Total_jual: qtyJual * hargaJual,
+          Biaya_penjualan: biayaPenjualan,
+          Total_jual: (qtyJual * hargaJual) - biayaPenjualan,
+          pic_penjualan: currentUserNameOrEmail,
           created_at: serverTimestamp()
         });
 
@@ -979,6 +1079,7 @@
 
         alert("Penjualan Berhasil!");
         e.target.reset();
+        document.getElementById("j_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         updatePenjualanDropdown();
       } catch (err) { alert(err.message); }
@@ -992,8 +1093,9 @@
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
             <div>
-              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_jual || '-'} • Ref: ${d.No_trx_beli || '-'}</span>
+              <span class="text-[10px] font-bold text-slate-400">${d.no_trx_jual || '-'} • Ref: ${d.No_trx_beli || '-'} • PIC: ${d.pic_penjualan || '-'}</span>
               <h4 class="text-sm font-bold text-slate-800">${d.nama_brg} (${d.Jumlah} ${d.Satuan})</h4>
+              ${d.Biaya_penjualan ? `<p class="text-[11px] text-slate-500">Biaya Jual: Rp ${Number(d.Biaya_penjualan).toLocaleString('id-ID')}</p>` : ''}
             </div>
             <span class="text-sm font-black text-amber-600">Rp ${Number(d.Total_jual || 0).toLocaleString('id-ID')}</span>
           </div>`;
@@ -1140,10 +1242,11 @@
       let html = `<div class='p-3 bg-brand-50 rounded-xl font-bold text-xs text-brand-700 mb-3'>Total Nominal: Rp ${Number(totalNominal).toLocaleString('id-ID')} (${lastLaporanData.length} Transaksi)</div>`;
 
       lastLaporanData.forEach(d => {
+        const pic = d.pic_penjualan || d.pic_pembelian || d.pic_pengolahan || '-';
         html += `
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
             <div>
-              <span class="font-bold text-slate-800">${d.no_trx_jual || d.no_trx_beli}</span> • ${d.Tanggal_jual || d.Tanggal_beli}
+              <span class="font-bold text-slate-800">${d.no_trx_jual || d.no_trx_beli}</span> • ${d.Tanggal_jual || d.Tanggal_beli} • <span class="text-brand-600 font-semibold">PIC: ${pic}</span>
               <p class="text-slate-500">${d.nama_brg} (${d.Jumlah || d.Jumlah_beli} ${d.Satuan})</p>
             </div>
             <span class="font-bold text-slate-900">Rp ${Number(d.Total_jual || d.Total_harga || 0).toLocaleString('id-ID')}</span>
@@ -1220,6 +1323,8 @@
           Satuan: "gram",
           Jumlah_beli: 500,
           Harga_satuan: 15000,
+          Biaya_pembelian: 50000,
+          pic_pembelian: "admin@delta.com",
           Status: "olahan"
         }];
       } else if (type === "pengolahan") {
@@ -1231,6 +1336,8 @@
           Jumlah: 500,
           Harga_satuan: 15000,
           Total_harga: 7500000,
+          biaya_olah: 100000,
+          pic_pengolahan: "admin@delta.com",
           status: "selesai olah",
           nama_brg_setelah_olah: "Perak Batangan 999",
           Satuan_setelah_olah: "gram",
@@ -1245,7 +1352,9 @@
           nama_brg: "Perak Batangan 999",
           Satuan: "gram",
           Jumlah: 100,
-          Harga_jual: 18000
+          Harga_jual: 18000,
+          Biaya_penjualan: 20000,
+          pic_penjualan: "admin@delta.com"
         }];
       } else if (type === "investors") {
         data = [{
@@ -1327,13 +1436,15 @@
             } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || row.jumlah_beli || 0);
               const price = parseFloat(row.Harga_satuan || row.harga_satuan || 0);
-              batchDoc.Total_harga = qty * price;
+              const biaya = parseFloat(row.Biaya_pembelian || row.biaya_pembelian || 0);
+              batchDoc.Total_harga = (qty * price) + biaya;
               batchDoc.Status_penjualan = ((row.Status || row.status) === "non olahan") ? "Barang jadi" : "tunggu olah";
               await addDoc(collection(db, "pembelian"), batchDoc);
             } else if (tableType === "penjualan") {
               const qty = parseFloat(row.Jumlah || row.jumlah || 0);
               const price = parseFloat(row.Harga_jual || row.harga_jual || 0);
-              batchDoc.Total_jual = qty * price;
+              const biaya = parseFloat(row.Biaya_penjualan || row.biaya_penjualan || 0);
+              batchDoc.Total_jual = (qty * price) - biaya;
               await addDoc(collection(db, "penjualan"), batchDoc);
             } else {
               await addDoc(collection(db, tableType), batchDoc);

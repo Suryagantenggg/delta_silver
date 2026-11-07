@@ -140,30 +140,30 @@
       </button>
     </header>
 
-    <!-- NAVIGATION TABS -->
+    <!-- NAVIGATION TABS (DESKTOP) -->
     <nav class="hidden md:flex items-center gap-2 mb-6 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
-      <button class="nav-btn active flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchTab('barang')">
-        <i class="ph-bold ph-package text-base"></i> Master Barang
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pembelian')">
-        <i class="ph-bold ph-shopping-cart text-base"></i> Pembelian
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pengolahan')">
-        <i class="ph-bold ph-gear text-base"></i> Pengolahan
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('penjualan')">
-        <i class="ph-bold ph-currency-dollar text-base"></i> Penjualan
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('investors')">
-        <i class="ph-bold ph-hand-coins text-base"></i> Investor
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('asset')">
-        <i class="ph-bold ph-buildings text-base"></i> Asset
-      </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('laporan')">
+      <button id="desk-nav-laporan" class="nav-btn active flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition bg-brand-600 text-white" onclick="switchTab('laporan')">
         <i class="ph-bold ph-chart-line text-base"></i> Laporan
       </button>
-      <button class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('user')">
+      <button id="desk-nav-barang" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('barang')">
+        <i class="ph-bold ph-package text-base"></i> Master Barang
+      </button>
+      <button id="desk-nav-pembelian" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pembelian')">
+        <i class="ph-bold ph-shopping-cart text-base"></i> Pembelian
+      </button>
+      <button id="desk-nav-pengolahan" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('pengolahan')">
+        <i class="ph-bold ph-gear text-base"></i> Pengolahan
+      </button>
+      <button id="desk-nav-penjualan" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('penjualan')">
+        <i class="ph-bold ph-currency-dollar text-base"></i> Penjualan
+      </button>
+      <button id="desk-nav-investors" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('investors')">
+        <i class="ph-bold ph-hand-coins text-base"></i> Investor
+      </button>
+      <button id="desk-nav-asset" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('asset')">
+        <i class="ph-bold ph-buildings text-base"></i> Asset
+      </button>
+      <button id="desk-nav-user" class="nav-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition text-slate-500 hover:bg-slate-50" onclick="switchTab('user')">
         <i class="ph-bold ph-user-gear text-base"></i> Menu User
       </button>
     </nav>
@@ -171,8 +171,98 @@
     <!-- CONTENT SECTIONS -->
     <main>
       
-      <!-- 1. TAB MASTER BARANG -->
-      <section id="tab-barang" class="tab-content block space-y-6">
+      <!-- 1. TAB LAPORAN (DEFAULT FIRST TAB) -->
+      <section id="tab-laporan" class="tab-content block space-y-6">
+        
+        <!-- RESUME WIDGET RINGKASAN BARANG -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Widget 1: Belum Diolah -->
+          <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-sm space-y-1">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-100">Barang Belum Diolah</span>
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-hourglass text-lg"></i>
+              </div>
+            </div>
+            <h3 id="res_belum_olah" class="text-2xl font-black">0</h3>
+            <p class="text-[11px] text-amber-100 font-medium">Status: Antrean / Tunggu Olah</p>
+          </div>
+
+          <!-- Widget 2: Sudah Diolah -->
+          <div class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-purple-100">Barang Sudah Diolah</span>
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-check-circle text-lg"></i>
+              </div>
+            </div>
+            <h3 id="res_sudah_olah" class="text-2xl font-black">0</h3>
+            <p class="text-[11px] text-purple-100 font-medium">Status: Pemurnian Selesai</p>
+          </div>
+
+          <!-- Widget 3: Sudah Dijual -->
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-100">Total Barang Dijual</span>
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="ph-bold ph-shopping-bag-open text-lg"></i>
+              </div>
+            </div>
+            <h3 id="res_sudah_jual" class="text-2xl font-black">0</h3>
+            <p class="text-[11px] text-emerald-100 font-medium">Status: Transaksi Terjual</p>
+          </div>
+        </div>
+
+        <!-- FILTER LAPORAN -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <i class="ph-bold ph-funnel text-brand-600 text-lg"></i> Filter Laporan Transaksi & Stok
+            </h2>
+            <!-- Quick Filter Presets -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="setFilterPreset('bulan_ini')" class="px-3 py-1.5 bg-brand-50 text-brand-600 hover:bg-brand-600 hover:text-white font-bold text-xs rounded-xl transition">Bulan Ini</button>
+              <button onclick="setFilterPreset('bulan_lalu')" class="px-3 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-700 hover:text-white font-bold text-xs rounded-xl transition">Bulan Lalu</button>
+              <button onclick="setFilterPreset('semua')" class="px-3 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-700 hover:text-white font-bold text-xs rounded-xl transition">Semua</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tipe Laporan Detail</label>
+              <select id="lap_tipe" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <option value="penjualan">Laporan Penjualan</option>
+                <option value="pembelian">Laporan Pembelian</option>
+                <option value="pengolahan">Laporan Pengolahan</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Mulai</label>
+              <input type="date" id="lap_tgl_mulai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Selesai</label>
+              <input type="date" id="lap_tgl_selesai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+            </div>
+          </div>
+          <button onclick="filterLaporan()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-brand-500/20">
+            Terapkan Filter & Tampilkan Data
+          </button>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Hasil Rincian Laporan</h3>
+            <button onclick="exportLaporanExcel()" class="px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition flex items-center gap-1.5">
+              <i class="ph-bold ph-file-xls"></i> Export Excel
+            </button>
+          </div>
+          <div id="laporanResult" class="space-y-3"><p class="text-xs text-slate-400">Pilih filter untuk melihat laporan.</p></div>
+        </div>
+      </section>
+
+      <!-- 2. TAB MASTER BARANG -->
+      <section id="tab-barang" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
             <i class="ph-bold ph-plus-circle text-brand-600 text-lg"></i> Input Master Barang
@@ -204,7 +294,7 @@
         </div>
       </section>
 
-      <!-- 2. TAB PEMBELIAN -->
+      <!-- 3. TAB PEMBELIAN -->
       <section id="tab-pembelian" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -266,7 +356,7 @@
         </div>
       </section>
 
-      <!-- 3. TAB PENGOLAHAN -->
+      <!-- 4. TAB PENGOLAHAN -->
       <section id="tab-pengolahan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -298,7 +388,7 @@
               </div>
               
               <div id="containerHasilOlah" class="space-y-3">
-                <!-- ROW HASIL OLAH AKAN DITAMBAHKAN DINAMIS DISINI -->
+                <!-- ROW HASIL OLAH DITAMBAHKAN DISINI -->
               </div>
             </div>
 
@@ -314,7 +404,7 @@
         </div>
       </section>
 
-      <!-- 4. TAB PENJUALAN -->
+      <!-- 5. TAB PENJUALAN -->
       <section id="tab-penjualan" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -361,7 +451,7 @@
         </div>
       </section>
 
-      <!-- 5. TAB INVESTOR -->
+      <!-- 6. TAB INVESTOR -->
       <section id="tab-investors" class="tab-content hidden space-y-6">
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
           <div>
@@ -417,7 +507,7 @@
         </div>
       </section>
 
-      <!-- 6. TAB ASSET -->
+      <!-- 7. TAB ASSET -->
       <section id="tab-asset" class="tab-content hidden space-y-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -457,45 +547,6 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
           <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Daftar Asset Operasional</h3>
           <div id="tabelAssetBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat asset...</p></div>
-        </div>
-      </section>
-
-      <!-- 7. TAB LAPORAN -->
-      <section id="tab-laporan" class="tab-content hidden space-y-6">
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-funnel text-brand-600 text-lg"></i> Filter Laporan Pembelian & Penjualan
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Tipe Laporan</label>
-              <select id="lap_tipe" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-                <option value="penjualan">Laporan Penjualan</option>
-                <option value="pembelian">Laporan Pembelian</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Mulai</label>
-              <input type="date" id="lap_tgl_mulai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Selesai</label>
-              <input type="date" id="lap_tgl_selesai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
-            </div>
-          </div>
-          <button onclick="filterLaporan()" class="mt-4 w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">
-            Tampilkan Laporan
-          </button>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Hasil Laporan</h3>
-            <button onclick="exportLaporanExcel()" class="px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition flex items-center gap-1.5">
-              <i class="ph-bold ph-file-xls"></i> Export Excel
-            </button>
-          </div>
-          <div id="laporanResult" class="space-y-3"><p class="text-xs text-slate-400">Pilih filter untuk melihat laporan.</p></div>
         </div>
       </section>
 
@@ -559,29 +610,29 @@
 
     </main>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <!-- MOBILE BOTTOM NAVIGATION BAR (DILENGKAPI TOMBOL LAPORAN DENGAN MATCHING ID) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
-      <button class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-2 rounded-xl text-brand-600" onclick="switchTab('barang')">
+      <button id="mob-nav-laporan" class="nav-btn-mobile active flex flex-col items-center gap-0.5 p-2 rounded-xl text-brand-600" onclick="switchTab('laporan')">
+        <i class="ph-bold ph-chart-line text-xl"></i>
+        <span class="text-[10px] font-bold">Laporan</span>
+      </button>
+      <button id="mob-nav-barang" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('barang')">
         <i class="ph-bold ph-package text-xl"></i>
         <span class="text-[10px] font-bold">Barang</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pembelian')">
+      <button id="mob-nav-pembelian" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pembelian')">
         <i class="ph-bold ph-shopping-cart text-xl"></i>
         <span class="text-[10px] font-bold">Beli</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pengolahan')">
+      <button id="mob-nav-pengolahan" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('pengolahan')">
         <i class="ph-bold ph-gear text-xl"></i>
         <span class="text-[10px] font-bold">Olah</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('penjualan')">
+      <button id="mob-nav-penjualan" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('penjualan')">
         <i class="ph-bold ph-currency-dollar text-xl"></i>
         <span class="text-[10px] font-bold">Jual</span>
       </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('investors')">
-        <i class="ph-bold ph-hand-coins text-xl"></i>
-        <span class="text-[10px] font-bold">Investor</span>
-      </button>
-      <button class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('user')">
+      <button id="mob-nav-user" class="nav-btn-mobile flex flex-col items-center gap-0.5 p-2 rounded-xl text-slate-400" onclick="switchTab('user')">
         <i class="ph-bold ph-user-gear text-xl"></i>
         <span class="text-[10px] font-bold">User</span>
       </button>
@@ -642,6 +693,7 @@
     // HELPER DYNAMIC HASIL OLAH ROW
     window.addHasilOlahRow = (nama = '', satuan = '', jumlah = '') => {
       const container = document.getElementById("containerHasilOlah");
+      if (!container) return;
       const index = container.children.length;
       const rowDiv = document.createElement("div");
       rowDiv.className = "grid grid-cols-1 md:grid-cols-12 gap-2 items-center bg-white p-3 rounded-xl border border-purple-200 hasil-olah-row";
@@ -709,6 +761,12 @@
           loadUsersList();
           updatePenjualanDropdown();
 
+          // SET TAB LAPORAN SEBAGAI LANDING PAGE AWAL SAAT LOGIN
+          switchTab('laporan');
+
+          // SINKRONISASI REALTIME RINGKASAN RESUME BARANG
+          initResumeDashboard();
+
           // Reset baris awal hasil olah jika kosong
           const container = document.getElementById("containerHasilOlah");
           if (container && container.children.length === 0) {
@@ -766,25 +824,187 @@
 
     window.handleLogout = () => signOut(auth);
 
+    // LOGIKA PERPINDAHAN TAB (TERMASUK TOMBOL LAPORAN MOBILE)
     window.switchTab = (tabName) => {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-      document.getElementById(`tab-${tabName}`).classList.remove("hidden");
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      if (targetTab) targetTab.classList.remove("hidden");
 
+      // Reset Nav Desktop Style
       document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.classList.remove("bg-brand-600", "text-white");
         btn.classList.add("text-slate-500");
       });
+      const activeDeskNav = document.getElementById(`desk-nav-${tabName}`);
+      if (activeDeskNav) {
+        activeDeskNav.classList.remove("text-slate-500");
+        activeDeskNav.classList.add("bg-brand-600", "text-white");
+      }
+
+      // Reset Nav Mobile Style
       document.querySelectorAll(".nav-btn-mobile").forEach(btn => {
         btn.classList.remove("text-brand-600");
         btn.classList.add("text-slate-400");
       });
+      const activeMobNav = document.getElementById(`mob-nav-${tabName}`);
+      if (activeMobNav) {
+        activeMobNav.classList.remove("text-slate-400");
+        activeMobNav.classList.add("text-brand-600");
+      }
 
       if (tabName === "penjualan") {
         updatePenjualanDropdown();
       }
+      if (tabName === "laporan") {
+        filterLaporan();
+      }
     };
 
-    // 1. MASTER BARANG
+    // 1. RESUME WIDGET RINGKASAN BARANG & FILTER LAPORAN
+    async function initResumeDashboard(tglMulai = null, tglSelesai = null) {
+      let qtyBelumOlah = 0;
+      let qtySudahOlah = 0;
+      let qtySudahJual = 0;
+
+      try {
+        // Fetch Pembelian (Belum Diolah)
+        const snapBeli = await getDocs(collection(db, "pembelian"));
+        snapBeli.forEach(docSnap => {
+          const d = docSnap.data();
+          const tgl = d.Tanggal_beli;
+          if (tglMulai && tgl < tglMulai) return;
+          if (tglSelesai && tgl > tglSelesai) return;
+
+          const st = (d.Status_penjualan || '').toLowerCase();
+          if (st === 'tunggu olah') {
+            qtyBelumOlah += parseFloat(d.Jumlah_beli || 0);
+          }
+        });
+
+        // Fetch Pengolahan (Sudah Diolah)
+        const snapOlah = await getDocs(collection(db, "pengolahan"));
+        snapOlah.forEach(docSnap => {
+          const d = docSnap.data();
+          const tgl = d.Tanggal_beli;
+          if (tglMulai && tgl < tglMulai) return;
+          if (tglSelesai && tgl > tglSelesai) return;
+
+          qtySudahOlah += parseFloat(d.Jumlah_setelah_olah || 0);
+        });
+
+        // Fetch Penjualan (Sudah Dijual)
+        const snapJual = await getDocs(collection(db, "penjualan"));
+        snapJual.forEach(docSnap => {
+          const d = docSnap.data();
+          const tgl = d.Tanggal_jual;
+          if (tglMulai && tgl < tglMulai) return;
+          if (tglSelesai && tgl > tglSelesai) return;
+
+          qtySudahJual += parseFloat(d.Jumlah || 0);
+        });
+
+        document.getElementById("res_belum_olah").innerText = qtyBelumOlah.toLocaleString('id-ID');
+        document.getElementById("res_sudah_olah").innerText = qtySudahOlah.toLocaleString('id-ID');
+        document.getElementById("res_sudah_jual").innerText = qtySudahJual.toLocaleString('id-ID');
+      } catch (err) {
+        console.error("Gagal memuat resume barang:", err);
+      }
+    }
+
+    // PRESET FILTER TANGGAL (BULAN INI / BULAN LALU / SEMUA)
+    window.setFilterPreset = (preset) => {
+      const now = new Date();
+      const tglMulaiEl = document.getElementById("lap_tgl_mulai");
+      const tglSelesaiEl = document.getElementById("lap_tgl_selesai");
+
+      if (preset === 'bulan_ini') {
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const firstDay = `${y}-${m}-01`;
+        const lastDayObj = new Date(y, now.getMonth() + 1, 0);
+        const lastDay = `${y}-${m}-${String(lastDayObj.getDate()).padStart(2, '0')}`;
+        tglMulaiEl.value = firstDay;
+        tglSelesaiEl.value = lastDay;
+      } else if (preset === 'bulan_lalu') {
+        const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const y = prevMonthDate.getFullYear();
+        const m = String(prevMonthDate.getMonth() + 1).padStart(2, '0');
+        const firstDay = `${y}-${m}-01`;
+        const lastDayObj = new Date(y, prevMonthDate.getMonth() + 1, 0);
+        const lastDay = `${y}-${m}-${String(lastDayObj.getDate()).padStart(2, '0')}`;
+        tglMulaiEl.value = firstDay;
+        tglSelesaiEl.value = lastDay;
+      } else if (preset === 'semua') {
+        tglMulaiEl.value = "";
+        tglSelesaiEl.value = "";
+      }
+
+      filterLaporan();
+    };
+
+    window.filterLaporan = async () => {
+      const tipe = document.getElementById("lap_tipe").value;
+      const tglMulai = document.getElementById("lap_tgl_mulai").value;
+      const tglSelesai = document.getElementById("lap_tgl_selesai").value;
+      const resultDiv = document.getElementById("laporanResult");
+
+      initResumeDashboard(tglMulai, tglSelesai);
+
+      resultDiv.innerHTML = "<p class='text-xs text-slate-400'>Memuat laporan...</p>";
+      const snap = await getDocs(collection(db, tipe));
+      
+      lastLaporanData = [];
+      let totalNominal = 0;
+
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const tglDoc = d.Tanggal_jual || d.Tanggal_beli;
+
+        let passFilter = true;
+        if (tglMulai && tglDoc < tglMulai) passFilter = false;
+        if (tglSelesai && tglDoc > tglSelesai) passFilter = false;
+
+        if (passFilter) {
+          lastLaporanData.push(d);
+          totalNominal += (d.Total_jual || d.Total_harga || 0);
+        }
+      });
+
+      if (!lastLaporanData.length) {
+        resultDiv.innerHTML = "<p class='text-xs text-slate-400'>Tidak ada data laporan sesuai filter.</p>";
+        return;
+      }
+
+      let html = `<div class='p-3 bg-brand-50 rounded-xl font-bold text-xs text-brand-700 mb-3'>Total Nominal: Rp ${Number(totalNominal).toLocaleString('id-ID')} (${lastLaporanData.length} Transaksi)</div>`;
+
+      lastLaporanData.forEach(d => {
+        const pic = d.pic_penjualan || d.pic_pembelian || d.pic_pengolahan || '-';
+        const namaBarang = d.nama_brg_setelah_olah || d.nama_brg;
+        const qty = d.Jumlah_setelah_olah || d.Jumlah || d.Jumlah_beli || 0;
+        const sat = d.Satuan_setelah_olah || d.Satuan || '';
+
+        html += `
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+            <div>
+              <span class="font-bold text-slate-800">${d.no_trx_jual || d.no_trx_beli}</span> • ${d.Tanggal_jual || d.Tanggal_beli} • <span class="text-brand-600 font-semibold">PIC: ${pic}</span>
+              <p class="text-slate-500">${namaBarang} (${qty} ${sat})</p>
+            </div>
+            <span class="font-bold text-slate-900">Rp ${Number(d.Total_jual || d.Total_harga || 0).toLocaleString('id-ID')}</span>
+          </div>`;
+      });
+
+      resultDiv.innerHTML = html;
+    };
+
+    window.exportLaporanExcel = () => {
+      if (!lastLaporanData.length) return alert("Tampilkan data laporan terlebih dahulu!");
+      const ws = XLSX.utils.json_to_sheet(lastLaporanData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+      XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
+    };
+
+    // 2. MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -865,7 +1085,7 @@
       renderBarangItems(barangDocsCache);
     }, (err) => console.log("Listen master_barang notice:", err));
 
-    // 2. PEMBELIAN
+    // 3. PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
       const namaBarang = document.getElementById("p_select_master_barang").value;
@@ -898,6 +1118,7 @@
         document.getElementById("p_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         updatePenjualanDropdown();
+        initResumeDashboard();
       } catch (err) { alert(err.message); }
     });
 
@@ -931,7 +1152,7 @@
       updatePenjualanDropdown();
     });
 
-    // 3. PENGOLAHAN (DENGAN SUPPORT MULTI-ITEM HASIL OLAH)
+    // 4. PENGOLAHAN
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pId = document.getElementById("o_select_item").value;
@@ -959,7 +1180,6 @@
 
         const biayaOlah = parseFloat(document.getElementById("o_biaya").value) || 0;
 
-        // Simpan dokumen pengolahan per item hasil olah ke database
         for (const item of hasilOlahItems) {
           await addDoc(collection(db, "pengolahan"), {
             no_trx_beli: pData.no_trx_beli,
@@ -988,6 +1208,7 @@
         document.getElementById("containerHasilOlah").innerHTML = "";
         addHasilOlahRow();
         updatePenjualanDropdown();
+        initResumeDashboard();
       } catch (err) { alert(err.message); }
     });
 
@@ -1040,7 +1261,7 @@
       }
     }
 
-    // 4. PENJUALAN
+    // 5. PENJUALAN
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
       const selectedVal = document.getElementById("j_select_barang").value;
@@ -1082,6 +1303,7 @@
         document.getElementById("j_pic").value = currentUserNameOrEmail;
         refreshAutoCodes();
         updatePenjualanDropdown();
+        initResumeDashboard();
       } catch (err) { alert(err.message); }
     });
 
@@ -1102,7 +1324,7 @@
       });
     });
 
-    // 5. INVESTOR
+    // 6. INVESTOR
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       const statusTipe = document.getElementById("inv_status").value;
@@ -1170,7 +1392,7 @@
       }
     });
 
-    // 6. ASSET
+    // 7. ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1206,63 +1428,6 @@
           </div>`;
       });
     });
-
-    // 7. LAPORAN
-    window.filterLaporan = async () => {
-      const tipe = document.getElementById("lap_tipe").value;
-      const tglMulai = document.getElementById("lap_tgl_mulai").value;
-      const tglSelesai = document.getElementById("lap_tgl_selesai").value;
-      const resultDiv = document.getElementById("laporanResult");
-
-      resultDiv.innerHTML = "<p class='text-xs text-slate-400'>Memuat laporan...</p>";
-      const snap = await getDocs(collection(db, tipe));
-      
-      lastLaporanData = [];
-      let totalNominal = 0;
-
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const tglDoc = d.Tanggal_jual || d.Tanggal_beli;
-
-        let passFilter = true;
-        if (tglMulai && tglDoc < tglMulai) passFilter = false;
-        if (tglSelesai && tglDoc > tglSelesai) passFilter = false;
-
-        if (passFilter) {
-          lastLaporanData.push(d);
-          totalNominal += (d.Total_jual || d.Total_harga || 0);
-        }
-      });
-
-      if (!lastLaporanData.length) {
-        resultDiv.innerHTML = "<p class='text-xs text-slate-400'>Tidak ada data laporan sesuai filter.</p>";
-        return;
-      }
-
-      let html = `<div class='p-3 bg-brand-50 rounded-xl font-bold text-xs text-brand-700 mb-3'>Total Nominal: Rp ${Number(totalNominal).toLocaleString('id-ID')} (${lastLaporanData.length} Transaksi)</div>`;
-
-      lastLaporanData.forEach(d => {
-        const pic = d.pic_penjualan || d.pic_pembelian || d.pic_pengolahan || '-';
-        html += `
-          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
-            <div>
-              <span class="font-bold text-slate-800">${d.no_trx_jual || d.no_trx_beli}</span> • ${d.Tanggal_jual || d.Tanggal_beli} • <span class="text-brand-600 font-semibold">PIC: ${pic}</span>
-              <p class="text-slate-500">${d.nama_brg} (${d.Jumlah || d.Jumlah_beli} ${d.Satuan})</p>
-            </div>
-            <span class="font-bold text-slate-900">Rp ${Number(d.Total_jual || d.Total_harga || 0).toLocaleString('id-ID')}</span>
-          </div>`;
-      });
-
-      resultDiv.innerHTML = html;
-    };
-
-    window.exportLaporanExcel = () => {
-      if (!lastLaporanData.length) return alert("Tampilkan data laporan terlebih dahulu!");
-      const ws = XLSX.utils.json_to_sheet(lastLaporanData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-      XLSX.writeFile(wb, `Laporan_${document.getElementById("lap_tipe").value}.xlsx`);
-    };
 
     // 8. USER MANAGEMENT & IMPORT EXCEL
     async function loadUsersList() {
@@ -1458,6 +1623,7 @@
           fileInput.value = "";
           if (tableType === "users") loadUsersList();
           updatePenjualanDropdown();
+          initResumeDashboard();
         } catch (err) {
           console.error(err);
           log.innerText = `❌ Error Import: ${err.message}`;

@@ -318,6 +318,7 @@
         </div>
 
         <div id="subcontent-neraca-ringkasan" class="sub-content-neraca block space-y-6">
+          <!-- 4 KARTU NERACA UTAMA -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
               <div class="flex justify-between items-center text-slate-400">
@@ -348,11 +349,35 @@
 
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-brand-500">
               <div class="flex justify-between items-center text-slate-400">
-                <span class="text-xs font-bold uppercase tracking-wider">Laba Bersih</span>
+                <span class="text-xs font-bold uppercase tracking-wider">Laba Bersih Operasional</span>
                 <i class="ph-bold ph-trend-up text-brand-500 text-xl"></i>
               </div>
               <h3 id="neraca_margin" class="text-xl md:text-2xl font-black text-slate-900">Rp 0</h3>
               <p class="text-[11px] text-slate-400">(Penjualan - Pembelian) - Biaya Op</p>
+            </div>
+          </div>
+
+          <!-- KARTU ALOKASI LABA DITAHAN TERBARU DI BAWAH LABA BERSIH (MENAMPILKAN TANGGAL TERAKHIR INP) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-indigo-50 to-slate-50 p-5 rounded-2xl border border-indigo-100 shadow-sm space-y-2 border-l-4 border-l-indigo-600">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-900">Laba Ditahan (Tabel: laba_ditahan)</span>
+                <i class="ph-bold ph-piggy-bank text-indigo-600 text-xl"></i>
+              </div>
+              <h3 id="neraca_laba_ditahan_display" class="text-2xl font-black text-indigo-700">Rp 0</h3>
+              <div class="flex justify-between items-center text-[11px] text-indigo-600 font-semibold pt-1">
+                <span>Periode Tanggal Terakhir: <b id="neraca_laba_ditahan_tgl">-</b></span>
+                <span>PIC Admin: <b id="neraca_laba_ditahan_pic">-</b></span>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-50 to-slate-50 p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-2 border-l-4 border-l-emerald-600">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-900">Sisa Laba Bersih Siap Dibagikan (Dividen Pool)</span>
+                <i class="ph-bold ph-hand-coins text-emerald-600 text-xl"></i>
+              </div>
+              <h3 id="neraca_laba_siap_dibagi_display" class="text-2xl font-black text-emerald-700">Rp 0</h3>
+              <p class="text-[11px] text-emerald-600 font-semibold">Total Laba Bersih - Laba Ditahan</p>
             </div>
           </div>
 
@@ -456,7 +481,7 @@
           </div>
         </div>
 
-        <!-- SUB TAB 2: INVESTOR + FITUR LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan IN RUPIAH) -->
+        <!-- SUB TAB 2: INVESTOR + FITUR LABA DITAHAN (HANYA MENGGUNAKAN PERIODE_TANGGAL) -->
         <div id="subcontent-inputdata-investor" class="sub-content-inputdata hidden space-y-6">
           <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
             <div>
@@ -468,14 +493,14 @@
             </div>
           </div>
 
-          <!-- KOTAK PENGATURAN LABA DITAHAN (NOMINAL RUPIAH DI SIMPAN KE TABEL laba_ditahan) -->
+          <!-- KOTAK PENGATURAN LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan: periode_tanggal, pic, jumlah) -->
           <div id="boxLabaDitahan" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
                 <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <i class="ph-bold ph-piggy-bank text-indigo-600 text-lg"></i> Alokasi Laba Ditahan (Tabel: laba_ditahan)
+                  <i class="ph-bold ph-piggy-bank text-indigo-600 text-lg"></i> Input Alokasi Laba Ditahan (Tabel: laba_ditahan)
                 </h2>
-                <p class="text-xs text-slate-500">Tentukan nominal Rupiah laba bersih yang ditahan sebagai modal cadangan perusahaan.</p>
+                <p class="text-xs text-slate-500">Nilai laba ditahan mengacu pada <b class="text-slate-800">periode_tanggal</b> terakhir yang di-input.</p>
               </div>
               <div id="roleBadgeLabaDitahan" class="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg">
                 Role: Admin/Super Admin Only
@@ -488,9 +513,9 @@
                 <span id="displayLabaBersihOlah" class="text-sm font-black text-slate-800">Rp 0</span>
               </div>
               <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
-                <span class="text-[10px] font-bold text-indigo-600 uppercase block">Cadangan Laba Ditahan</span>
+                <span class="text-[10px] font-bold text-indigo-600 uppercase block">Alokasi Laba Ditahan Terakhir</span>
                 <span id="displayNominalLabaDitahan" class="text-sm font-black text-indigo-700">Rp 0</span>
-                <p id="displayLastUpdateLabaDitahan" class="text-[9px] text-indigo-500 font-semibold mt-0.5">PIC: - | Tanggal: -</p>
+                <p id="displayLastUpdateLabaDitahan" class="text-[9px] text-indigo-500 font-semibold mt-0.5">PIC: - | Periode Tanggal: -</p>
               </div>
               <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
                 <span class="text-[10px] font-bold text-emerald-600 uppercase block">Laba Siap Dibagikan (Dividen Pool)</span>
@@ -560,7 +585,7 @@
           </div>
         </div>
 
-        <!-- SUB TAB 3: PENARIKAN (PEMBAGIAN LABA & TARIK MODAL FITUR LIST + LENGKAP FITUR) -->
+        <!-- SUB TAB 3: PENARIKAN -->
         <div id="subcontent-inputdata-penarikan" class="sub-content-inputdata hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -832,6 +857,7 @@
                   <option value="penjualan">Penjualan (Tabel_penjualan)</option>
                   <option value="investors">Investor (Tabel_investor)</option>
                   <option value="master_barang">Master Barang (Tabel_master_barang)</option>
+                  <option value="laba_ditahan">Laba Ditahan (Tabel_laba_ditahan)</option>
                 </select>
               </div>
               <div>
@@ -934,16 +960,17 @@
     let lastLaporanData = [];
     let currentGlobalLabaBersih = 0;
     
-    // STATE LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan)
+    // STATE LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan: periode_tanggal, pic, jumlah)
     let globalNominalLabaDitahan = 0;
     let globalLastUpdateLabaDitahan = { pic: '-', periode_tanggal: '-' };
 
     const barangDocsCache = {};
 
-    // CACHE REALTIME UNTUK DASHBOARD STOK
+    // CACHE REALTIME DASHBOARD STOK
     let snapshotBeliCache = [];
     let snapshotOlahCache = [];
     let snapshotJualCache = [];
+    let snapshotInvestorCache = [];
 
     function generateAutoCode(prefix) {
       const d = new Date();
@@ -1089,7 +1116,7 @@
       }
     }
 
-    // REALTIME LISTENER TABEL laba_ditahan (MENGAMBIL RECORD TERBARU ATAU TOTAL ALOKASI)
+    // REALTIME LISTENER TABEL laba_ditahan (MEMBACA DATA TERAKHIR BERDASARKAN periode_tanggal)
     function initLabaDitahanRealtimeListener() {
       onSnapshot(collection(db, "laba_ditahan"), (snapshot) => {
         let latestRecord = null;
@@ -1098,6 +1125,7 @@
         snapshot.forEach(docSnap => {
           const d = docSnap.data();
           const pTgl = d.periode_tanggal || "";
+          // Membandingkan dan memilih periode_tanggal yang paling akhir
           if (pTgl >= latestDate) {
             latestDate = pTgl;
             latestRecord = d;
@@ -1119,10 +1147,11 @@
         if (inputJml && !inputJml.value) inputJml.value = globalNominalLabaDitahan;
 
         calculateNeracaAndUserSummary();
+        renderInvestorsData();
       });
     }
 
-    // SIMPAN RECORD ALOKASI LABA DITAHAN KE TABEL laba_ditahan
+    // SIMPAN RECORD ALOKASI LABA DITAHAN (HANYA FIELD: periode_tanggal, pic, jumlah)
     document.getElementById("formSettingLabaDitahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (currentUserRole !== "super admin" && currentUserRole !== "admin") {
@@ -1139,12 +1168,12 @@
         await addDoc(collection(db, "laba_ditahan"), {
           periode_tanggal: pTanggal,
           pic: currentUserNameOrEmail,
-          jumlah: nominal,
-          created_at: new Date().toISOString()
+          jumlah: nominal
         });
 
-        alert(`Berhasil menyimpan alokasi Laba Ditahan sebesar Rp ${nominal.toLocaleString('id-ID')} ke tabel laba_ditahan!`);
+        alert(`Berhasil menyimpan alokasi Laba Ditahan sebesar Rp ${nominal.toLocaleString('id-ID')} (Periode: ${pTanggal})!`);
         calculateNeracaAndUserSummary();
+        renderInvestorsData();
       } catch (err) {
         alert("Gagal menyimpan alokasi: " + err.message);
       }
@@ -1230,6 +1259,7 @@
       }
       if (tabName === "inputdata") {
         calculateNeracaAndUserSummary();
+        renderInvestorsData();
       }
     };
 
@@ -1263,6 +1293,7 @@
       }
       if (parentGroup === "inputdata" && (subName === "investor" || subName === "penarikan")) {
         calculateNeracaAndUserSummary();
+        renderInvestorsData();
       }
     };
 
@@ -1284,6 +1315,12 @@
         snapshotJualCache = [];
         snapshot.forEach(docSnap => snapshotJualCache.push(docSnap.data()));
         calculateResumeDashboard();
+      });
+
+      onSnapshot(collection(db, "investors"), (snapshot) => {
+        snapshotInvestorCache = [];
+        snapshot.forEach(docSnap => snapshotInvestorCache.push(docSnap.data()));
+        renderInvestorsData();
       });
     }
 
@@ -1354,7 +1391,7 @@
       if (resJual) resJual.innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
     }
 
-    // NERACA & USER SUMMARY & UPDATE STATS LABA DITAHAN NOMINAL RUPIAH
+    // NERACA & USER SUMMARY & DISPLAY LABA DITAHAN DI RINGKASAN NERACA
     window.calculateNeracaAndUserSummary = async () => {
       let sumBeliNominal = 0;
       let sumJualNominal = 0;
@@ -1430,10 +1467,11 @@
         if (elMargin) elMargin.innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
         if (elBiaya) elBiaya.innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
 
-        // UPDATE STATISTIK KOTAK LABA DITAHAN (BERDASARKAN NOMINAL RUPIAH DARI TABEL laba_ditahan)
+        // CALCULATE DENGAN LABA DITAHAN NOMINAL RUPIAH
         const nominalDitahan = globalNominalLabaDitahan;
         const nominalSiapDibagi = Math.max(0, labaBersih - nominalDitahan);
 
+        // UPDATE KOTAK INFORMASI DI SUB TAB INVESTOR
         const dLabaBersih = document.getElementById("displayLabaBersihOlah");
         const dNominalDitahan = document.getElementById("displayNominalLabaDitahan");
         const dNominalDibagi = document.getElementById("displayNominalLabaDibagikan");
@@ -1442,7 +1480,18 @@
         if (dLabaBersih) dLabaBersih.innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
         if (dNominalDitahan) dNominalDitahan.innerText = `Rp ${nominalDitahan.toLocaleString('id-ID')}`;
         if (dNominalDibagi) dNominalDibagi.innerText = `Rp ${nominalSiapDibagi.toLocaleString('id-ID')}`;
-        if (dLastUpdateInfo) dLastUpdateInfo.innerText = `PIC: ${globalLastUpdateLabaDitahan.pic} | Periode: ${globalLastUpdateLabaDitahan.periode_tanggal}`;
+        if (dLastUpdateInfo) dLastUpdateInfo.innerText = `PIC: ${globalLastUpdateLabaDitahan.pic} | Periode Tanggal: ${globalLastUpdateLabaDitahan.periode_tanggal}`;
+
+        // DISPLAY LABA DITAHAN PADA MENU NERACA - TAB RINGKASAN NERACA (DI BAWAH LABA BERSIH)
+        const neracaDitahanDisplay = document.getElementById("neraca_laba_ditahan_display");
+        const neracaDitahanTgl = document.getElementById("neraca_laba_ditahan_tgl");
+        const neracaDitahanPic = document.getElementById("neraca_laba_ditahan_pic");
+        const neracaSiapDibagiDisplay = document.getElementById("neraca_laba_siap_dibagi_display");
+
+        if (neracaDitahanDisplay) neracaDitahanDisplay.innerText = `Rp ${nominalDitahan.toLocaleString('id-ID')}`;
+        if (neracaDitahanTgl) neracaDitahanTgl.innerText = globalLastUpdateLabaDitahan.periode_tanggal;
+        if (neracaDitahanPic) neracaDitahanPic.innerText = globalLastUpdateLabaDitahan.pic;
+        if (neracaSiapDibagiDisplay) neracaSiapDibagiDisplay.innerText = `Rp ${nominalSiapDibagi.toLocaleString('id-ID')}`;
 
         const userContainer = document.getElementById("containerUserSummary");
         if (!userContainer) return;
@@ -1474,7 +1523,7 @@
       } catch (err) { console.error(err); }
     };
 
-    // MUTASI ARUS KAS (CASH FLOW) - FIELD TANGGAL_INVESTASI
+    // MUTASI ARUS KAS (CASH FLOW)
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
       if (!container) return;
@@ -1996,7 +2045,7 @@
       });
     });
 
-    // FITUR LENGKAP INVESTOR & PENARIKAN (MODAL POP-UP DENGAN PORSI LABA DITAHAN NOMINAL RUPIAH)
+    // INPUT DATA INVESTOR & MODAL POPUP
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -2013,7 +2062,6 @@
       } catch (err) { alert(err.message); }
     });
 
-    // MODAL HANDLERS FOR AKSI INVESTOR
     window.openInvestorActionModal = (nama, hp, statusAksi) => {
       if ((statusAksi === "Tarik Modal" || statusAksi === "Tarik Laba") && currentUserRole !== "super admin" && currentUserRole !== "admin") {
         return alert("Akses Ditolak! Hanya Admin/Super Admin yang dapat memproses penarikan.");
@@ -2073,25 +2121,22 @@
       } catch (err) { alert(err.message); }
     });
 
-    onSnapshot(collection(db, "investors"), async (snapshot) => {
+    // FUNGSI RENDER DATA INVESTOR DENGAN PERHITUNGAN PORSI LABA DITAHAN BERFUNGSI FULL
+    function renderInvestorsData() {
       const listSummary = document.getElementById("tabelInvestorBody");
       const penarikanList = document.getElementById("tabelRiwayatPenarikanBody");
       const totalDisplay = document.getElementById("totalInvestasiDisplay");
       const cardsContainer = document.getElementById("listInvestorActionCards");
-      
+
       if (listSummary) listSummary.innerHTML = "";
       if (penarikanList) penarikanList.innerHTML = "";
       if (cardsContainer) cardsContainer.innerHTML = "";
 
-      // 1. UPDATE LABA BERSIH TERLEBIH DAHULU SEBELUM MENGKALKULASI ESTIMASI LABA
-      await calculateNeracaAndUserSummary();
-
       const investorMap = {};
       let totalModalGrup = 0;
 
-      // PASS 1: AKUMULASI TRANSAKSI UNTUK SETIAP INVESTOR & HITUNG TOTAL MODAL GRUP
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
+      // PASS 1: AKUMULASI TRANSAKSI
+      snapshotInvestorCache.forEach(d => {
         const nama = d.Nama || "Anonim";
         const jumlah = parseFloat(d.Jumlah || 0);
         const st = (d.Status || "").toLowerCase();
@@ -2136,20 +2181,20 @@
 
       if (totalDisplay) totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
 
-      // PASS 2: RENDER KARTU INVESTOR DENGAN PORSI PERSENTASE (%) & KALKULASI LABA DITAHAN NOMINAL RUPIAH
+      // PASS 2: KALKULASI PORSI & LABA DITAHAN NOMINAL RUPIAH PER INVESTOR
       for (const [nama, data] of Object.entries(investorMap)) {
         const porsiRatio = totalModalGrup > 0 ? (data.modalTotal / totalModalGrup) : 0;
         const porsiPct = (porsiRatio * 100).toFixed(2);
         
-        // Net Laba Siap Dibagi (Seluruh Investor) = Max(0, Total Laba Bersih - Total Laba Ditahan)
+        // Sisa Laba Bersih Siap Dibagi (Seluruh Investor)
         const netLabaSiapDibagi = Math.max(0, currentGlobalLabaBersih - globalNominalLabaDitahan);
         
-        // Hak Laba Kotor Investor dari Dividen Pool
+        // Hak Laba Investor dari Dividen Pool
         const hakLabaInvestorNominal = netLabaSiapDibagi * porsiRatio;
         const sisaHakLabaNet = hakLabaInvestorNominal - data.ditarikLabaTotal;
         const alokasiDitahanInvestor = (globalNominalLabaDitahan * porsiRatio);
 
-        // RENDER 1: RESUME INVESTOR DI TAB INPUT DATA -> SUB TAB INVESTOR
+        // RENDER 1: SUB TAB INVESTOR
         if (listSummary) {
           listSummary.innerHTML += `
             <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-3">
@@ -2166,7 +2211,7 @@
             </div>`;
         }
 
-        // RENDER 2: KARTU AKSI DENGAN PORSI & KALKULASI DI TAB INPUT DATA -> SUB TAB PENARIKAN
+        // RENDER 2: SUB TAB PENARIKAN (KARTU AKSI CEPAT)
         if (cardsContainer) {
           cardsContainer.innerHTML += `
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-4 shadow-sm hover:border-brand-300 transition">
@@ -2215,7 +2260,7 @@
             </div>`;
         }
       }
-    });
+    }
 
     // ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
@@ -2288,6 +2333,7 @@
       else if (type === "penjualan") data = [{ no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001", nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000, Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com", tipe_asal: "pengolahan" }];
       else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
       else if (type === "master_barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
+      else if (type === "laba_ditahan") data = [{ periode_tanggal: "2026-11-07", pic: "admin@delta.com", jumlah: 10000000 }];
 
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
@@ -2332,6 +2378,9 @@
             } else if (tableType === "master_barang") {
               batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", Tanggal_beli: todayStr };
               await addDoc(collection(db, "master_barang"), batchDoc);
+            } else if (tableType === "laba_ditahan") {
+              batchDoc = { periode_tanggal: row.periode_tanggal || todayStr, pic: row.pic || currentUserNameOrEmail, jumlah: parseFloat(row.jumlah || 0) };
+              await addDoc(collection(db, "laba_ditahan"), batchDoc);
             } else if (tableType === "investors") {
               batchDoc = { 
                 Nama: row.Nama || "Anonim", 
@@ -2366,6 +2415,7 @@
           if (tableType === "users") loadUsersList();
           loadMultiPenjualanItems();
           calculateNeracaAndUserSummary();
+          renderInvestorsData();
           loadCashFlowData();
         } catch (err) { alert(`Gagal: ${err.message}`); }
         finally { 

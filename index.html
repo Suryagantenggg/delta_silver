@@ -464,6 +464,15 @@
           </button>
         </div>
 
+        <!-- CONTAINER PESAN JIKA SEMUA SUB TAB DI-UNCHECK -->
+        <div id="no-subtab-neraca" class="hidden p-8 bg-white rounded-3xl border border-slate-100 text-center space-y-3 shadow-sm">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+            <i class="ph-bold ph-lock-key"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-900">Akses Sub-Modul Dibatasi</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda memiliki izin ke menu Neraca, namun Super Admin tidak memberikan otorisasi untuk sub-tab di dalamnya.</p>
+        </div>
+
         <div id="subcontent-neraca-ringkasan" class="sub-content-neraca block space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
@@ -602,6 +611,15 @@
           <button id="sub-input-asset" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'asset')">
             <i class="ph-bold ph-buildings"></i> Asset
           </button>
+        </div>
+
+        <!-- CONTAINER PESAN JIKA SEMUA SUB TAB DI-UNCHECK -->
+        <div id="no-subtab-inputdata" class="hidden p-8 bg-white rounded-3xl border border-slate-100 text-center space-y-3 shadow-sm">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+            <i class="ph-bold ph-lock-key"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-900">Akses Sub-Modul Dibatasi</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda memiliki izin ke menu Input Data, namun Super Admin tidak memberikan otorisasi untuk sub-tab di dalamnya.</p>
         </div>
 
         <!-- SUB TAB 1: MASTER BARANG -->
@@ -822,6 +840,15 @@
           </button>
         </div>
 
+        <!-- CONTAINER PESAN JIKA SEMUA SUB TAB DI-UNCHECK -->
+        <div id="no-subtab-transaksi" class="hidden p-8 bg-white rounded-3xl border border-slate-100 text-center space-y-3 shadow-sm">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+            <i class="ph-bold ph-lock-key"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-900">Akses Sub-Modul Dibatasi</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda memiliki izin ke menu Transaksi, namun Super Admin tidak memberikan otorisasi untuk sub-tab di dalamnya.</p>
+        </div>
+
         <!-- SUB CONTENT 1: PEMBELIAN -->
         <div id="subcontent-transaksi-pembelian" class="sub-content-transaksi block space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
@@ -1003,6 +1030,15 @@
           <button id="sub-user-excel" class="sub-tab-btn flex-1 min-w-[110px] py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'excel')">
             <i class="ph-bold ph-file-arrow-up"></i> Import Excel
           </button>
+        </div>
+
+        <!-- CONTAINER PESAN JIKA SEMUA SUB TAB DI-UNCHECK -->
+        <div id="no-subtab-user" class="hidden p-8 bg-white rounded-3xl border border-slate-100 text-center space-y-3 shadow-sm">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+            <i class="ph-bold ph-lock-key"></i>
+          </div>
+          <h3 class="text-sm font-bold text-slate-900">Akses Sub-Modul Dibatasi</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda memiliki izin ke menu User, namun Super Admin tidak memberikan otorisasi untuk sub-tab di dalamnya.</p>
         </div>
 
         <!-- SUB TAB 1: OTORISASI ROLE USER -->
@@ -1231,6 +1267,13 @@
       sub_user_otorisasi: true, sub_user_control: true, sub_user_rekening: true, sub_user_excel: true
     };
 
+    // FUNGSI CEK OTORISASI AMAN
+    window.hasPermission = (key) => {
+      if (currentUserRole === "super admin") return true;
+      if (!currentUserPermissions) return true;
+      return currentUserPermissions[key] !== false;
+    };
+
     function generateAutoCode(prefix) {
       const d = new Date();
       const dateStr = d.getFullYear().toString() +
@@ -1354,14 +1397,6 @@
 
     // FILTER DAN PENERAPAN VISIBILITAS NAVIGASI BERDASARKAN PERMISSIONS
     function applyUIPermissionsFilter() {
-      const isSuper = (currentUserRole === "super admin");
-
-      const checkPerm = (key) => {
-        if (isSuper) return true;
-        if (!currentUserPermissions) return true;
-        return currentUserPermissions[key] !== false;
-      };
-
       // 1. SEMBUNYIKAN/TAMPILKAN NAVIGASI MENU UTAMA
       const mainMenus = ['laporan', 'neraca', 'inputdata', 'transaksi', 'user'];
       let firstAllowedMain = null;
@@ -1369,7 +1404,7 @@
       mainMenus.forEach(mKey => {
         const deskBtn = document.getElementById(`desk-nav-${mKey}`);
         const mobBtn = document.getElementById(`mob-nav-${mKey}`);
-        const isAllowed = checkPerm(mKey);
+        const isAllowed = window.hasPermission(mKey);
 
         if (deskBtn) deskBtn.style.display = isAllowed ? '' : 'none';
         if (mobBtn) mobBtn.style.display = isAllowed ? '' : 'none';
@@ -1396,7 +1431,7 @@
 
       subTabs.forEach(st => {
         const btn = document.getElementById(`sub-${st.parent}-${st.key}`);
-        const isAllowed = checkPerm(st.pKey) && checkPerm(st.parent);
+        const isAllowed = window.hasPermission(st.pKey) && window.hasPermission(st.parent);
         if (btn) btn.style.display = isAllowed ? '' : 'none';
       });
 
@@ -1527,6 +1562,8 @@
     // FORM SIMPAN TRANSAKSI REKENING BANK
     document.getElementById("formBankTrx").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_user_rekening')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk menyimpan data pada sub-tab Rekening Bank.");
+
       const tgl = document.getElementById("bank_tanggal").value;
       const status = document.getElementById("bank_status").value;
       const norek = document.getElementById("bank_norek").value;
@@ -1626,8 +1663,7 @@
 
     // FUNGSI SWITCH MAIN TAB DENGAN VALIDASI OTORISASI SANITIZED
     window.switchMainTab = (tabName) => {
-      const isSuper = (currentUserRole === "super admin");
-      if (!isSuper && currentUserPermissions && currentUserPermissions[tabName] === false) {
+      if (!window.hasPermission(tabName)) {
         console.warn(`Akses ditolak ke menu utama: ${tabName}`);
         return;
       }
@@ -1665,9 +1701,26 @@
       };
 
       if (subTabOrder[tabName]) {
+        let hasAnySubTabAllowed = false;
+        
+        // Sembunyikan semua sub content terlebih dahulu
+        document.querySelectorAll(`.sub-content-${tabName}`).forEach(el => el.classList.add("hidden"));
+
         for (const subItem of subTabOrder[tabName]) {
           const success = window.switchSubTab(tabName, subItem);
-          if (success) break;
+          if (success) {
+            hasAnySubTabAllowed = true;
+            break;
+          }
+        }
+
+        const noSubTabBox = document.getElementById(`no-subtab-${tabName}`);
+        if (noSubTabBox) {
+          if (!hasAnySubTabAllowed) {
+            noSubTabBox.classList.remove("hidden");
+          } else {
+            noSubTabBox.classList.add("hidden");
+          }
         }
       }
 
@@ -1687,13 +1740,10 @@
         user: { otorisasi: 'sub_user_otorisasi', control: 'sub_user_control', rekening: 'sub_user_rekening', excel: 'sub_user_excel' }
       };
 
-      const isSuper = (currentUserRole === "super admin");
-      if (!isSuper && currentUserPermissions) {
-        const permKey = permMap[parentGroup]?.[subName];
-        if (permKey && (currentUserPermissions[permKey] === false || currentUserPermissions[parentGroup] === false)) {
-          console.warn(`Akses ditolak untuk sub-tab: ${parentGroup} -> ${subName}`);
-          return false;
-        }
+      const permKey = permMap[parentGroup]?.[subName];
+      if (permKey && (!window.hasPermission(permKey) || !window.hasPermission(parentGroup))) {
+        console.warn(`Akses ditolak untuk sub-tab: ${parentGroup} -> ${subName}`);
+        return false;
       }
 
       document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
@@ -2153,6 +2203,8 @@
     // MASTER BARANG
     document.getElementById("formBarang").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_input_barang')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk menyimpan Master Barang.");
+
       try {
         const itemData = { 
           kode_brg: document.getElementById("b_kode").value, 
@@ -2210,6 +2262,8 @@
     // PEMBELIAN
     document.getElementById("formPembelian").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_trans_pembelian')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk menyimpan Transaksi Pembelian.");
+
       const namaBarang = document.getElementById("p_select_master_barang").value;
       if (!namaBarang) return alert("Pilih Master Barang!");
 
@@ -2282,6 +2336,8 @@
     // PENGOLAHAN (MULTI SELECT)
     document.getElementById("formPengolahan").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_trans_pengolahan')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk memproses Pengolahan.");
+
       const selectedAntrean = document.querySelectorAll("input[name='antrean_olah']:checked");
       if (!selectedAntrean.length) return alert("Pilih minimal 1 item antrean yang akan diolah!");
 
@@ -2423,6 +2479,8 @@
 
     document.getElementById("formPenjualan").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_trans_penjualan')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk memproses Transaksi Penjualan.");
+
       const rows = document.querySelectorAll(".item-multi-jual-row");
       const selectedItems = [];
 
@@ -2494,6 +2552,8 @@
     // INPUT DATA INVESTOR & MODAL POPUP
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_input_investor')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk menambah data Investor.");
+
       try {
         await addDoc(collection(db, "investors"), {
           Nama: document.getElementById("inv_nama").value, 
@@ -2702,6 +2762,8 @@
     // ASSET
     document.getElementById("formAsset").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!window.hasPermission('sub_input_asset')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk menyimpan Asset.");
+
       try {
         await addDoc(collection(db, "assets"), {
           kode_aset: document.getElementById("a_kode").value, nama_aset: document.getElementById("a_nama").value,
@@ -2924,6 +2986,8 @@
     };
 
     window.processExcelImport = async () => {
+      if (!window.hasPermission('sub_user_excel')) return alert("Akses Ditolak! Anda tidak memiliki izin untuk mengimpor Excel.");
+
       const fileInput = document.getElementById("excelFileInput");
       const tableType = document.getElementById("excelTableType").value;
       const btn = document.getElementById("btnProcessImport");

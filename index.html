@@ -885,10 +885,15 @@
     }
 
     function refreshAutoCodes() {
-      document.getElementById("b_kode").value = generateAutoCode("BRG");
-      document.getElementById("p_faktur").value = generateAutoCode("BUY");
-      document.getElementById("j_nota").value = generateAutoCode("POS");
-      document.getElementById("a_kode").value = generateAutoCode("AST");
+      const bKode = document.getElementById("b_kode");
+      const pFaktur = document.getElementById("p_faktur");
+      const jNota = document.getElementById("j_nota");
+      const aKode = document.getElementById("a_kode");
+
+      if (bKode) bKode.value = generateAutoCode("BRG");
+      if (pFaktur) pFaktur.value = generateAutoCode("BUY");
+      if (jNota) jNota.value = generateAutoCode("POS");
+      if (aKode) aKode.value = generateAutoCode("AST");
     }
 
     window.addHasilOlahRow = (nama = '', satuan = '', jumlah = '') => {
@@ -917,6 +922,7 @@
       container.appendChild(rowDiv);
     };
 
+    // LOGIKA PERBAIKAN AUTH STATE CHANGED
     onAuthStateChanged(auth, async (user) => {
       const authOverlay = document.getElementById("authOverlay");
       const appContainer = document.getElementById("appContainer");
@@ -927,49 +933,58 @@
       currentUser = user;
 
       if (user) {
-        authOverlay.classList.add("hidden");
-        userDisplay.innerText = user.email;
+        if (authOverlay) authOverlay.classList.add("hidden");
+        if (userDisplay) userDisplay.innerText = user.email;
 
-        const userDocRef = doc(doc(db, "users", user.uid));
-        const userDocSnap = await getDoc(doc(db, "users", user.uid));
+        try {
+          // PERBAIKAN SINTAKS DOKUMEN FIRESTORE
+          const userDocSnap = await getDoc(doc(db, "users", user.uid));
 
-        if (userDocSnap.exists()) {
-          const uData = userDocSnap.data();
-          currentUserRole = (uData.role || "tamu").toLowerCase();
-          currentUserNameOrEmail = uData.nama || user.email;
-        } else {
-          currentUserRole = "tamu";
-          currentUserNameOrEmail = user.email;
-        }
-
-        roleBadge.innerText = currentUserRole;
-
-        document.getElementById("p_pic").value = currentUserNameOrEmail;
-        document.getElementById("o_pic").value = currentUserNameOrEmail;
-        document.getElementById("j_pic").value = currentUserNameOrEmail;
-
-        if (currentUserRole === "tamu") {
-          guestBlock.classList.remove("hidden");
-          appContainer.classList.add("hidden");
-        } else {
-          guestBlock.classList.add("hidden");
-          appContainer.classList.remove("hidden");
-          refreshAutoCodes();
-          loadUsersList();
-          loadMultiPenjualanItems();
-          initRealtimeDashboardListeners();
-
-          switchMainTab('laporan');
-
-          const container = document.getElementById("containerHasilOlah");
-          if (container && container.children.length === 0) {
-            addHasilOlahRow();
+          if (userDocSnap.exists()) {
+            const uData = userDocSnap.data();
+            currentUserRole = (uData.role || "tamu").toLowerCase();
+            currentUserNameOrEmail = uData.nama || user.email;
+          } else {
+            currentUserRole = "tamu";
+            currentUserNameOrEmail = user.email;
           }
+
+          if (roleBadge) roleBadge.innerText = currentUserRole;
+
+          const pPic = document.getElementById("p_pic");
+          const oPic = document.getElementById("o_pic");
+          const jPic = document.getElementById("j_pic");
+          if (pPic) pPic.value = currentUserNameOrEmail;
+          if (oPic) oPic.value = currentUserNameOrEmail;
+          if (jPic) jPic.value = currentUserNameOrEmail;
+
+          if (currentUserRole === "tamu") {
+            if (guestBlock) guestBlock.classList.remove("hidden");
+            if (appContainer) appContainer.classList.add("hidden");
+          } else {
+            if (guestBlock) guestBlock.classList.add("hidden");
+            if (appContainer) appContainer.classList.remove("hidden");
+
+            refreshAutoCodes();
+            loadUsersList();
+            loadMultiPenjualanItems();
+            initRealtimeDashboardListeners();
+
+            switchMainTab('laporan');
+
+            const container = document.getElementById("containerHasilOlah");
+            if (container && container.children.length === 0) {
+              addHasilOlahRow();
+            }
+          }
+        } catch (err) {
+          console.error("Gagal membaca profil user:", err);
+          alert("Gagal memuat profil pengguna: " + err.message);
         }
       } else {
-        authOverlay.classList.remove("hidden");
-        appContainer.classList.add("hidden");
-        guestBlock.classList.add("hidden");
+        if (authOverlay) authOverlay.classList.remove("hidden");
+        if (appContainer) appContainer.classList.add("hidden");
+        if (guestBlock) guestBlock.classList.add("hidden");
       }
     });
 
@@ -1089,7 +1104,7 @@
       }
     };
 
-    // 1. INISIALISASI REALTIME LISTENERS UTK RESUME CARD LAPORAN
+    // REALTIME LISTENERS DASHBOARD
     function initRealtimeDashboardListeners() {
       onSnapshot(collection(db, "pembelian"), (snapshot) => {
         snapshotBeliCache = [];
@@ -1111,8 +1126,8 @@
     }
 
     function calculateResumeDashboard() {
-      const tglMulai = document.getElementById("lap_tgl_mulai").value;
-      const tglSelesai = document.getElementById("lap_tgl_selesai").value;
+      const tglMulai = document.getElementById("lap_tgl_mulai")?.value;
+      const tglSelesai = document.getElementById("lap_tgl_selesai")?.value;
 
       let totalPembelianOlahan = 0;
       let totalMasukOlah = 0;
@@ -1166,13 +1181,18 @@
       const netHasilOlahanReady = Math.max(0, totalHasilOlah - totalJualOlahan);
       const netNonOlahanReady = Math.max(0, totalPembelianNonOlahan - totalJualNonOlahan);
 
-      document.getElementById("res_belum_olah").innerText = netBelumDiolah.toLocaleString('id-ID');
-      document.getElementById("res_sudah_olah").innerText = netHasilOlahanReady.toLocaleString('id-ID');
-      document.getElementById("res_non_olah").innerText = netNonOlahanReady.toLocaleString('id-ID');
-      document.getElementById("res_sudah_jual").innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
+      const resBelum = document.getElementById("res_belum_olah");
+      const resSudah = document.getElementById("res_sudah_olah");
+      const resNon = document.getElementById("res_non_olah");
+      const resJual = document.getElementById("res_sudah_jual");
+
+      if (resBelum) resBelum.innerText = netBelumDiolah.toLocaleString('id-ID');
+      if (resSudah) resSudah.innerText = netHasilOlahanReady.toLocaleString('id-ID');
+      if (resNon) resNon.innerText = netNonOlahanReady.toLocaleString('id-ID');
+      if (resJual) resJual.innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
     }
 
-    // 2. NERACA & USER SUMMARY
+    // NERACA & USER SUMMARY
     window.calculateNeracaAndUserSummary = async () => {
       let sumBeliNominal = 0;
       let sumJualNominal = 0;
@@ -1238,14 +1258,20 @@
         const labaBersih = (sumJualNominal - sumBeliNominal) - totalBiayaOperasional;
         currentGlobalLabaBersih = labaBersih;
 
-        document.getElementById("neraca_total_beli").innerText = `Rp ${sumBeliNominal.toLocaleString('id-ID')}`;
-        document.getElementById("neraca_total_jual").innerText = `Rp ${sumJualNominal.toLocaleString('id-ID')}`;
-        document.getElementById("neraca_margin").innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
-        document.getElementById("neraca_total_biaya_op").innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
+        const elBeli = document.getElementById("neraca_total_beli");
+        const elJual = document.getElementById("neraca_total_jual");
+        const elMargin = document.getElementById("neraca_margin");
+        const elBiaya = document.getElementById("neraca_total_biaya_op");
+
+        if (elBeli) elBeli.innerText = `Rp ${sumBeliNominal.toLocaleString('id-ID')}`;
+        if (elJual) elJual.innerText = `Rp ${sumJualNominal.toLocaleString('id-ID')}`;
+        if (elMargin) elMargin.innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
+        if (elBiaya) elBiaya.innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
 
         const userContainer = document.getElementById("containerUserSummary");
-        userContainer.innerHTML = "";
+        if (!userContainer) return;
 
+        userContainer.innerHTML = "";
         const keys = Object.keys(userStats);
         if (keys.length === 0) {
           userContainer.innerHTML = `<p class="text-xs text-slate-400">Belum ada aktivitas transaksi user.</p>`;
@@ -1272,9 +1298,10 @@
       } catch (err) { console.error(err); }
     };
 
-    // 3. MUTASI ARUS KAS (CASH FLOW) - SESUAI FIELD TANGGAL_INVESTASI
+    // MUTASI ARUS KAS (CASH FLOW) - FIELD TANGGAL_INVESTASI
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
+      if (!container) return;
       container.innerHTML = `<p class="text-xs text-slate-400">Mengkalkulasi arus kas...</p>`;
 
       const flowItems = [];
@@ -1308,7 +1335,7 @@
           }
         });
 
-        // HANYA MENGGUNAKAN TANGGAL_INVESTASI UNTUK TABEL INVESTORS
+        // TABEL INVESTORS: HANYA MEMBACA TANGGAL_INVESTASI
         const snapInv = await getDocs(collection(db, "investors"));
         snapInv.forEach(docSnap => {
           const d = docSnap.data();
@@ -1329,9 +1356,13 @@
 
         flowItems.sort((a, b) => (b.tgl > a.tgl ? 1 : -1));
 
-        document.getElementById("cf_total_in").innerText = `Rp ${totalKasIn.toLocaleString('id-ID')}`;
-        document.getElementById("cf_total_out").innerText = `Rp ${totalKasOut.toLocaleString('id-ID')}`;
-        document.getElementById("cf_total_net").innerText = `Rp ${(totalKasIn - totalKasOut).toLocaleString('id-ID')}`;
+        const cfIn = document.getElementById("cf_total_in");
+        const cfOut = document.getElementById("cf_total_out");
+        const cfNet = document.getElementById("cf_total_net");
+
+        if (cfIn) cfIn.innerText = `Rp ${totalKasIn.toLocaleString('id-ID')}`;
+        if (cfOut) cfOut.innerText = `Rp ${totalKasOut.toLocaleString('id-ID')}`;
+        if (cfNet) cfNet.innerText = `Rp ${(totalKasIn - totalKasOut).toLocaleString('id-ID')}`;
 
         if (flowItems.length === 0) {
           container.innerHTML = `<p class="text-xs text-slate-400">Belum ada mutasi arus kas.</p>`;
@@ -1385,7 +1416,10 @@
     };
 
     window.filterLaporan = async () => {
-      const tipe = document.getElementById("lap_tipe").value;
+      const tipeEl = document.getElementById("lap_tipe");
+      if (!tipeEl) return;
+
+      const tipe = tipeEl.value;
       const tglMulai = document.getElementById("lap_tgl_mulai").value;
       const tglSelesai = document.getElementById("lap_tgl_selesai").value;
       const resultDiv = document.getElementById("laporanResult");
@@ -1457,7 +1491,7 @@
           Tanggal_beli: new Date().toISOString().split('T')[0] 
         };
         await addDoc(collection(db, "master_barang"), itemData);
-        alert("Master barang berhasil disimpan ke koleksi master_barang!");
+        alert("Master barang berhasil disimpan!");
         e.target.reset();
         refreshAutoCodes();
       } catch (err) { alert(err.message); }
@@ -1538,6 +1572,8 @@
     onSnapshot(collection(db, "pembelian"), (snapshot) => {
       const list = document.getElementById("tabelPembelianBody");
       const multiAntreanBox = document.getElementById("multi_select_antrean_container");
+      if (!list || !multiAntreanBox) return;
+
       list.innerHTML = "";
       multiAntreanBox.innerHTML = "";
 
@@ -1627,6 +1663,7 @@
 
     onSnapshot(collection(db, "pengolahan"), (snapshot) => {
       const list = document.getElementById("tabelPengolahanBody");
+      if (!list) return;
       list.innerHTML = "";
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -1769,6 +1806,7 @@
 
     onSnapshot(collection(db, "penjualan"), (snapshot) => {
       const list = document.getElementById("tabelPenjualanBody");
+      if (!list) return;
       list.innerHTML = "";
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -1783,7 +1821,7 @@
       });
     });
 
-    // INVESTOR & PENARIKAN (MENGGUNAKAN HANYA FIELD TANGGAL_INVESTASI)
+    // INVESTOR & PENARIKAN (HANYA PAKAI FIELD TANGGAL_INVESTASI)
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1833,6 +1871,8 @@
       const totalDisplay = document.getElementById("totalInvestasiDisplay");
       const penSelect = document.getElementById("pen_select_investor");
       
+      if (!list || !penarikanList || !penSelect) return;
+
       list.innerHTML = "";
       penarikanList.innerHTML = "";
       penSelect.innerHTML = '<option value="">-- Pilih Investor --</option>';
@@ -1861,7 +1901,6 @@
           investorMap[nama].ditarikLabaTotal += jumlah;
         }
 
-        // Tampilkan Riwayat Penarikan
         penarikanList.innerHTML += `
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
             <div>
@@ -1875,7 +1914,7 @@
           </div>`;
       });
 
-      totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
+      if (totalDisplay) totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
 
       for (const [nama, data] of Object.entries(investorMap)) {
         const porsiRatio = totalModalGrup > 0 ? (data.modalTotal / totalModalGrup) : 0;
@@ -1884,7 +1923,6 @@
         const hakLabaKotor = currentGlobalLabaBersih * porsiRatio;
         const sisaHakLabaNet = hakLabaKotor - data.ditarikLabaTotal;
 
-        // Populate Dropdown Investor di Form Penarikan
         penSelect.innerHTML += `<option value="${nama}" data-hp="${data.hp}">${nama} (Modal: Rp ${data.modalTotal.toLocaleString('id-ID')})</option>`;
 
         list.innerHTML += `
@@ -1920,6 +1958,7 @@
 
     onSnapshot(collection(db, "assets"), (snapshot) => {
       const list = document.getElementById("tabelAssetBody");
+      if (!list) return;
       list.innerHTML = "";
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
@@ -1934,6 +1973,7 @@
     // USER MANAGEMENT & IMPORT EXCEL
     async function loadUsersList() {
       const list = document.getElementById("tabelUsersBody");
+      if (!list) return;
       list.innerHTML = "";
       if (currentUserRole !== "super admin") {
         list.innerHTML = `<p class="text-xs text-slate-400 font-medium">Hanya Role Super Admin yang memiliki akses mengontrol role user.</p>`;
@@ -2017,7 +2057,7 @@
               batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", Tanggal_beli: todayStr };
               await addDoc(collection(db, "master_barang"), batchDoc);
             } else if (tableType === "investors") {
-              // IMPORT KHUSUS INVESTORS: HANYA PAKAI TANGGAL_INVESTASI
+              // IMPORT INVESTOR HANYA MENGGUNAKAN TANGGAL_INVESTASI
               batchDoc = { 
                 Nama: row.Nama || "Anonim", 
                 Nomor_hp: row.Nomor_hp || "-", 

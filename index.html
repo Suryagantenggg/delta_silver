@@ -318,7 +318,6 @@
         </div>
 
         <div id="subcontent-neraca-ringkasan" class="sub-content-neraca block space-y-6">
-          <!-- 4 KARTU NERACA UTAMA -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-2 border-l-4 border-l-rose-500">
               <div class="flex justify-between items-center text-slate-400">
@@ -357,7 +356,6 @@
             </div>
           </div>
 
-          <!-- KARTU ALOKASI LABA DITAHAN TERBARU DI BAWAH LABA BERSIH (MENAMPILKAN TANGGAL TERAKHIR INP) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-gradient-to-br from-indigo-50 to-slate-50 p-5 rounded-2xl border border-indigo-100 shadow-sm space-y-2 border-l-4 border-l-indigo-600">
               <div class="flex justify-between items-center">
@@ -481,7 +479,7 @@
           </div>
         </div>
 
-        <!-- SUB TAB 2: INVESTOR + FITUR LABA DITAHAN (HANYA MENGGUNAKAN PERIODE_TANGGAL) -->
+        <!-- SUB TAB 2: INVESTOR -->
         <div id="subcontent-inputdata-investor" class="sub-content-inputdata hidden space-y-6">
           <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
             <div>
@@ -493,7 +491,7 @@
             </div>
           </div>
 
-          <!-- KOTAK PENGATURAN LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan: periode_tanggal, pic, jumlah) -->
+          <!-- KOTAK PENGATURAN LABA DITAHAN -->
           <div id="boxLabaDitahan" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
@@ -833,58 +831,131 @@
 
       </section>
 
-      <!-- 5. MENU UTAMA: USER & IMPORT EXCEL -->
+      <!-- 5. MENU UTAMA: USER (DISERTAI SUB-TAB REKENING BANK & FITUR LAIN) -->
       <section id="main-tab-user" class="main-tab-content hidden space-y-6">
-        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center text-2xl">
-              <i class="ph-bold ph-file-arrow-up"></i>
-            </div>
-            <div>
-              <h2 class="text-base font-bold">Import Data dari File Excel Lokal</h2>
-              <p class="text-xs text-white/80">Unggah file .xlsx / .csv dari komputer lokal Anda untuk input otomatis.</p>
-            </div>
-          </div>
+        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
+          <button id="sub-user-otorisasi" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('user', 'otorisasi')">
+            <i class="ph-bold ph-shield-check"></i> Otorisasi Role User
+          </button>
+          <button id="sub-user-rekening" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'rekening')">
+            <i class="ph-bold ph-bank"></i> Rekening Bank (Tabel: bank)
+          </button>
+          <button id="sub-user-excel" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'excel')">
+            <i class="ph-bold ph-file-arrow-up"></i> Import Excel
+          </button>
+        </div>
 
-          <div class="bg-white/10 backdrop-blur p-4 rounded-2xl space-y-4 border border-white/20">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-bold mb-1 text-white">1. Pilih Jenis Tabel Target</label>
-                <select id="excelTableType" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 text-sm font-semibold">
-                  <option value="users">User / Pengguna (Tabel_user)</option>
-                  <option value="pembelian">Pembelian (Tabel_pembelian)</option>
-                  <option value="pengolahan">Pengolahan (Tabel_pengolahan)</option>
-                  <option value="penjualan">Penjualan (Tabel_penjualan)</option>
-                  <option value="investors">Investor (Tabel_investor)</option>
-                  <option value="master_barang">Master Barang (Tabel_master_barang)</option>
-                  <option value="laba_ditahan">Laba Ditahan (Tabel_laba_ditahan)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold mb-1 text-white">2. Format Template Excel</label>
-                <button type="button" onclick="downloadExcelTemplate()" class="w-full py-2.5 bg-white/20 hover:bg-white/30 text-white font-bold rounded-xl text-xs transition border border-white/30 flex items-center justify-center gap-2">
-                  <i class="ph-bold ph-download"></i> Download Template (.xlsx)
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold mb-1 text-white">3. Pilih File Excel dari Komputer (.xlsx / .csv)</label>
-              <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="w-full px-3 py-2 bg-white text-slate-800 rounded-xl text-xs font-medium file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-600 file:text-white">
-            </div>
-
-            <button type="button" onclick="processExcelImport()" id="btnProcessImport" class="w-full py-3.5 bg-white text-emerald-800 hover:bg-slate-100 font-extrabold rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
-              <i class="ph-bold ph-upload-simple"></i> Upload & Simpan Data Ke Database
-            </button>
-            <div id="excelImportLog" class="text-xs font-semibold text-white/90 hidden bg-black/20 p-3 rounded-xl"></div>
+        <!-- SUB TAB 1: OTORISASI USER -->
+        <div id="subcontent-user-otorisasi" class="sub-content-user block space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Otorisasi Role User (Khusus Super Admin)
+            </h2>
+            <div id="tabelUsersBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat daftar user...</p></div>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Otorisasi Role User (Khusus Super Admin)
-          </h2>
-          <div id="tabelUsersBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat daftar user...</p></div>
+        <!-- SUB TAB 2: REKENING BANK (TABEL bank) -->
+        <div id="subcontent-user-rekening" class="sub-content-user hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <i class="ph-bold ph-bank text-blue-600 text-lg"></i> Input Catatan Transaksi Bank (Tabel: bank)
+            </h2>
+
+            <form id="formBankTrx" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Transaksi (tanggal_trx_bank)</label>
+                  <input type="date" id="bank_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Status Transaksi (status)</label>
+                  <select id="bank_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-800">
+                    <option value="transfer masuk">transfer masuk (+)</option>
+                    <option value="transfer keluar">transfer keluar (-)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nomor Rekening (nomor_rekening)</label>
+                  <input type="text" id="bank_norek" required placeholder="Misal: BCA 1234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Transaksi (nominal_transaksi)</label>
+                  <input type="number" id="bank_nominal" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-black text-blue-700">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">PIC Admin Logged In</label>
+                  <input type="text" id="bank_pic" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-100 bg-blue-50 text-blue-800 font-bold text-sm">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-blue-500/20">
+                Simpan Transaksi Rekening Bank
+              </button>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Riwayat Mutasi Rekening Bank</h3>
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-slate-500">Saldo Net Bank: <b id="bankNetSaldoDisplay" class="text-blue-700 font-black">Rp 0</b></span>
+              </div>
+            </div>
+            <div id="tabelBankBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat mutasi bank...</p></div>
+          </div>
+        </div>
+
+        <!-- SUB TAB 3: IMPORT EXCEL LOKAL -->
+        <div id="subcontent-user-excel" class="sub-content-user hidden space-y-6">
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center text-2xl">
+                <i class="ph-bold ph-file-arrow-up"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-bold">Import Data dari File Excel Lokal</h2>
+                <p class="text-xs text-white/80">Unggah file .xlsx / .csv dari komputer lokal Anda untuk input otomatis.</p>
+              </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur p-4 rounded-2xl space-y-4 border border-white/20">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold mb-1 text-white">1. Pilih Jenis Tabel Target</label>
+                  <select id="excelTableType" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-800 text-sm font-semibold">
+                    <option value="users">User / Pengguna (Tabel_user)</option>
+                    <option value="pembelian">Pembelian (Tabel_pembelian)</option>
+                    <option value="pengolahan">Pengolahan (Tabel_pengolahan)</option>
+                    <option value="penjualan">Penjualan (Tabel_penjualan)</option>
+                    <option value="investors">Investor (Tabel_investor)</option>
+                    <option value="master_barang">Master Barang (Tabel_master_barang)</option>
+                    <option value="laba_ditahan">Laba Ditahan (Tabel_laba_ditahan)</option>
+                    <option value="bank">Rekening Bank (Tabel_bank)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold mb-1 text-white">2. Format Template Excel</label>
+                  <button type="button" onclick="downloadExcelTemplate()" class="w-full py-2.5 bg-white/20 hover:bg-white/30 text-white font-bold rounded-xl text-xs transition border border-white/30 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-download"></i> Download Template (.xlsx)
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold mb-1 text-white">3. Pilih File Excel dari Komputer (.xlsx / .csv)</label>
+                <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="w-full px-3 py-2 bg-white text-slate-800 rounded-xl text-xs font-medium file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-600 file:text-white">
+              </div>
+
+              <button type="button" onclick="processExcelImport()" id="btnProcessImport" class="w-full py-3.5 bg-white text-emerald-800 hover:bg-slate-100 font-extrabold rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
+                <i class="ph-bold ph-upload-simple"></i> Upload & Simpan Data Ke Database
+              </button>
+              <div id="excelImportLog" class="text-xs font-semibold text-white/90 hidden bg-black/20 p-3 rounded-xl"></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -960,7 +1031,7 @@
     let lastLaporanData = [];
     let currentGlobalLabaBersih = 0;
     
-    // STATE LABA DITAHAN (DISIMPAN KE TABEL laba_ditahan: periode_tanggal, pic, jumlah)
+    // STATE LABA DITAHAN
     let globalNominalLabaDitahan = 0;
     let globalLastUpdateLabaDitahan = { pic: '-', periode_tanggal: '-' };
 
@@ -1050,9 +1121,12 @@
           const pPic = document.getElementById("p_pic");
           const oPic = document.getElementById("o_pic");
           const jPic = document.getElementById("j_pic");
+          const bankPic = document.getElementById("bank_pic");
+
           if (pPic) pPic.value = currentUserNameOrEmail;
           if (oPic) oPic.value = currentUserNameOrEmail;
           if (jPic) jPic.value = currentUserNameOrEmail;
+          if (bankPic) bankPic.value = currentUserNameOrEmail;
 
           // EVALUASI AKSES FORM LABA DITAHAN
           checkLabaDitahanAccessRole();
@@ -1069,6 +1143,7 @@
             loadMultiPenjualanItems();
             initLabaDitahanRealtimeListener();
             initRealtimeDashboardListeners();
+            initBankRealtimeListener();
 
             switchMainTab('laporan');
 
@@ -1116,7 +1191,7 @@
       }
     }
 
-    // REALTIME LISTENER TABEL laba_ditahan (MEMBACA DATA TERAKHIR BERDASARKAN periode_tanggal)
+    // REALTIME LISTENER TABEL laba_ditahan
     function initLabaDitahanRealtimeListener() {
       onSnapshot(collection(db, "laba_ditahan"), (snapshot) => {
         let latestRecord = null;
@@ -1125,7 +1200,6 @@
         snapshot.forEach(docSnap => {
           const d = docSnap.data();
           const pTgl = d.periode_tanggal || "";
-          // Membandingkan dan memilih periode_tanggal yang paling akhir
           if (pTgl >= latestDate) {
             latestDate = pTgl;
             latestRecord = d;
@@ -1151,7 +1225,89 @@
       });
     }
 
-    // SIMPAN RECORD ALOKASI LABA DITAHAN (HANYA FIELD: periode_tanggal, pic, jumlah)
+    // REALTIME LISTENER TABEL bank (KATEGORI REKENING BANK)
+    function initBankRealtimeListener() {
+      const bankTgl = document.getElementById("bank_tanggal");
+      if (bankTgl && !bankTgl.value) bankTgl.value = new Date().toISOString().split('T')[0];
+
+      onSnapshot(collection(db, "bank"), (snapshot) => {
+        const list = document.getElementById("tabelBankBody");
+        const netSaldoDisplay = document.getElementById("bankNetSaldoDisplay");
+        if (!list) return;
+
+        list.innerHTML = "";
+        let totalIn = 0;
+        let totalOut = 0;
+        const bankItems = [];
+
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
+          const nominal = parseFloat(d.nominal_transaksi || 0);
+          const st = (d.status || "").toLowerCase();
+
+          if (st.includes("masuk")) totalIn += nominal;
+          else totalOut += nominal;
+
+          bankItems.push(d);
+        });
+
+        bankItems.sort((a, b) => ((b.tanggal_trx_bank || '') > (a.tanggal_trx_bank || '') ? 1 : -1));
+
+        if (netSaldoDisplay) {
+          netSaldoDisplay.innerText = `Rp ${(totalIn - totalOut).toLocaleString('id-ID')}`;
+        }
+
+        if (bankItems.length === 0) {
+          list.innerHTML = `<p class="text-xs text-slate-400">Belum ada transaksi rekening bank.</p>`;
+          return;
+        }
+
+        bankItems.forEach(item => {
+          const isMasuk = (item.status || "").toLowerCase().includes("masuk");
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-bold px-2 py-0.5 rounded text-[10px] ${isMasuk ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${item.status}</span>
+                  <span class="text-slate-400 font-medium">${item.tanggal_trx_bank || '-'}</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-800">No. Rekening: ${item.nomor_rekening || '-'}</h4>
+                <p class="text-[10px] text-slate-500">PIC Admin: ${item.pic || '-'}</p>
+              </div>
+              <span class="text-sm font-black ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">${isMasuk ? '+' : '-'} Rp ${Number(item.nominal_transaksi || 0).toLocaleString('id-ID')}</span>
+            </div>`;
+        });
+      });
+    }
+
+    // FORM SIMPAN TRANSAKSI REKENING BANK (FIELD: tanggal_trx_bank, status, nomor_rekening, nominal_transaksi, pic)
+    document.getElementById("formBankTrx").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const tgl = document.getElementById("bank_tanggal").value;
+      const status = document.getElementById("bank_status").value;
+      const norek = document.getElementById("bank_norek").value;
+      const nominal = parseFloat(document.getElementById("bank_nominal").value) || 0;
+
+      if (!tgl || !norek) return alert("Lengkapi tanggal transaksi dan nomor rekening!");
+      if (nominal <= 0) return alert("Nominal transaksi harus lebih besar dari 0!");
+
+      try {
+        await addDoc(collection(db, "bank"), {
+          tanggal_trx_bank: tgl,
+          status: status,
+          nomor_rekening: norek,
+          nominal_transaksi: nominal,
+          pic: currentUserNameOrEmail
+        });
+
+        alert(`Berhasil menyimpan transaksi bank (${status}) sebesar Rp ${nominal.toLocaleString('id-ID')}!`);
+        e.target.reset();
+        document.getElementById("bank_pic").value = currentUserNameOrEmail;
+        document.getElementById("bank_tanggal").value = new Date().toISOString().split('T')[0];
+      } catch (err) { alert("Gagal menyimpan transaksi bank: " + err.message); }
+    });
+
+    // SIMPAN RECORD ALOKASI LABA DITAHAN
     document.getElementById("formSettingLabaDitahan").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (currentUserRole !== "super admin" && currentUserRole !== "admin") {
@@ -1261,6 +1417,9 @@
         calculateNeracaAndUserSummary();
         renderInvestorsData();
       }
+      if (tabName === "user") {
+        loadUsersList();
+      }
     };
 
     window.switchSubTab = (parentGroup, subName) => {
@@ -1271,7 +1430,7 @@
       const parentContainer = targetSub.parentElement;
       const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
       buttons.forEach(btn => {
-        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "text-rose-600", "text-indigo-600", "shadow-sm");
+        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "text-rose-600", "text-indigo-600", "text-blue-600", "shadow-sm");
         btn.classList.add("text-slate-600");
       });
 
@@ -1279,13 +1438,14 @@
       if (activeSubBtn) {
         activeSubBtn.classList.remove("text-slate-600");
         activeSubBtn.classList.add("bg-white", "shadow-sm");
-        if (subName === 'barang' || subName === 'ringkasan') activeSubBtn.classList.add("text-brand-600");
+        if (subName === 'barang' || subName === 'ringkasan' || subName === 'otorisasi') activeSubBtn.classList.add("text-brand-600");
         if (subName === 'investor' || subName === 'aruskas') activeSubBtn.classList.add("text-indigo-600");
         if (subName === 'penarikan') activeSubBtn.classList.add("text-rose-600");
         if (subName === 'asset') activeSubBtn.classList.add("text-cyan-600");
-        if (subName === 'pembelian') activeSubBtn.classList.add("text-emerald-600");
+        if (subName === 'pembelian' || subName === 'excel') activeSubBtn.classList.add("text-emerald-600");
         if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
         if (subName === 'penjualan') activeSubBtn.classList.add("text-amber-600");
+        if (subName === 'rekening') activeSubBtn.classList.add("text-blue-600");
       }
 
       if (parentGroup === "neraca" && subName === "aruskas") {
@@ -1391,7 +1551,7 @@
       if (resJual) resJual.innerText = totalAkumulasiTerjual.toLocaleString('id-ID');
     }
 
-    // NERACA & USER SUMMARY & DISPLAY LABA DITAHAN DI RINGKASAN NERACA
+    // NERACA & USER SUMMARY
     window.calculateNeracaAndUserSummary = async () => {
       let sumBeliNominal = 0;
       let sumJualNominal = 0;
@@ -1471,7 +1631,6 @@
         const nominalDitahan = globalNominalLabaDitahan;
         const nominalSiapDibagi = Math.max(0, labaBersih - nominalDitahan);
 
-        // UPDATE KOTAK INFORMASI DI SUB TAB INVESTOR
         const dLabaBersih = document.getElementById("displayLabaBersihOlah");
         const dNominalDitahan = document.getElementById("displayNominalLabaDitahan");
         const dNominalDibagi = document.getElementById("displayNominalLabaDibagikan");
@@ -1482,7 +1641,6 @@
         if (dNominalDibagi) dNominalDibagi.innerText = `Rp ${nominalSiapDibagi.toLocaleString('id-ID')}`;
         if (dLastUpdateInfo) dLastUpdateInfo.innerText = `PIC: ${globalLastUpdateLabaDitahan.pic} | Periode Tanggal: ${globalLastUpdateLabaDitahan.periode_tanggal}`;
 
-        // DISPLAY LABA DITAHAN PADA MENU NERACA - TAB RINGKASAN NERACA (DI BAWAH LABA BERSIH)
         const neracaDitahanDisplay = document.getElementById("neraca_laba_ditahan_display");
         const neracaDitahanTgl = document.getElementById("neraca_laba_ditahan_tgl");
         const neracaDitahanPic = document.getElementById("neraca_laba_ditahan_pic");
@@ -2121,7 +2279,7 @@
       } catch (err) { alert(err.message); }
     });
 
-    // FUNGSI RENDER DATA INVESTOR DENGAN PERHITUNGAN PORSI LABA DITAHAN BERFUNGSI FULL
+    // FUNGSI RENDER DATA INVESTOR
     function renderInvestorsData() {
       const listSummary = document.getElementById("tabelInvestorBody");
       const penarikanList = document.getElementById("tabelRiwayatPenarikanBody");
@@ -2135,7 +2293,6 @@
       const investorMap = {};
       let totalModalGrup = 0;
 
-      // PASS 1: AKUMULASI TRANSAKSI
       snapshotInvestorCache.forEach(d => {
         const nama = d.Nama || "Anonim";
         const jumlah = parseFloat(d.Jumlah || 0);
@@ -2181,20 +2338,15 @@
 
       if (totalDisplay) totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
 
-      // PASS 2: KALKULASI PORSI & LABA DITAHAN NOMINAL RUPIAH PER INVESTOR
       for (const [nama, data] of Object.entries(investorMap)) {
         const porsiRatio = totalModalGrup > 0 ? (data.modalTotal / totalModalGrup) : 0;
         const porsiPct = (porsiRatio * 100).toFixed(2);
         
-        // Sisa Laba Bersih Siap Dibagi (Seluruh Investor)
         const netLabaSiapDibagi = Math.max(0, currentGlobalLabaBersih - globalNominalLabaDitahan);
-        
-        // Hak Laba Investor dari Dividen Pool
         const hakLabaInvestorNominal = netLabaSiapDibagi * porsiRatio;
         const sisaHakLabaNet = hakLabaInvestorNominal - data.ditarikLabaTotal;
         const alokasiDitahanInvestor = (globalNominalLabaDitahan * porsiRatio);
 
-        // RENDER 1: SUB TAB INVESTOR
         if (listSummary) {
           listSummary.innerHTML += `
             <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-3">
@@ -2211,7 +2363,6 @@
             </div>`;
         }
 
-        // RENDER 2: SUB TAB PENARIKAN (KARTU AKSI CEPAT)
         if (cardsContainer) {
           cardsContainer.innerHTML += `
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-4 shadow-sm hover:border-brand-300 transition">
@@ -2225,7 +2376,6 @@
                 </div>
               </div>
 
-              <!-- DETIL NOMINAL KALKULASI DENGAN LABA DITAHAN RUPIAH -->
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
                 <div class="bg-white p-2.5 rounded-xl border border-slate-100">
                   <span class="text-[10px] font-bold uppercase text-slate-400 block">Modal Net Aktif</span>
@@ -2245,7 +2395,6 @@
                 </div>
               </div>
 
-              <!-- TOMBOL AKSI CEPAT -->
               <div class="flex flex-wrap md:flex-nowrap gap-2 pt-1">
                 <button type="button" onclick="openInvestorActionModal('${nama}', '${data.hp}', 'tambah modal')" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
                   <i class="ph-bold ph-plus-circle"></i> Tambah Modal
@@ -2334,6 +2483,7 @@
       else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
       else if (type === "master_barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
       else if (type === "laba_ditahan") data = [{ periode_tanggal: "2026-11-07", pic: "admin@delta.com", jumlah: 10000000 }];
+      else if (type === "bank") data = [{ tanggal_trx_bank: "2026-11-07", status: "transfer masuk", nomor_rekening: "BCA 1234567890", nominal_transaksi: 15000000, pic: "admin@delta.com" }];
 
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
@@ -2381,6 +2531,15 @@
             } else if (tableType === "laba_ditahan") {
               batchDoc = { periode_tanggal: row.periode_tanggal || todayStr, pic: row.pic || currentUserNameOrEmail, jumlah: parseFloat(row.jumlah || 0) };
               await addDoc(collection(db, "laba_ditahan"), batchDoc);
+            } else if (tableType === "bank") {
+              batchDoc = {
+                tanggal_trx_bank: row.tanggal_trx_bank || todayStr,
+                status: row.status || "transfer masuk",
+                nomor_rekening: row.nomor_rekening || "-",
+                nominal_transaksi: parseFloat(row.nominal_transaksi || 0),
+                pic: row.pic || currentUserNameOrEmail
+              };
+              await addDoc(collection(db, "bank"), batchDoc);
             } else if (tableType === "investors") {
               batchDoc = { 
                 Nama: row.Nama || "Anonim", 

@@ -394,8 +394,9 @@
           </div>
         </div>
 
+        <!-- TAB ARUS KAS (CASH FLOW) TERMASUK DITAMBAHKAN KARTU SALDO NET REKENING BANK -->
         <div id="subcontent-neraca-aruskas" class="sub-content-neraca hidden space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-emerald-900 space-y-1">
               <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Total Kas Masuk (Inflow)</span>
               <h3 id="cf_total_in" class="text-2xl font-black text-emerald-800">Rp 0</h3>
@@ -412,6 +413,16 @@
               <span class="text-xs font-bold uppercase tracking-wider text-brand-700">Saldo Kas Net (Net Flow)</span>
               <h3 id="cf_total_net" class="text-2xl font-black text-brand-800">Rp 0</h3>
               <p class="text-[10px] text-brand-600">Selisih Kas Masuk - Kas Keluar</p>
+            </div>
+
+            <!-- KARTU SALDO NET REKENING BANK (DITAMPILKAN DI BAWAH/SAMPING SALDO KAS NET) -->
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-blue-900 space-y-1">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Saldo Net Rekening Bank</span>
+                <i class="ph-bold ph-bank text-blue-600 text-lg"></i>
+              </div>
+              <h3 id="cf_bank_net" class="text-2xl font-black text-blue-800">Rp 0</h3>
+              <p class="text-[10px] text-blue-600">Transfer Masuk - Transfer Keluar (Tabel: bank)</p>
             </div>
           </div>
 
@@ -831,7 +842,7 @@
 
       </section>
 
-      <!-- 5. MENU UTAMA: USER (DISERTAI SUB-TAB REKENING BANK & FITUR LAIN) -->
+      <!-- 5. MENU UTAMA: USER -->
       <section id="main-tab-user" class="main-tab-content hidden space-y-6">
         <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
           <button id="sub-user-otorisasi" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('user', 'otorisasi')">
@@ -1128,7 +1139,6 @@
           if (jPic) jPic.value = currentUserNameOrEmail;
           if (bankPic) bankPic.value = currentUserNameOrEmail;
 
-          // EVALUASI AKSES FORM LABA DITAHAN
           checkLabaDitahanAccessRole();
 
           if (currentUserRole === "tamu") {
@@ -1163,7 +1173,6 @@
       }
     });
 
-    // HAK AKSES DAN EVALUASI FORM LABA DITAHAN
     function checkLabaDitahanAccessRole() {
       const inputTgl = document.getElementById("inputTglLabaDitahan");
       const inputJml = document.getElementById("inputJumlahLabaDitahan");
@@ -1225,7 +1234,7 @@
       });
     }
 
-    // REALTIME LISTENER TABEL bank (KATEGORI REKENING BANK)
+    // REALTIME LISTENER TABEL bank
     function initBankRealtimeListener() {
       const bankTgl = document.getElementById("bank_tanggal");
       if (bankTgl && !bankTgl.value) bankTgl.value = new Date().toISOString().split('T')[0];
@@ -1233,6 +1242,7 @@
       onSnapshot(collection(db, "bank"), (snapshot) => {
         const list = document.getElementById("tabelBankBody");
         const netSaldoDisplay = document.getElementById("bankNetSaldoDisplay");
+        const cfBankNetDisplay = document.getElementById("cf_bank_net");
         if (!list) return;
 
         list.innerHTML = "";
@@ -1251,11 +1261,12 @@
           bankItems.push(d);
         });
 
-        bankItems.sort((a, b) => ((b.tanggal_trx_bank || '') > (a.tanggal_trx_bank || '') ? 1 : -1));
+        const netBankSaldo = totalIn - totalOut;
 
-        if (netSaldoDisplay) {
-          netSaldoDisplay.innerText = `Rp ${(totalIn - totalOut).toLocaleString('id-ID')}`;
-        }
+        if (netSaldoDisplay) netSaldoDisplay.innerText = `Rp ${netBankSaldo.toLocaleString('id-ID')}`;
+        if (cfBankNetDisplay) cfBankNetDisplay.innerText = `Rp ${netBankSaldo.toLocaleString('id-ID')}`;
+
+        bankItems.sort((a, b) => ((b.tanggal_trx_bank || '') > (a.tanggal_trx_bank || '') ? 1 : -1));
 
         if (bankItems.length === 0) {
           list.innerHTML = `<p class="text-xs text-slate-400">Belum ada transaksi rekening bank.</p>`;
@@ -1280,7 +1291,7 @@
       });
     }
 
-    // FORM SIMPAN TRANSAKSI REKENING BANK (FIELD: tanggal_trx_bank, status, nomor_rekening, nominal_transaksi, pic)
+    // FORM SIMPAN TRANSAKSI REKENING BANK
     document.getElementById("formBankTrx").addEventListener("submit", async (e) => {
       e.preventDefault();
       const tgl = document.getElementById("bank_tanggal").value;
@@ -1304,6 +1315,7 @@
         e.target.reset();
         document.getElementById("bank_pic").value = currentUserNameOrEmail;
         document.getElementById("bank_tanggal").value = new Date().toISOString().split('T')[0];
+        loadCashFlowData();
       } catch (err) { alert("Gagal menyimpan transaksi bank: " + err.message); }
     });
 
@@ -1627,7 +1639,6 @@
         if (elMargin) elMargin.innerText = `Rp ${labaBersih.toLocaleString('id-ID')}`;
         if (elBiaya) elBiaya.innerText = `Rp ${totalBiayaOperasional.toLocaleString('id-ID')}`;
 
-        // CALCULATE DENGAN LABA DITAHAN NOMINAL RUPIAH
         const nominalDitahan = globalNominalLabaDitahan;
         const nominalSiapDibagi = Math.max(0, labaBersih - nominalDitahan);
 
@@ -1681,7 +1692,7 @@
       } catch (err) { console.error(err); }
     };
 
-    // MUTASI ARUS KAS (CASH FLOW)
+    // MUTASI ARUS KAS & AKUMULASI NET REKENING BANK
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
       if (!container) return;
@@ -1736,15 +1747,31 @@
           }
         });
 
+        // AMBIL REALTIME AKUMULASI NET SALDO BANK
+        let bankIn = 0;
+        let bankOut = 0;
+        const snapBank = await getDocs(collection(db, "bank"));
+        snapBank.forEach(docSnap => {
+          const d = docSnap.data();
+          const nom = parseFloat(d.nominal_transaksi || 0);
+          const st = (d.status || '').toLowerCase();
+          if (st.includes("masuk")) bankIn += nom;
+          else bankOut += nom;
+        });
+
+        const bankNetTotal = bankIn - bankOut;
+
         flowItems.sort((a, b) => (b.tgl > a.tgl ? 1 : -1));
 
         const cfIn = document.getElementById("cf_total_in");
         const cfOut = document.getElementById("cf_total_out");
         const cfNet = document.getElementById("cf_total_net");
+        const cfBankNet = document.getElementById("cf_bank_net");
 
         if (cfIn) cfIn.innerText = `Rp ${totalKasIn.toLocaleString('id-ID')}`;
         if (cfOut) cfOut.innerText = `Rp ${totalKasOut.toLocaleString('id-ID')}`;
         if (cfNet) cfNet.innerText = `Rp ${(totalKasIn - totalKasOut).toLocaleString('id-ID')}`;
+        if (cfBankNet) cfBankNet.innerText = `Rp ${bankNetTotal.toLocaleString('id-ID')}`;
 
         if (flowItems.length === 0) {
           container.innerHTML = `<p class="text-xs text-slate-400">Belum ada mutasi arus kas.</p>`;

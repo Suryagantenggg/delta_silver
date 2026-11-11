@@ -171,6 +171,153 @@
     </div>
   </div>
 
+  <!-- POP-UP MODAL CONTROL MENU / OTORISASI PERMISSIONS PER USER -->
+  <div id="modalUserPermissions" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 relative max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3 flex-shrink-0">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="ph-bold ph-sliders text-brand-600"></i> Otorisasi Modul & Sub-Tab User
+          </h3>
+          <p class="text-xs text-slate-500">Target User: <b id="targetUserPermNama" class="text-brand-600">...</b> (<span id="targetUserPermEmail">...</span>)</p>
+        </div>
+        <button onclick="closePermissionsModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <input type="hidden" id="targetUserPermId">
+
+      <div class="space-y-4 overflow-y-auto pr-1 flex-1">
+        
+        <!-- PRESET ACCORDION BUTTONS -->
+        <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <span class="text-xs font-bold text-slate-600">Pilih Preset Cepat:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="applyPermPreset('full')" class="px-2.5 py-1 bg-brand-600 text-white font-bold text-[11px] rounded-lg hover:bg-brand-700 transition">Full Access</button>
+            <button type="button" onclick="applyPermPreset('kasir')" class="px-2.5 py-1 bg-amber-600 text-white font-bold text-[11px] rounded-lg hover:bg-amber-700 transition">Akses POS/Kasir</button>
+            <button type="button" onclick="applyPermPreset('olah')" class="px-2.5 py-1 bg-purple-600 text-white font-bold text-[11px] rounded-lg hover:bg-purple-700 transition">Akses Pengolahan</button>
+            <button type="button" onclick="applyPermPreset('none')" class="px-2.5 py-1 bg-slate-200 text-slate-700 font-bold text-[11px] rounded-lg hover:bg-slate-300 transition">Kosongkan Semua</button>
+          </div>
+        </div>
+
+        <form id="formUserPermissions" class="space-y-5">
+
+          <!-- 1. MENU LAPORAN -->
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-sm text-slate-900 border-b border-slate-200 pb-2">
+              <input type="checkbox" id="perm_laporan" class="w-4 h-4 rounded text-brand-600" onchange="toggleChildCheckboxes('perm_laporan', [])">
+              <i class="ph-bold ph-chart-line text-brand-600"></i> Menu Laporan Utama
+            </label>
+            <p class="text-[11px] text-slate-500 pl-6">Memberikan akses melihat dashboard ringkasan stok & filter rincian laporan.</p>
+          </div>
+
+          <!-- 2. MENU NERACA -->
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-sm text-slate-900 border-b border-slate-200 pb-2">
+              <input type="checkbox" id="perm_neraca" class="w-4 h-4 rounded text-brand-600" onchange="toggleChildCheckboxes('perm_neraca', ['perm_sub_neraca_ringkasan', 'perm_sub_neraca_aruskas'])">
+              <i class="ph-bold ph-scales text-indigo-600"></i> Menu Neraca Keuangan
+            </label>
+            <div class="pl-6 space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_neraca_ringkasan" class="w-3.5 h-3.5 rounded text-indigo-600">
+                Sub-Tab: Ringkasan Neraca & Laba Ditahan
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_neraca_aruskas" class="w-3.5 h-3.5 rounded text-indigo-600">
+                Sub-Tab: Mutasi Arus Kas (Cash Flow) & Net Bank
+              </label>
+            </div>
+          </div>
+
+          <!-- 3. MENU INPUT DATA -->
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-sm text-slate-900 border-b border-slate-200 pb-2">
+              <input type="checkbox" id="perm_inputdata" class="w-4 h-4 rounded text-brand-600" onchange="toggleChildCheckboxes('perm_inputdata', ['perm_sub_input_barang', 'perm_sub_input_investor', 'perm_sub_input_penarikan', 'perm_sub_input_asset'])">
+              <i class="ph-bold ph-folder-plus text-cyan-600"></i> Menu Input Data Master
+            </label>
+            <div class="pl-6 grid grid-cols-1 md:grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_input_barang" class="w-3.5 h-3.5 rounded text-cyan-600">
+                Sub-Tab: Master Barang
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_input_investor" class="w-3.5 h-3.5 rounded text-cyan-600">
+                Sub-Tab: Input Investor & Laba Ditahan
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_input_penarikan" class="w-3.5 h-3.5 rounded text-cyan-600">
+                Sub-Tab: Penarikan & Mutasi Investor
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_input_asset" class="w-3.5 h-3.5 rounded text-cyan-600">
+                Sub-Tab: Asset Operasional
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. MENU TRANSAKSI -->
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-sm text-slate-900 border-b border-slate-200 pb-2">
+              <input type="checkbox" id="perm_transaksi" class="w-4 h-4 rounded text-brand-600" onchange="toggleChildCheckboxes('perm_transaksi', ['perm_sub_trans_pembelian', 'perm_sub_trans_pengolahan', 'perm_sub_trans_penjualan'])">
+              <i class="ph-bold ph-arrows-down-up text-amber-600"></i> Menu Operasional Transaksi
+            </label>
+            <div class="pl-6 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_trans_pembelian" class="w-3.5 h-3.5 rounded text-emerald-600">
+                Sub-Tab: Pembelian
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_trans_pengolahan" class="w-3.5 h-3.5 rounded text-purple-600">
+                Sub-Tab: Pengolahan (Multi)
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_trans_penjualan" class="w-3.5 h-3.5 rounded text-amber-600">
+                Sub-Tab: Penjualan POS Kasir
+              </label>
+            </div>
+          </div>
+
+          <!-- 5. MENU USER -->
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-sm text-slate-900 border-b border-slate-200 pb-2">
+              <input type="checkbox" id="perm_user" class="w-4 h-4 rounded text-brand-600" onchange="toggleChildCheckboxes('perm_user', ['perm_sub_user_otorisasi', 'perm_sub_user_control', 'perm_sub_user_rekening', 'perm_sub_user_excel'])">
+              <i class="ph-bold ph-user-gear text-rose-600"></i> Menu Pengaturan User
+            </label>
+            <div class="pl-6 grid grid-cols-1 md:grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_user_otorisasi" class="w-3.5 h-3.5 rounded text-rose-600">
+                Sub-Tab: Otorisasi Role User
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_user_control" class="w-3.5 h-3.5 rounded text-rose-600">
+                Sub-Tab: Otorisasi Modul & Sub-Tab
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_user_rekening" class="w-3.5 h-3.5 rounded text-blue-600">
+                Sub-Tab: Rekening Bank (Tabel: bank)
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="perm_sub_user_excel" class="w-3.5 h-3.5 rounded text-emerald-600">
+                Sub-Tab: Import Excel Lokal
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-3 flex gap-2">
+            <button type="button" onclick="closePermissionsModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
+              Batal
+            </button>
+            <button type="submit" class="flex-1 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-1.5">
+              <i class="ph-bold ph-floppy-disk"></i> Simpan Akses Modul User
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- APP MAIN CONTAINER -->
   <div id="appContainer" class="max-w-5xl mx-auto px-4 pt-4 hidden">
     
@@ -394,7 +541,7 @@
           </div>
         </div>
 
-        <!-- TAB ARUS KAS (CASH FLOW) TERMASUK DITAMBAHKAN KARTU SALDO NET REKENING BANK -->
+        <!-- TAB ARUS KAS -->
         <div id="subcontent-neraca-aruskas" class="sub-content-neraca hidden space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-emerald-900 space-y-1">
@@ -415,7 +562,7 @@
               <p class="text-[10px] text-brand-600">Selisih Kas Masuk - Kas Keluar</p>
             </div>
 
-            <!-- KARTU SALDO NET REKENING BANK (DITAMPILKAN DI BAWAH/SAMPING SALDO KAS NET) -->
+            <!-- KARTU SALDO NET REKENING BANK -->
             <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-blue-900 space-y-1">
               <div class="flex justify-between items-center">
                 <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Saldo Net Rekening Bank</span>
@@ -606,7 +753,6 @@
               </div>
             </div>
 
-            <!-- CONTAINER LIST KARTU INVESTOR -->
             <div id="listInvestorActionCards" class="space-y-4">
               <p class="text-xs text-slate-400">Memuat daftar kartu investor...</p>
             </div>
@@ -842,31 +988,52 @@
 
       </section>
 
-      <!-- 5. MENU UTAMA: USER -->
+      <!-- 5. MENU UTAMA: USER (DENGAN 4 SUB-TAB LENGKAP) -->
       <section id="main-tab-user" class="main-tab-content hidden space-y-6">
-        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
-          <button id="sub-user-otorisasi" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('user', 'otorisasi')">
-            <i class="ph-bold ph-shield-check"></i> Otorisasi Role User
+        <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1 overflow-x-auto no-scrollbar">
+          <button id="sub-user-otorisasi" class="sub-tab-btn flex-1 min-w-[120px] py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('user', 'otorisasi')">
+            <i class="ph-bold ph-shield-check"></i> Otorisasi Role
           </button>
-          <button id="sub-user-rekening" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'rekening')">
-            <i class="ph-bold ph-bank"></i> Rekening Bank (Tabel: bank)
+          <button id="sub-user-control" class="sub-tab-btn flex-1 min-w-[130px] py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'control')">
+            <i class="ph-bold ph-sliders"></i> Control Modul
           </button>
-          <button id="sub-user-excel" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'excel')">
+          <button id="sub-user-rekening" class="sub-tab-btn flex-1 min-w-[120px] py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'rekening')">
+            <i class="ph-bold ph-bank"></i> Rekening Bank
+          </button>
+          <button id="sub-user-excel" class="sub-tab-btn flex-1 min-w-[110px] py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('user', 'excel')">
             <i class="ph-bold ph-file-arrow-up"></i> Import Excel
           </button>
         </div>
 
-        <!-- SUB TAB 1: OTORISASI USER -->
+        <!-- SUB TAB 1: OTORISASI ROLE USER -->
         <div id="subcontent-user-otorisasi" class="sub-content-user block space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Otorisasi Role User (Khusus Super Admin)
+              <i class="ph-bold ph-shield-check text-rose-600 text-lg"></i> Otorisasi Role Utama (Khusus Super Admin)
             </h2>
             <div id="tabelUsersBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat daftar user...</p></div>
           </div>
         </div>
 
-        <!-- SUB TAB 2: REKENING BANK (TABEL bank) -->
+        <!-- SUB TAB 2: TAB CONTROL MENU / OTORISASI MODUL (BARU) -->
+        <div id="subcontent-user-control" class="sub-content-user hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <i class="ph-bold ph-sliders text-brand-600 text-lg"></i> Pengaturan Akses Modul & Sub-Tab User
+                </h2>
+                <p class="text-xs text-slate-500">Tentukan secara presisi menu mana saja yang boleh dibuka oleh tiap-tiap akun.</p>
+              </div>
+            </div>
+
+            <div id="containerUserControlList" class="space-y-3">
+              <p class="text-xs text-slate-400">Memuat daftar kontrol akses modul...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB TAB 3: REKENING BANK -->
         <div id="subcontent-user-rekening" class="sub-content-user hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
@@ -920,7 +1087,7 @@
           </div>
         </div>
 
-        <!-- SUB TAB 3: IMPORT EXCEL LOKAL -->
+        <!-- SUB TAB 4: IMPORT EXCEL LOKAL -->
         <div id="subcontent-user-excel" class="sub-content-user hidden space-y-6">
           <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg space-y-4">
             <div class="flex items-center gap-3">
@@ -1038,6 +1205,7 @@
 
     let currentUser = null;
     let currentUserRole = "tamu";
+    let currentUserPermissions = null;
     let currentUserNameOrEmail = "";
     let lastLaporanData = [];
     let currentGlobalLabaBersih = 0;
@@ -1053,6 +1221,15 @@
     let snapshotOlahCache = [];
     let snapshotJualCache = [];
     let snapshotInvestorCache = [];
+
+    // SETTINGS STANDARD DEFAULT PERMISSIONS
+    const defaultFullPermissions = {
+      laporan: true, neraca: true, inputdata: true, transaksi: true, user: true,
+      sub_neraca_ringkasan: true, sub_neraca_aruskas: true,
+      sub_input_barang: true, sub_input_investor: true, sub_input_penarikan: true, sub_input_asset: true,
+      sub_trans_pembelian: true, sub_trans_pengolahan: true, sub_trans_penjualan: true,
+      sub_user_otorisasi: true, sub_user_control: true, sub_user_rekening: true, sub_user_excel: true
+    };
 
     function generateAutoCode(prefix) {
       const d = new Date();
@@ -1101,7 +1278,7 @@
       container.appendChild(rowDiv);
     };
 
-    // LOGIKA AUTH STATE CHANGED
+    // LOGIKA AUTH STATE CHANGED & EVALUASI PERMISSIONS
     onAuthStateChanged(auth, async (user) => {
       const authOverlay = document.getElementById("authOverlay");
       const appContainer = document.getElementById("appContainer");
@@ -1122,9 +1299,11 @@
             const uData = userDocSnap.data();
             currentUserRole = (uData.role || "tamu").toLowerCase();
             currentUserNameOrEmail = uData.nama || user.email;
+            currentUserPermissions = uData.permissions || null;
           } else {
             currentUserRole = "tamu";
             currentUserNameOrEmail = user.email;
+            currentUserPermissions = null;
           }
 
           if (roleBadge) roleBadge.innerText = currentUserRole;
@@ -1148,14 +1327,14 @@
             if (guestBlock) guestBlock.classList.add("hidden");
             if (appContainer) appContainer.classList.remove("hidden");
 
+            // EVALUASI & SEMBUNYIKAN UI SESUAI PERMISSIONS
+            applyUIPermissionsFilter();
+
             refreshAutoCodes();
             loadUsersList();
-            loadMultiPenjualanItems();
             initLabaDitahanRealtimeListener();
             initRealtimeDashboardListeners();
             initBankRealtimeListener();
-
-            switchMainTab('laporan');
 
             const container = document.getElementById("containerHasilOlah");
             if (container && container.children.length === 0) {
@@ -1172,6 +1351,61 @@
         if (guestBlock) guestBlock.classList.add("hidden");
       }
     });
+
+    // FILTER DAN PENERAPAN VISIBILITAS NAVIGASI BERDASARKAN PERMISSIONS
+    function applyUIPermissionsFilter() {
+      // JIKA SUPER ADMIN: AKSES PENUH SECARA OTOMATIS
+      const isSuper = (currentUserRole === "super admin");
+
+      const checkPerm = (key) => {
+        if (isSuper) return true;
+        if (!currentUserPermissions) return true; // fallback default
+        return currentUserPermissions[key] !== false;
+      };
+
+      // 1. MENU UTAMA
+      const mainMenus = ['laporan', 'neraca', 'inputdata', 'transaksi', 'user'];
+      let firstAllowedMain = null;
+
+      mainMenus.forEach(mKey => {
+        const deskBtn = document.getElementById(`desk-nav-${mKey}`);
+        const mobBtn = document.getElementById(`mob-nav-${mKey}`);
+        const isAllowed = checkPerm(mKey);
+
+        if (deskBtn) deskBtn.style.display = isAllowed ? '' : 'none';
+        if (mobBtn) mobBtn.style.display = isAllowed ? '' : 'none';
+
+        if (isAllowed && !firstAllowedMain) firstAllowedMain = mKey;
+      });
+
+      // 2. SUB TAB PERKATEGORI
+      const subTabs = [
+        { parent: 'neraca', key: 'ringkasan', pKey: 'sub_neraca_ringkasan' },
+        { parent: 'neraca', key: 'aruskas', pKey: 'sub_neraca_aruskas' },
+        { parent: 'inputdata', key: 'barang', pKey: 'sub_input_barang' },
+        { parent: 'inputdata', key: 'investor', pKey: 'sub_input_investor' },
+        { parent: 'inputdata', key: 'penarikan', pKey: 'sub_input_penarikan' },
+        { parent: 'inputdata', key: 'asset', pKey: 'sub_input_asset' },
+        { parent: 'transaksi', key: 'pembelian', pKey: 'sub_trans_pembelian' },
+        { parent: 'transaksi', key: 'pengolahan', pKey: 'sub_trans_pengolahan' },
+        { parent: 'transaksi', key: 'penjualan', pKey: 'sub_trans_penjualan' },
+        { parent: 'user', key: 'otorisasi', pKey: 'sub_user_otorisasi' },
+        { parent: 'user', key: 'control', pKey: 'sub_user_control' },
+        { parent: 'user', key: 'rekening', pKey: 'sub_user_rekening' },
+        { parent: 'user', key: 'excel', pKey: 'sub_user_excel' }
+      ];
+
+      subTabs.forEach(st => {
+        const btn = document.getElementById(`sub-${st.parent}-${st.key}`);
+        const isAllowed = checkPerm(st.pKey);
+        if (btn) btn.style.display = isAllowed ? '' : 'none';
+      });
+
+      // PINDAH SECARA OTOMATIS KE TAB PERTAMA YANG DIIZINKAN
+      if (firstAllowedMain) {
+        switchMainTab(firstAllowedMain);
+      }
+    }
 
     function checkLabaDitahanAccessRole() {
       const inputTgl = document.getElementById("inputTglLabaDitahan");
@@ -1373,7 +1607,8 @@
           nama: document.getElementById("signupNama").value,
           email: document.getElementById("signupEmail").value,
           role: "tamu",
-          Tanggal_beli: new Date().toISOString().split('T')[0]
+          created_at: new Date().toISOString().split('T')[0],
+          permissions: defaultFullPermissions
         });
         alert("Akun berhasil dibuat! Status awal Anda adalah 'Tamu'.");
       } catch (err) { alert("Daftar Gagal: " + err.message); }
@@ -1458,6 +1693,7 @@
         if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
         if (subName === 'penjualan') activeSubBtn.classList.add("text-amber-600");
         if (subName === 'rekening') activeSubBtn.classList.add("text-blue-600");
+        if (subName === 'control') activeSubBtn.classList.add("text-brand-600");
       }
 
       if (parentGroup === "neraca" && subName === "aruskas") {
@@ -1747,7 +1983,6 @@
           }
         });
 
-        // AMBIL REALTIME AKUMULASI NET SALDO BANK
         let bankIn = 0;
         let bankOut = 0;
         const snapBank = await getDocs(collection(db, "bank"));
@@ -2467,29 +2702,57 @@
       });
     });
 
-    // USER MANAGEMENT & IMPORT EXCEL
+    // USER MANAGEMENT & OTORISASI PERMISSIONS
     async function loadUsersList() {
       const list = document.getElementById("tabelUsersBody");
-      if (!list) return;
-      list.innerHTML = "";
+      const controlList = document.getElementById("containerUserControlList");
+
+      if (list) list.innerHTML = "";
+      if (controlList) controlList.innerHTML = "";
+
       if (currentUserRole !== "super admin") {
-        list.innerHTML = `<p class="text-xs text-slate-400 font-medium">Hanya Role Super Admin yang memiliki akses mengontrol role user.</p>`;
+        if (list) list.innerHTML = `<p class="text-xs text-slate-400 font-medium">Hanya Role Super Admin yang memiliki akses mengontrol role user.</p>`;
+        if (controlList) controlList.innerHTML = `<p class="text-xs text-slate-400 font-medium">Hanya Role Super Admin yang memiliki akses mengontrol modul menu.</p>`;
         return;
       }
+
       const snap = await getDocs(collection(db, "users"));
       snap.forEach(docSnap => {
         const d = docSnap.data();
-        list.innerHTML += `
-          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-2">
-            <div><h4 class="text-sm font-bold text-slate-800">${d.nama || 'User'}</h4><p class="text-xs text-slate-400">${d.email || ''}</p></div>
-            <select onchange="updateUserRole('${docSnap.id}', this.value)" class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase bg-white">
-              <option value="super admin" ${d.role === 'super admin' ? 'selected' : ''}>Super Admin</option>
-              <option value="admin" ${d.role === 'admin' ? 'selected' : ''}>Admin</option>
-              <option value="petugas" ${d.role === 'petugas' ? 'selected' : ''}>Petugas</option>
-              <option value="investor" ${d.role === 'investor' ? 'selected' : ''}>Investor</option>
-              <option value="tamu" ${d.role === 'tamu' ? 'selected' : ''}>Tamu</option>
-            </select>
-          </div>`;
+        const uid = docSnap.id;
+        const nama = d.nama || 'User';
+        const email = d.email || '-';
+
+        // 1. RENDER LIST TABEL OTORISASI ROLE
+        if (list) {
+          list.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-2">
+              <div><h4 class="text-sm font-bold text-slate-800">${nama}</h4><p class="text-xs text-slate-400">${email}</p></div>
+              <select onchange="updateUserRole('${uid}', this.value)" class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase bg-white">
+                <option value="super admin" ${d.role === 'super admin' ? 'selected' : ''}>Super Admin</option>
+                <option value="admin" ${d.role === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="petugas" ${d.role === 'petugas' ? 'selected' : ''}>Petugas</option>
+                <option value="investor" ${d.role === 'investor' ? 'selected' : ''}>Investor</option>
+                <option value="tamu" ${d.role === 'tamu' ? 'selected' : ''}>Tamu</option>
+              </select>
+            </div>`;
+        }
+
+        // 2. RENDER LIST TAB CONTROL MODUL
+        if (controlList) {
+          controlList.innerHTML += `
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                  <i class="ph-bold ph-user-circle text-brand-600"></i> ${nama}
+                </h4>
+                <p class="text-xs text-slate-400 font-medium">${email} • Role: <b class="capitalize text-slate-700">${d.role || 'tamu'}</b></p>
+              </div>
+              <button type="button" onclick="openPermissionsModal('${uid}', '${nama}', '${email}')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                <i class="ph-bold ph-sliders"></i> Atur Akses Modul
+              </button>
+            </div>`;
+        }
       });
     }
 
@@ -2500,6 +2763,122 @@
       } catch (err) { alert(err.message); }
     };
 
+    // OTORISASI CHECKBOX & MODAL LOGIC
+    window.toggleChildCheckboxes = (parentId, childIds) => {
+      const parentCb = document.getElementById(parentId);
+      if (!parentCb) return;
+      childIds.forEach(cId => {
+        const childCb = document.getElementById(cId);
+        if (childCb) childCb.checked = parentCb.checked;
+      });
+    };
+
+    window.openPermissionsModal = async (uid, nama, email) => {
+      document.getElementById("targetUserPermId").value = uid;
+      document.getElementById("targetUserPermNama").innerText = nama;
+      document.getElementById("targetUserPermEmail").innerText = email;
+
+      try {
+        const docSnap = await getDoc(doc(db, "users", uid));
+        let userPerms = defaultFullPermissions;
+
+        if (docSnap.exists() && docSnap.data().permissions) {
+          userPerms = docSnap.data().permissions;
+        }
+
+        const permKeys = [
+          'laporan', 'neraca', 'inputdata', 'transaksi', 'user',
+          'sub_neraca_ringkasan', 'sub_neraca_aruskas',
+          'sub_input_barang', 'sub_input_investor', 'sub_input_penarikan', 'sub_input_asset',
+          'sub_trans_pembelian', 'sub_trans_pengolahan', 'sub_trans_penjualan',
+          'sub_user_otorisasi', 'sub_user_control', 'sub_user_rekening', 'sub_user_excel'
+        ];
+
+        permKeys.forEach(k => {
+          const cb = document.getElementById(`perm_${k}`);
+          if (cb) cb.checked = (userPerms[k] !== false);
+        });
+
+        document.getElementById("modalUserPermissions").classList.remove("hidden");
+      } catch (err) { alert("Gagal memuat otorisasi user: " + err.message); }
+    };
+
+    window.closePermissionsModal = () => {
+      document.getElementById("modalUserPermissions").classList.add("hidden");
+    };
+
+    window.applyPermPreset = (presetType) => {
+      const permKeys = [
+        'laporan', 'neraca', 'inputdata', 'transaksi', 'user',
+        'sub_neraca_ringkasan', 'sub_neraca_aruskas',
+        'sub_input_barang', 'sub_input_investor', 'sub_input_penarikan', 'sub_input_asset',
+        'sub_trans_pembelian', 'sub_trans_pengolahan', 'sub_trans_penjualan',
+        'sub_user_otorisasi', 'sub_user_control', 'sub_user_rekening', 'sub_user_excel'
+      ];
+
+      permKeys.forEach(k => {
+        const cb = document.getElementById(`perm_${k}`);
+        if (!cb) return;
+
+        if (presetType === 'full') {
+          cb.checked = true;
+        } else if (presetType === 'none') {
+          cb.checked = false;
+        } else if (presetType === 'kasir') {
+          cb.checked = ['laporan', 'transaksi', 'sub_trans_penjualan'].includes(k);
+        } else if (presetType === 'olah') {
+          cb.checked = ['laporan', 'inputdata', 'transaksi', 'sub_input_barang', 'sub_trans_pembelian', 'sub_trans_pengolahan'].includes(k);
+        }
+      });
+    };
+
+    document.getElementById("formUserPermissions").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById("targetUserPermId").value;
+      if (!uid) return alert("User ID tidak valid!");
+
+      const permissionsObj = {
+        laporan: document.getElementById("perm_laporan").checked,
+        neraca: document.getElementById("perm_neraca").checked,
+        inputdata: document.getElementById("perm_inputdata").checked,
+        transaksi: document.getElementById("perm_transaksi").checked,
+        user: document.getElementById("perm_user").checked,
+
+        sub_neraca_ringkasan: document.getElementById("perm_sub_neraca_ringkasan").checked,
+        sub_neraca_aruskas: document.getElementById("perm_sub_neraca_aruskas").checked,
+
+        sub_input_barang: document.getElementById("perm_sub_input_barang").checked,
+        sub_input_investor: document.getElementById("perm_sub_input_investor").checked,
+        sub_input_penarikan: document.getElementById("perm_sub_input_penarikan").checked,
+        sub_input_asset: document.getElementById("perm_sub_input_asset").checked,
+
+        sub_trans_pembelian: document.getElementById("perm_sub_trans_pembelian").checked,
+        sub_trans_pengolahan: document.getElementById("perm_sub_trans_pengolahan").checked,
+        sub_trans_penjualan: document.getElementById("perm_sub_trans_penjualan").checked,
+
+        sub_user_otorisasi: document.getElementById("perm_sub_user_otorisasi").checked,
+        sub_user_control: document.getElementById("perm_sub_user_control").checked,
+        sub_user_rekening: document.getElementById("perm_sub_user_rekening").checked,
+        sub_user_excel: document.getElementById("perm_sub_user_excel").checked
+      };
+
+      try {
+        await updateDoc(doc(db, "users", uid), {
+          permissions: permissionsObj
+        });
+
+        alert("Hak Akses Modul & Sub-Tab Berhasil Diperbarui!");
+        closePermissionsModal();
+
+        // JIKA UPDATE AKUN SENDIRI: REFRESH DISPLAY
+        if (currentUser && currentUser.uid === uid) {
+          currentUserPermissions = permissionsObj;
+          applyUIPermissionsFilter();
+        }
+      } catch (err) { alert("Gagal memperbarui otorisasi: " + err.message); }
+    });
+
+    // EXCEL IMPORT & TEMPLATES
     window.downloadExcelTemplate = () => {
       const type = document.getElementById("excelTableType").value;
       let data = [];
@@ -2550,7 +2929,13 @@
             let batchDoc = { ...row };
 
             if (tableType === "users") {
-              batchDoc = { nama: row.Nama || "User", email: row.Email || "", role: (row.Role || "tamu").toLowerCase(), Tanggal_beli: todayStr };
+              batchDoc = { 
+                nama: row.Nama || "User", 
+                email: row.Email || "", 
+                role: (row.Role || "tamu").toLowerCase(), 
+                created_at: todayStr,
+                permissions: defaultFullPermissions
+              };
               await addDoc(collection(db, "users"), batchDoc);
             } else if (tableType === "master_barang") {
               batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", Tanggal_beli: todayStr };

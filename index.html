@@ -337,7 +337,7 @@
             <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-rose-900 space-y-1">
               <span class="text-xs font-bold uppercase tracking-wider text-rose-700">Total Kas Keluar (Outflow)</span>
               <h3 id="cf_total_out" class="text-2xl font-black text-rose-800">Rp 0</h3>
-              <p class="text-[10px] text-rose-600">Pembelian + Biaya Op + Tarik Modal (-)</p>
+              <p class="text-[10px] text-rose-600">Pembelian + Biaya Op + Penarikan (-)</p>
             </div>
 
             <div class="bg-brand-50 border border-brand-200 p-4 rounded-2xl text-brand-900 space-y-1">
@@ -361,7 +361,7 @@
         </div>
       </section>
 
-      <!-- 3. MENU UTAMA: INPUT DATA -->
+      <!-- 3. MENU UTAMA: INPUT DATA (4 SUB-TAB) -->
       <section id="main-tab-inputdata" class="main-tab-content hidden space-y-6">
         <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-1">
           <button id="sub-input-barang" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-600 shadow-sm transition" onclick="switchSubTab('inputdata', 'barang')">
@@ -370,11 +370,15 @@
           <button id="sub-input-investor" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'investor')">
             <i class="ph-bold ph-hand-coins"></i> Investor
           </button>
+          <button id="sub-input-penarikan" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'penarikan')">
+            <i class="ph-bold ph-money-withdraw"></i> Penarikan
+          </button>
           <button id="sub-input-asset" class="sub-tab-btn flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition" onclick="switchSubTab('inputdata', 'asset')">
             <i class="ph-bold ph-buildings"></i> Asset
           </button>
         </div>
 
+        <!-- SUB TAB 1: MASTER BARANG -->
         <div id="subcontent-inputdata-barang" class="sub-content-inputdata block space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -407,6 +411,7 @@
           </div>
         </div>
 
+        <!-- SUB TAB 2: INVESTOR -->
         <div id="subcontent-inputdata-investor" class="sub-content-inputdata hidden space-y-6">
           <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl shadow-lg flex justify-between items-center">
             <div>
@@ -420,7 +425,7 @@
 
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <i class="ph-bold ph-user-plus text-indigo-600 text-lg"></i> Input Data Investor (Tambah / Tarik Modal)
+              <i class="ph-bold ph-user-plus text-indigo-600 text-lg"></i> Input Data Investor Baru / Tambah Modal
             </h2>
             <form id="formInvestor" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -439,14 +444,13 @@
                   <input type="date" id="inv_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah (Rp)</label>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Modal (Rp)</label>
                   <input type="number" id="inv_jumlah" required placeholder="10000000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-slate-600 mb-1">Status Aksi</label>
-                  <select id="inv_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                  <select id="inv_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-indigo-700">
                     <option value="tambah modal">tambah modal (+)</option>
-                    <option value="Tarik Modal">Tarik Modal (-) [Khusus Super Admin]</option>
                   </select>
                 </div>
               </div>
@@ -457,11 +461,65 @@
           </div>
 
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal & Estimasi Hasil Pembagian Laba Bersih</h3>
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal & Estimasi Hak Bagi Laba Bersih</h3>
             <div id="tabelInvestorBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data investor...</p></div>
           </div>
         </div>
 
+        <!-- SUB TAB 3: PENARIKAN (PEMBAGIAN LABA & TARIK MODAL) -->
+        <div id="subcontent-inputdata-penarikan" class="sub-content-inputdata hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <i class="ph-bold ph-money-withdraw text-rose-600 text-lg"></i> Form Penarikan Laba Bersih & Modal Investor
+            </h2>
+            <form id="formPenarikan" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Investor</label>
+                  <select id="pen_select_investor" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-800">
+                    <option value="">-- Memuat Daftar Investor... --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Penarikan</label>
+                  <select id="pen_status" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-rose-700">
+                    <option value="Tarik Laba">Tarik Laba Bersih (-) [Pembagian Bagi Hasil Laba]</option>
+                    <option value="Tarik Modal">Tarik Modal (-) [Pengurangan Pokok Modal]</option>
+                    <option value="tambah modal">Tambah Modal (+) [Injeksi Modal Tambahan]</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Penarikan (tanggal_investasi)</label>
+                  <input type="date" id="pen_tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Penarikan (Rp)</label>
+                  <input type="number" id="pen_jumlah" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-rose-700">
+                </div>
+              </div>
+
+              <div class="p-4 bg-rose-50/70 border border-rose-100 rounded-2xl flex flex-col md:flex-row justify-between md:items-center gap-2">
+                <div>
+                  <span class="text-[10px] text-rose-500 uppercase font-extrabold tracking-wider block">Informasi Otorisasi</span>
+                  <p class="text-xs text-rose-800 font-semibold">Penarikan modal/laba akan langsung mengurangi saldo terkait & tercatat di Arus Kas.</p>
+                </div>
+                <button type="submit" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-rose-500/20 whitespace-nowrap">
+                  Proses & Simpan Penarikan
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Riwayat Seluruh Transaksi Investor & Penarikan</h3>
+            <div id="tabelRiwayatPenarikanBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat riwayat penarikan...</p></div>
+          </div>
+        </div>
+
+        <!-- SUB TAB 4: ASSET -->
         <div id="subcontent-inputdata-asset" class="sub-content-inputdata hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -872,8 +930,8 @@
         authOverlay.classList.add("hidden");
         userDisplay.innerText = user.email;
 
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
+        const userDocRef = doc(doc(db, "users", user.uid));
+        const userDocSnap = await getDoc(doc(db, "users", user.uid));
 
         if (userDocSnap.exists()) {
           const uData = userDocSnap.data();
@@ -1006,7 +1064,7 @@
       const parentContainer = targetSub.parentElement;
       const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
       buttons.forEach(btn => {
-        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "shadow-sm");
+        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "text-rose-600", "text-indigo-600", "shadow-sm");
         btn.classList.add("text-slate-600");
       });
 
@@ -1016,6 +1074,7 @@
         activeSubBtn.classList.add("bg-white", "shadow-sm");
         if (subName === 'barang' || subName === 'ringkasan') activeSubBtn.classList.add("text-brand-600");
         if (subName === 'investor' || subName === 'aruskas') activeSubBtn.classList.add("text-indigo-600");
+        if (subName === 'penarikan') activeSubBtn.classList.add("text-rose-600");
         if (subName === 'asset') activeSubBtn.classList.add("text-cyan-600");
         if (subName === 'pembelian') activeSubBtn.classList.add("text-emerald-600");
         if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
@@ -1025,7 +1084,7 @@
       if (parentGroup === "neraca" && subName === "aruskas") {
         loadCashFlowData();
       }
-      if (parentGroup === "inputdata" && subName === "investor") {
+      if (parentGroup === "inputdata" && (subName === "investor" || subName === "penarikan")) {
         calculateNeracaAndUserSummary();
       }
     };
@@ -1213,7 +1272,7 @@
       } catch (err) { console.error(err); }
     };
 
-    // 3. MUTASI ARUS KAS
+    // 3. MUTASI ARUS KAS (CASH FLOW) - SESUAI FIELD TANGGAL_INVESTASI
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
       container.innerHTML = `<p class="text-xs text-slate-400">Mengkalkulasi arus kas...</p>`;
@@ -1249,17 +1308,22 @@
           }
         });
 
+        // HANYA MENGGUNAKAN TANGGAL_INVESTASI UNTUK TABEL INVESTORS
         const snapInv = await getDocs(collection(db, "investors"));
         snapInv.forEach(docSnap => {
           const d = docSnap.data();
           const nominal = parseFloat(d.Jumlah || 0);
-          const isTambah = (d.Status || '').toLowerCase().includes("tambah");
-          if (isTambah) {
+          const st = (d.Status || '').toLowerCase();
+          
+          if (st.includes("tambah")) {
             totalKasIn += nominal;
-            flowItems.push({ tgl: d.tanggal_investasi || d.Tanggal_beli || '-', jenis: 'Injeksi Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'in', nominal: nominal, pic: 'Investor' });
+            flowItems.push({ tgl: d.tanggal_investasi || '-', jenis: 'Injeksi Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'in', nominal: nominal, pic: 'Investor' });
+          } else if (st.includes("laba")) {
+            totalKasOut += nominal;
+            flowItems.push({ tgl: d.tanggal_investasi || '-', jenis: 'Penarikan Laba Bersih', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'out', nominal: nominal, pic: currentUserNameOrEmail });
           } else {
             totalKasOut += nominal;
-            flowItems.push({ tgl: d.tanggal_investasi || d.Tanggal_beli || '-', jenis: 'Penarikan Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'out', nominal: nominal, pic: 'Super Admin' });
+            flowItems.push({ tgl: d.tanggal_investasi || '-', jenis: 'Penarikan Modal Investor', keterangan: `Investor: ${d.Nama || 'Investor'}`, tipe: 'out', nominal: nominal, pic: 'Super Admin' });
           }
         });
 
@@ -1719,19 +1783,45 @@
       });
     });
 
-    // INVESTOR
+    // INVESTOR & PENARIKAN (MENGGUNAKAN HANYA FIELD TANGGAL_INVESTASI)
     document.getElementById("formInvestor").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const statusTipe = document.getElementById("inv_status").value;
-      if (statusTipe === "Tarik Modal" && currentUserRole !== "super admin") return alert("Akses Ditolak!");
+      try {
+        await addDoc(collection(db, "investors"), {
+          Nama: document.getElementById("inv_nama").value, 
+          Nomor_hp: document.getElementById("inv_hp").value,
+          tanggal_investasi: document.getElementById("inv_tanggal").value, 
+          Jumlah: parseFloat(document.getElementById("inv_jumlah").value),
+          Status: "tambah modal"
+        });
+        alert("Transaksi Tambah Modal Investor Disimpan!");
+        e.target.reset();
+        loadCashFlowData();
+      } catch (err) { alert(err.message); }
+    });
+
+    document.getElementById("formPenarikan").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const investorNama = document.getElementById("pen_select_investor").value;
+      if (!investorNama) return alert("Pilih Investor!");
+
+      const statusTipe = document.getElementById("pen_status").value;
+      if ((statusTipe === "Tarik Modal" || statusTipe === "Tarik Laba") && currentUserRole !== "super admin" && currentUserRole !== "admin") {
+        return alert("Akses Ditolak! Hanya Admin/Super Admin yang dapat memproses penarikan.");
+      }
+
+      const selectedOpt = document.getElementById("pen_select_investor").options[document.getElementById("pen_select_investor").selectedIndex];
+      const hp = selectedOpt.getAttribute("data-hp") || "-";
 
       try {
         await addDoc(collection(db, "investors"), {
-          Nama: document.getElementById("inv_nama").value, Nomor_hp: document.getElementById("inv_hp").value,
-          tanggal_investasi: document.getElementById("inv_tanggal").value, Jumlah: parseFloat(document.getElementById("inv_jumlah").value),
-          Status: statusTipe, Tanggal_beli: document.getElementById("inv_tanggal").value
+          Nama: investorNama, 
+          Nomor_hp: hp,
+          tanggal_investasi: document.getElementById("pen_tanggal").value, 
+          Jumlah: parseFloat(document.getElementById("pen_jumlah").value),
+          Status: statusTipe
         });
-        alert("Transaksi Investor Disimpan!");
+        alert(`Berhasil menyimpan transaksi ${statusTipe} untuk ${investorNama}!`);
         e.target.reset();
         loadCashFlowData();
       } catch (err) { alert(err.message); }
@@ -1739,8 +1829,14 @@
 
     onSnapshot(collection(db, "investors"), (snapshot) => {
       const list = document.getElementById("tabelInvestorBody");
+      const penarikanList = document.getElementById("tabelRiwayatPenarikanBody");
       const totalDisplay = document.getElementById("totalInvestasiDisplay");
+      const penSelect = document.getElementById("pen_select_investor");
+      
       list.innerHTML = "";
+      penarikanList.innerHTML = "";
+      penSelect.innerHTML = '<option value="">-- Pilih Investor --</option>';
+
       const investorMap = {};
       let totalModalGrup = 0;
 
@@ -1748,20 +1844,48 @@
         const d = docSnap.data();
         const nama = d.Nama || "Anonim";
         const jumlah = parseFloat(d.Jumlah || 0);
-        const isTambah = (d.Status || "").toLowerCase().includes("tambah");
+        const st = (d.Status || "").toLowerCase();
+        const tgl = d.tanggal_investasi || "-";
 
-        if (!investorMap[nama]) investorMap[nama] = { hp: d.Nomor_hp || '-', total: 0 };
-        if (isTambah) { investorMap[nama].total += jumlah; totalModalGrup += jumlah; }
-        else { investorMap[nama].total -= jumlah; totalModalGrup -= jumlah; }
+        if (!investorMap[nama]) {
+          investorMap[nama] = { hp: d.Nomor_hp || '-', modalTotal: 0, ditarikLabaTotal: 0 };
+        }
+
+        if (st.includes("tambah")) {
+          investorMap[nama].modalTotal += jumlah;
+          totalModalGrup += jumlah;
+        } else if (st.includes("tarik modal")) {
+          investorMap[nama].modalTotal -= jumlah;
+          totalModalGrup -= jumlah;
+        } else if (st.includes("laba")) {
+          investorMap[nama].ditarikLabaTotal += jumlah;
+        }
+
+        // Tampilkan Riwayat Penarikan
+        penarikanList.innerHTML += `
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="font-bold px-2 py-0.5 rounded text-[10px] ${st.includes('tambah') ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${d.Status || 'Status'}</span>
+                <span class="text-slate-400 font-medium">${tgl}</span>
+              </div>
+              <p class="font-bold text-slate-800">${nama} (${d.Nomor_hp || '-'})</p>
+            </div>
+            <span class="text-sm font-black ${st.includes('tambah') ? 'text-emerald-600' : 'text-rose-600'}">${st.includes('tambah') ? '+' : '-'} Rp ${jumlah.toLocaleString('id-ID')}</span>
+          </div>`;
       });
 
       totalDisplay.innerText = `Rp ${Number(totalModalGrup).toLocaleString('id-ID')}`;
 
       for (const [nama, data] of Object.entries(investorMap)) {
-        const porsiRatio = totalModalGrup > 0 ? (data.total / totalModalGrup) : 0;
+        const porsiRatio = totalModalGrup > 0 ? (data.modalTotal / totalModalGrup) : 0;
         const porsiPct = (porsiRatio * 100).toFixed(2);
         
-        const nominalLabaInvestor = currentGlobalLabaBersih * porsiRatio;
+        const hakLabaKotor = currentGlobalLabaBersih * porsiRatio;
+        const sisaHakLabaNet = hakLabaKotor - data.ditarikLabaTotal;
+
+        // Populate Dropdown Investor di Form Penarikan
+        penSelect.innerHTML += `<option value="${nama}" data-hp="${data.hp}">${nama} (Modal: Rp ${data.modalTotal.toLocaleString('id-ID')})</option>`;
 
         list.innerHTML += `
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center gap-3">
@@ -1770,9 +1894,10 @@
               <p class="text-xs text-slate-400">${data.hp}</p>
             </div>
             <div class="text-right space-y-0.5">
-              <span class="text-sm font-black ${data.total >= 0 ? 'text-indigo-600' : 'text-rose-600'}">Modal: Rp ${Number(data.total).toLocaleString('id-ID')}</span>
+              <span class="text-sm font-black ${data.modalTotal >= 0 ? 'text-indigo-600' : 'text-rose-600'}">Modal: Rp ${Number(data.modalTotal).toLocaleString('id-ID')}</span>
               <span class="text-xs font-bold block text-slate-500">Porsi: ${porsiPct}%</span>
-              <span class="text-xs font-extrabold block text-emerald-600">Bagi Laba: Rp ${Number(nominalLabaInvestor).toLocaleString('id-ID')}</span>
+              <span class="text-xs font-extrabold block text-emerald-600">Hak Laba Net: Rp ${Number(sisaHakLabaNet).toLocaleString('id-ID')}</span>
+              <span class="text-[10px] text-rose-500 font-semibold block">(Sudah Ditarik: Rp ${Number(data.ditarikLabaTotal).toLocaleString('id-ID')})</span>
             </div>
           </div>`;
       }
@@ -1845,7 +1970,7 @@
       else if (type === "pembelian") data = [{ no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak SGE Murni", Satuan: "gram", Jumlah_beli: 500, Harga_satuan: 15000, Biaya_pembelian: 50000, pic_pembelian: "admin@delta.com", Status: "olahan" }];
       else if (type === "pengolahan") data = [{ no_trx_beli: "BUY-20261107-1001", Tanggal_beli: "2026-11-07", nama_brg: "Perak Mentah", Satuan: "gram", Jumlah: 500, Harga_satuan: 15000, Total_harga: 7500000, biaya_olah: 100000, pic_pengolahan: "admin@delta.com", status: "selesai olah", nama_brg_setelah_olah: "Perak Batangan 999", Satuan_setelah_olah: "gram", Jumlah_setelah_olah: 495, Status_penjualan: "Belum terjual" }];
       else if (type === "penjualan") data = [{ no_trx_jual: "POS-20261107-2001", Tanggal_jual: "2026-11-07", No_trx_beli: "BUY-20261107-1001", nama_brg: "Perak Batangan 999", Satuan: "gram", Jumlah: 100, Harga_jual: 18000, Biaya_penjualan: 20000, pic_penjualan: "admin@delta.com", tipe_asal: "pengolahan" }];
-      else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal", Tanggal_beli: "2026-11-07" }];
+      else if (type === "investors") data = [{ Nama: "Budi Santoso", Nomor_hp: "081234567890", tanggal_investasi: "2026-11-07", Jumlah: 50000000, Status: "tambah modal" }];
       else if (type === "master_barang") data = [{ kode_brg: "BRG-20261107-001", nama_brg: "Perak Granul SGE", Satuan: "gram" }];
 
       const ws = XLSX.utils.json_to_sheet(data);
@@ -1885,16 +2010,22 @@
           for (const row of jsonData) {
             let batchDoc = { ...row };
 
-            if (!batchDoc.Tanggal_beli) {
-              batchDoc.Tanggal_beli = row.Tanggal_jual || row.tanggal_investasi || todayStr;
-            }
-
             if (tableType === "users") {
               batchDoc = { nama: row.Nama || "User", email: row.Email || "", role: (row.Role || "tamu").toLowerCase(), Tanggal_beli: todayStr };
               await addDoc(collection(db, "users"), batchDoc);
             } else if (tableType === "master_barang") {
               batchDoc = { kode_brg: row.kode_brg || "", nama_brg: row.nama_brg || "", Satuan: row.Satuan || "", Tanggal_beli: todayStr };
               await addDoc(collection(db, "master_barang"), batchDoc);
+            } else if (tableType === "investors") {
+              // IMPORT KHUSUS INVESTORS: HANYA PAKAI TANGGAL_INVESTASI
+              batchDoc = { 
+                Nama: row.Nama || "Anonim", 
+                Nomor_hp: row.Nomor_hp || "-", 
+                tanggal_investasi: row.tanggal_investasi || todayStr, 
+                Jumlah: parseFloat(row.Jumlah || 0), 
+                Status: row.Status || "tambah modal" 
+              };
+              await addDoc(collection(db, "investors"), batchDoc);
             } else if (tableType === "pembelian") {
               const qty = parseFloat(row.Jumlah_beli || 0);
               const price = parseFloat(row.Harga_satuan || 0);

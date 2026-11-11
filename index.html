@@ -190,7 +190,7 @@
 
       <div class="space-y-4 overflow-y-auto pr-1 flex-1">
         
-        <!-- PRESET ACCORDION BUTTONS -->
+        <!-- PRESET BUTTONS -->
         <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 rounded-2xl border border-slate-100">
           <span class="text-xs font-bold text-slate-600">Pilih Preset Cepat:</span>
           <div class="flex flex-wrap gap-1.5">
@@ -736,7 +736,7 @@
           </div>
 
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal & Estimasi Hak Bagi Laba Bersih (Setalah Dipotong Laba Ditahan)</h3>
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Persentase Porsi Modal & Estimasi Hak Bagi Laba Bersih (Setelah Dipotong Laba Ditahan)</h3>
             <div id="tabelInvestorBody" class="space-y-3"><p class="text-xs text-slate-400">Memuat data investor...</p></div>
           </div>
         </div>
@@ -1015,7 +1015,7 @@
           </div>
         </div>
 
-        <!-- SUB TAB 2: TAB CONTROL MENU / OTORISASI MODUL (BARU) -->
+        <!-- SUB TAB 2: TAB CONTROL MENU / OTORISASI MODUL -->
         <div id="subcontent-user-control" class="sub-content-user hidden space-y-6">
           <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1327,7 +1327,7 @@
             if (guestBlock) guestBlock.classList.add("hidden");
             if (appContainer) appContainer.classList.remove("hidden");
 
-            // EVALUASI & SEMBUNYIKAN UI SESUAI PERMISSIONS
+            // FILTER & SEMBUNYIKAN UI NAVIGASI
             applyUIPermissionsFilter();
 
             refreshAutoCodes();
@@ -1354,16 +1354,15 @@
 
     // FILTER DAN PENERAPAN VISIBILITAS NAVIGASI BERDASARKAN PERMISSIONS
     function applyUIPermissionsFilter() {
-      // JIKA SUPER ADMIN: AKSES PENUH SECARA OTOMATIS
       const isSuper = (currentUserRole === "super admin");
 
       const checkPerm = (key) => {
         if (isSuper) return true;
-        if (!currentUserPermissions) return true; // fallback default
+        if (!currentUserPermissions) return true;
         return currentUserPermissions[key] !== false;
       };
 
-      // 1. MENU UTAMA
+      // 1. SEMBUNYIKAN/TAMPILKAN NAVIGASI MENU UTAMA
       const mainMenus = ['laporan', 'neraca', 'inputdata', 'transaksi', 'user'];
       let firstAllowedMain = null;
 
@@ -1378,7 +1377,7 @@
         if (isAllowed && !firstAllowedMain) firstAllowedMain = mKey;
       });
 
-      // 2. SUB TAB PERKATEGORI
+      // 2. SEMBUNYIKAN/TAMPILKAN TOMBOL SUB TAB
       const subTabs = [
         { parent: 'neraca', key: 'ringkasan', pKey: 'sub_neraca_ringkasan' },
         { parent: 'neraca', key: 'aruskas', pKey: 'sub_neraca_aruskas' },
@@ -1397,11 +1396,11 @@
 
       subTabs.forEach(st => {
         const btn = document.getElementById(`sub-${st.parent}-${st.key}`);
-        const isAllowed = checkPerm(st.pKey);
+        const isAllowed = checkPerm(st.pKey) && checkPerm(st.parent);
         if (btn) btn.style.display = isAllowed ? '' : 'none';
       });
 
-      // PINDAH SECARA OTOMATIS KE TAB PERTAMA YANG DIIZINKAN
+      // BUKATAB PERTAMA YANG DIIZINKAN
       if (firstAllowedMain) {
         switchMainTab(firstAllowedMain);
       }
@@ -1625,7 +1624,14 @@
 
     window.handleLogout = () => signOut(auth);
 
+    // FUNGSI SWITCH MAIN TAB DENGAN VALIDASI OTORISASI SANITIZED
     window.switchMainTab = (tabName) => {
+      const isSuper = (currentUserRole === "super admin");
+      if (!isSuper && currentUserPermissions && currentUserPermissions[tabName] === false) {
+        console.warn(`Akses ditolak ke menu utama: ${tabName}`);
+        return;
+      }
+
       document.querySelectorAll(".main-tab-content").forEach(el => el.classList.add("hidden"));
       const targetTab = document.getElementById(`main-tab-${tabName}`);
       if (targetTab) targetTab.classList.remove("hidden");
@@ -1650,42 +1656,64 @@
         activeMobNav.classList.add("text-brand-600");
       }
 
-      if (tabName === "transaksi") {
-        loadMultiPenjualanItems();
+      // AUTO SWITCH KE SUB-TAB PERTAMA YANG DIIZINKAN
+      const subTabOrder = {
+        neraca: ['ringkasan', 'aruskas'],
+        inputdata: ['barang', 'investor', 'penarikan', 'asset'],
+        transaksi: ['pembelian', 'pengolahan', 'penjualan'],
+        user: ['otorisasi', 'control', 'rekening', 'excel']
+      };
+
+      if (subTabOrder[tabName]) {
+        for (const subItem of subTabOrder[tabName]) {
+          const success = window.switchSubTab(tabName, subItem);
+          if (success) break;
+        }
       }
-      if (tabName === "laporan") {
-        filterLaporan();
-      }
-      if (tabName === "neraca") {
-        calculateNeracaAndUserSummary();
-        loadCashFlowData();
-      }
-      if (tabName === "inputdata") {
-        calculateNeracaAndUserSummary();
-        renderInvestorsData();
-      }
-      if (tabName === "user") {
-        loadUsersList();
-      }
+
+      if (tabName === "transaksi") loadMultiPenjualanItems();
+      if (tabName === "laporan") filterLaporan();
+      if (tabName === "neraca") { calculateNeracaAndUserSummary(); loadCashFlowData(); }
+      if (tabName === "inputdata") { calculateNeracaAndUserSummary(); renderInvestorsData(); }
+      if (tabName === "user") loadUsersList();
     };
 
+    // FUNGSI SWITCH SUB TAB DENGAN VALIDASI OTORISASI PRESISE
     window.switchSubTab = (parentGroup, subName) => {
+      const permMap = {
+        neraca: { ringkasan: 'sub_neraca_ringkasan', aruskas: 'sub_neraca_aruskas' },
+        inputdata: { barang: 'sub_input_barang', investor: 'sub_input_investor', penarikan: 'sub_input_penarikan', asset: 'sub_input_asset' },
+        transaksi: { pembelian: 'sub_trans_pembelian', pengolahan: 'sub_trans_pengolahan', penjualan: 'sub_trans_penjualan' },
+        user: { otorisasi: 'sub_user_otorisasi', control: 'sub_user_control', rekening: 'sub_user_rekening', excel: 'sub_user_excel' }
+      };
+
+      const isSuper = (currentUserRole === "super admin");
+      if (!isSuper && currentUserPermissions) {
+        const permKey = permMap[parentGroup]?.[subName];
+        if (permKey && (currentUserPermissions[permKey] === false || currentUserPermissions[parentGroup] === false)) {
+          console.warn(`Akses ditolak untuk sub-tab: ${parentGroup} -> ${subName}`);
+          return false;
+        }
+      }
+
       document.querySelectorAll(`.sub-content-${parentGroup}`).forEach(el => el.classList.add("hidden"));
       const targetSub = document.getElementById(`subcontent-${parentGroup}-${subName}`);
       if (targetSub) targetSub.classList.remove("hidden");
 
-      const parentContainer = targetSub.parentElement;
-      const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
-      buttons.forEach(btn => {
-        btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "text-rose-600", "text-indigo-600", "text-blue-600", "shadow-sm");
-        btn.classList.add("text-slate-600");
-      });
+      const parentContainer = targetSub ? targetSub.parentElement : null;
+      if (parentContainer) {
+        const buttons = parentContainer.querySelectorAll(".sub-tab-btn");
+        buttons.forEach(btn => {
+          btn.classList.remove("bg-white", "text-brand-600", "text-emerald-600", "text-purple-600", "text-amber-600", "text-rose-600", "text-indigo-600", "text-blue-600", "shadow-sm");
+          btn.classList.add("text-slate-600");
+        });
+      }
 
       const activeSubBtn = document.getElementById(`sub-${parentGroup}-${subName}`);
       if (activeSubBtn) {
         activeSubBtn.classList.remove("text-slate-600");
         activeSubBtn.classList.add("bg-white", "shadow-sm");
-        if (subName === 'barang' || subName === 'ringkasan' || subName === 'otorisasi') activeSubBtn.classList.add("text-brand-600");
+        if (subName === 'barang' || subName === 'ringkasan' || subName === 'otorisasi' || subName === 'control') activeSubBtn.classList.add("text-brand-600");
         if (subName === 'investor' || subName === 'aruskas') activeSubBtn.classList.add("text-indigo-600");
         if (subName === 'penarikan') activeSubBtn.classList.add("text-rose-600");
         if (subName === 'asset') activeSubBtn.classList.add("text-cyan-600");
@@ -1693,16 +1721,15 @@
         if (subName === 'pengolahan') activeSubBtn.classList.add("text-purple-600");
         if (subName === 'penjualan') activeSubBtn.classList.add("text-amber-600");
         if (subName === 'rekening') activeSubBtn.classList.add("text-blue-600");
-        if (subName === 'control') activeSubBtn.classList.add("text-brand-600");
       }
 
-      if (parentGroup === "neraca" && subName === "aruskas") {
-        loadCashFlowData();
-      }
+      if (parentGroup === "neraca" && subName === "aruskas") loadCashFlowData();
       if (parentGroup === "inputdata" && (subName === "investor" || subName === "penarikan")) {
         calculateNeracaAndUserSummary();
         renderInvestorsData();
       }
+
+      return true;
     };
 
     // REALTIME LISTENERS DASHBOARD
@@ -1928,7 +1955,7 @@
       } catch (err) { console.error(err); }
     };
 
-    // MUTASI ARUS KAS & AKUMULASI NET REKENING BANK
+    // MUTASI ARUS KAS
     window.loadCashFlowData = async () => {
       const container = document.getElementById("tabelCashFlowBody");
       if (!container) return;
@@ -1995,7 +2022,6 @@
         });
 
         const bankNetTotal = bankIn - bankOut;
-
         flowItems.sort((a, b) => (b.tgl > a.tgl ? 1 : -1));
 
         const cfIn = document.getElementById("cf_total_in");
@@ -2870,7 +2896,7 @@
         alert("Hak Akses Modul & Sub-Tab Berhasil Diperbarui!");
         closePermissionsModal();
 
-        // JIKA UPDATE AKUN SENDIRI: REFRESH DISPLAY
+        // REFRESH VISIBILITAS JIKA UPDATE DIRI SENDIRI
         if (currentUser && currentUser.uid === uid) {
           currentUserPermissions = permissionsObj;
           applyUIPermissionsFilter();
